@@ -1,8 +1,8 @@
 import express from 'express';
-import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { authRoutes, userRoutes } from './routes';
 import { errorHandler } from './middleware/errorHandler';
+import { createPool } from './repositories/db';
 
 dotenv.config();
 
@@ -10,9 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Create a new pool using the connection string from environment variables
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const pool = createPool();
 
 // Function to test the database connection
 async function testDatabaseConnection(retries = 5, delay = 5000) {
@@ -59,6 +57,3 @@ startServer().catch((err) => {
   console.error('Failed to start server:', err);
   process.exit(1);
 });
-
-// Export the pool for use in other parts of your application
-export { pool };

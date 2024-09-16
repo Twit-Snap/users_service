@@ -1,7 +1,6 @@
 import { Pool, QueryResult } from 'pg';
 import { CreateUserDto, User } from 'user';
 
-
 class UserRepository {
   private pool: Pool;
 
@@ -9,30 +8,22 @@ class UserRepository {
     this.pool = pool;
   }
 
-  async getList(): Promise<User | null> {
+  async getList(): Promise<User[] | null> {
     const query = 'SELECT id, username, email, created_at FROM users';
-    try {
-      const result: QueryResult = await this.pool.query(query);
-      if (result.rows.length === 0) {
-        return null;
-      }
-      return result.rows[0] as User;
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      throw error;
+    const result: QueryResult = await this.pool.query(query);
+    if (result.rows.length === 0) {
+      return null;
     }
-  }async get(id: number): Promise<User | null> {
+    return result.rows as User[];
+  }
+
+  async get(id: number): Promise<User | null> {
     const query = 'SELECT id, username, email, created_at FROM users WHERE id = $1';
-    try {
-      const result: QueryResult = await this.pool.query(query, [id]);
-      if (result.rows.length === 0) {
-        return null;
-      }
-      return result.rows[0] as User;
-    } catch (error) {
-      console.error('Error fetching user:', error);
-      throw error;
+    const result: QueryResult = await this.pool.query(query, [id]);
+    if (result.rows.length === 0) {
+      return null;
     }
+    return result.rows[0] as User;
   }
 
   async create(userData: CreateUserDto): Promise<User> {
@@ -42,14 +33,9 @@ class UserRepository {
       VALUES ($1, $2, $3)
       RETURNING id, username, email, created_at
     `;
-    try {
-      const result: QueryResult = await this.pool.query(query, [username, email, password]);
-      return result.rows[0] as User;
-    } catch (error) {
-      console.error('Error creating user:', error);
-      throw error;
-    }
+    const result: QueryResult = await this.pool.query(query, [username, email, password]);
+    return result.rows[0] as User;
   }
 }
 
-export { UserRepository, User, CreateUserDto };
+export { UserRepository };
