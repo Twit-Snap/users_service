@@ -8,16 +8,24 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  console.log(email, password);
-  res.send('Login route');
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    console.log(email, password);
+    res.send('Login route');
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post('/register', (req, res) => {
-  const { email, password, name } = req.body;
-  console.log(email, password, name);
-  res.send('Register route');
+router.post('/register', async (req, res, next) => {
+  try {
+    const { email, password, name } = req.body;
+    console.log(email, password, name);
+    res.send('Register route');
+  } catch (error) {
+    next(error);
+  }
 });
 
 

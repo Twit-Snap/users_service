@@ -15,17 +15,23 @@ const pool = new Pool({
 });
 
 // Function to test the database connection
-async function testDatabaseConnection() {
-  let client;
-  try {
-    client = await pool.connect();
-    await client.query('SELECT NOW()');
-    console.log('Successfully connected to the database');
-  } catch (err) {
-    console.error('Error connecting to the database:', err);
-    process.exit(1); // Exit the process if we can't connect to the database
-  } finally {
-    if (client) client.release();
+async function testDatabaseConnection(retries = 5, delay = 5000) {
+  while (retries > 0) {
+    try {
+      const client = await pool.connect();
+      await client.query('SELECT NOW()');
+      client.release();
+      console.log('Successfully connected to the database');
+      return;
+    } catch (err) {
+      console.error(`Failed to connect to the database. Retries left: ${retries}`);
+      retries--;
+      if (retries === 0) {
+        console.error('Max retries reached. Exiting.');
+        process.exit(1);
+      }
+      await new Promise(res => setTimeout(res, delay));
+    }
   }
 }
 
@@ -38,6 +44,7 @@ app.use('/auth', authRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
+
 
 // Start the server and connect to the database
 async function startServer() {
