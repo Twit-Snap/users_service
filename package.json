@@ -4,7 +4,7 @@
   "description": "Users service",
   "main": "src/app.ts",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "docker-compose up",
     "dev": "docker-compose up -d db && nodemon src/app.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
