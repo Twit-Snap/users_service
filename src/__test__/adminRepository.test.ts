@@ -45,4 +45,20 @@ describe('AdminService - create admin', () => {
         mockQuery.mockRestore();
     });
 
+    it('should fail with repite email', async () => {
+
+        const adminData = { username: 'admin1', email: 'admin1@example.com', password: 'securepassword' };
+
+
+        // Simula la respuesta de la consulta que indica que el username ya existe
+        // @ts-ignore
+        const mockQuery = jest.spyOn(pool, 'query').mockResolvedValueOnce({
+            rows: [{ username: 'admin1', email: 'admin1@example.com' }],
+            rowCount: 1,
+        });
+
+        await expect(adminService.create(adminData)).rejects.toThrow(InvalidCredentialsError);
+        mockQuery.mockRestore();
+    });
+
 });
