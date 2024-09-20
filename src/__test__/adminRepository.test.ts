@@ -22,6 +22,8 @@ describe('AdminService - create admin', () => {
         // @ts-ignore
         jest.spyOn(pool, 'query').mockResolvedValueOnce({ rows: [], rowCount: 0 }) // Para la verificación del username
         // @ts-ignore
+        jest.spyOn(pool, 'query').mockResolvedValueOnce({ rows: [], rowCount: 0 }) // Para la verificación del username
+        // @ts-ignore
         jest.spyOn(pool, 'query').mockResolvedValueOnce({ rows: [{ username: 'admin1', email: 'admin1@example.com' }], rowCount: 1 }); // Para la inserción
 
 
@@ -31,18 +33,19 @@ describe('AdminService - create admin', () => {
 
     it('should fail with repite username', async () => {
 
-        const adminData = { username: 'admin1', email: 'admin1@example.com', password: 'securepassword' };
+        const adminData = { username: 'invalid_user', email: 'admin1@example.com', password: 'securepassword' };
 
-
-        // Simula la respuesta de la consulta que indica que el username ya existe
         // @ts-ignore
-        const mockQuery = jest.spyOn(pool, 'query').mockResolvedValueOnce({
-            rows: [{ username: 'admin1', email: 'admin1@example.com' }],
+        jest.spyOn(pool, 'query').mockResolvedValueOnce({ rows: [{ username: 'admin1' }],
             rowCount: 1,
-        });
+        })
 
-        await expect(adminService.create(adminData)).rejects.toThrow(InvalidCredentialsError);
-        mockQuery.mockRestore();
+        await expect(adminService.create(adminData)).rejects.toThrow(
+            expect.objectContaining({
+                name: 'InvalidCredentials', // Verifica el tipo de error
+                message: 'invalid_user already exists', // Verifica el mensaje
+
+            }));
     });
 
     it('should fail with repite email', async () => {
@@ -52,12 +55,20 @@ describe('AdminService - create admin', () => {
 
         // Simula la respuesta de la consulta que indica que el username ya existe
         // @ts-ignore
+        jest.spyOn(pool, 'query').mockResolvedValueOnce({ rows: [], rowCount: 0 }) // Para la verificación del username
+        // @ts-ignore
         const mockQuery = jest.spyOn(pool, 'query').mockResolvedValueOnce({
-            rows: [{ username: 'admin1', email: 'admin1@example.com' }],
+            rows: [{email: 'admin1@example.com' }],
             rowCount: 1,
         });
 
-        await expect(adminService.create(adminData)).rejects.toThrow(InvalidCredentialsError);
+        await expect(adminService.create(adminData)).rejects.toThrow(
+            expect.objectContaining({
+                name: 'InvalidCredentials', // Verifica el tipo de error
+                message: ' admin1@example.com already exists', // Verifica el mensaje
+
+            })
+        );
         mockQuery.mockRestore();
     });
 
