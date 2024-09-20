@@ -1,0 +1,20 @@
+### admin_register_valid
+
+POST http://localhost:3000/auth/admin/register
+Content-Type: application/json
+
+{
+  "username": "usernameTest2",
+  "email": "email2",
+  "password": "123456"
+}
+
+### admin_register_without_password
+POST http://localhost:3000/auth/admin/register
+Content-Type: application/json
+
+{
+  "username": "usernameTest2",
+  "email": "email2",
+  "password": ""
+}
