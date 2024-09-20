@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { authRoutes, userRoutes } from './routes';
-import { errorHandler } from './middleware/errorHandler';
+import { authUserRoutes, authAdminRoutes, adminRoutes, userRoutes, } from './routes';
+import { userErrorHandler } from './middleware/userErrorHandler';
 import { createPool } from './repositories/db';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
 
@@ -34,6 +34,8 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
   }
 }
 
+
+
 // Middleware
 app.use(express.json());
 
@@ -47,10 +49,14 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/user', userRoutes);
-app.use('/auth', authRoutes);
+app.use('/auth', authUserRoutes);
+app.use('/admin', adminRoutes);
+app.use('/auth/admin', authAdminRoutes);
+
+
 
 // Error handling middleware
-app.use(errorHandler);
+app.use(userErrorHandler);
 
 
 // Start the server and connect to the database

@@ -4,7 +4,7 @@ import { EntityAlreadyExistsError, AuthenticationError } from '../types/customEr
 // import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const userErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof NotFoundError) {
     console.warn(`NotFoundError: ${err.message}`, {
       entityName: err.entityName,
