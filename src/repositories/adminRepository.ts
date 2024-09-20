@@ -51,7 +51,7 @@ class AdminRepository {
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new InvalidCredentialsError(username, 'Username already exists.');
+            throw new InvalidCredentialsError(username,'');
         }
     }
 
@@ -61,7 +61,7 @@ class AdminRepository {
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new InvalidCredentialsError(email, 'Email already exists.');
+            throw new InvalidCredentialsError('',email);
         }
     }
 }
