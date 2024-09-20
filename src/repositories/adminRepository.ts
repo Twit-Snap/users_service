@@ -33,6 +33,7 @@ class AdminRepository {
 
         const { username, email, password } = adminData;
         await this.checkUsername(username);
+        await this.checkEmail(email);
 
         const query = `
       INSERT INTO admins (username, email, password)
@@ -54,6 +55,15 @@ class AdminRepository {
         }
     }
 
+    private async checkEmail(email: string) {
+        const checkQuery = `SELECT email FROM admins WHERE email = $1`;
+        const checkResult: QueryResult = await this.pool.query(checkQuery, [email]);
+
+        const rowCount = checkResult.rowCount ?? 0;
+        if (rowCount > 0) {
+            throw new InvalidCredentialsError(email, 'Email already exists.');
+        }
+    }
 }
 
 export { AdminRepository };
