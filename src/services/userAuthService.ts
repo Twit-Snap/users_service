@@ -1,9 +1,10 @@
-import { IJWTService } from 'auth';
+import { IJWTService } from 'jwt';
 import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories';
-import { IAuthUserService, IUserRepository, UserRegisterDto, User, UserWithToken } from 'user';
 import { JWTService } from './jwtService';
 import { AuthenticationError, ValidationError } from '../types/customErrors';
+import { IAuthUserService, UserWithToken, UserRegisterDto } from 'userAuth';
+import { IUserRepository } from 'user';
 
 export class UserAuthService implements IAuthUserService {
   private userRepository: IUserRepository;

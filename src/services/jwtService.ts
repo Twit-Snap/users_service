@@ -1,4 +1,4 @@
-import { IJWTService, JwtCustomPayload } from 'auth';
+import { IJWTService, JwtCustomPayload } from 'jwt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
 // JWT Service class implementation

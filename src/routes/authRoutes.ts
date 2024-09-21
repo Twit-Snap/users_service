@@ -1,6 +1,6 @@
 import express from 'express';
 import { UserAuthService } from '../services/userAuthService';
-import { UserRegisterDto } from 'user';
+import { UserRegisterDto } from 'userAuth';
 
 const router = express.Router();
 
