@@ -8,7 +8,7 @@ export interface User {
   createdAt: Date;
 }
 
-export interface RegisterUserDto {
+export interface UserRegisterDto {
   username: string;
   email: string;
   name: string;
@@ -21,12 +21,12 @@ export interface RegisterUserDto {
 export interface IUserRepository {
   getList(): Promise<User[] | null>;
   get(id: number): Promise<User | null>;
-  create(userData: RegisterUserDto): Promise<User>;
+  create(userData: UserRegisterDto): Promise<User>;
 }
 
 
 
 export interface IAuthUserService {
   login(emailOrUsername: string, password: string): Promise<User>;
-  register(user: RegisterUserDto): Promise<User>;
+  register(user: UserRegisterDto): Promise<User>;
 }

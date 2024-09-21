@@ -1,6 +1,6 @@
 import { EntityAlreadyExistsError } from 'customErrors';
 import { Pool, QueryResult } from 'pg';
-import { IUserRepository, RegisterUserDto, User } from 'user';
+import { IUserRepository, UserRegisterDto, User } from 'user';
 
 class UserRepository implements IUserRepository{
   private pool: Pool;
@@ -27,7 +27,7 @@ class UserRepository implements IUserRepository{
     return result.rows[0] as User;
   }
 
-  async create(userData: RegisterUserDto): Promise<User> {
+  async create(userData: UserRegisterDto): Promise<User> {
     const { username, email, name, lastname, birthdate, password } = userData;
     const query = `
       INSERT INTO users (username, email, name, lastname, birthdate, password)
@@ -46,6 +46,7 @@ class UserRepository implements IUserRepository{
       ]);
       return result.rows[0] as User;
     } catch (error) {
+      console.error(error);
       const errorAux = error as { code: string, constraint: string };
       if (errorAux.code === '23505') { // PostgreSQL unique constraint violation error code
         if (errorAux.constraint?.includes('username')) {
