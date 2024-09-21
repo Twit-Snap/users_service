@@ -13,15 +13,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
-  try {
-    const { username, email, password } = req.body;
-    const user = await userRepository.create({ username, email, password });
-    res.send(user);
-  } catch (error) {
-    next(error);
-  }
-});
 
 
 export default router;

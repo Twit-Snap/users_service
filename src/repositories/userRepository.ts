@@ -1,5 +1,5 @@
-import { EntityAlreadyExistsError } from 'customErrors';
-import { Pool, QueryResult } from 'pg';
+import { EntityAlreadyExistsError } from '../types/customErrors';
+import { Pool } from 'pg';
 import { IUserRepository, UserRegisterDto, User, UserWithPassword } from 'user';
 
 export class UserRepository implements IUserRepository{

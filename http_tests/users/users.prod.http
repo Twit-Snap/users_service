@@ -1,0 +1,4 @@
+@url = https://twitsnap-users.up.railway.app
+
+# get all users
+curl -X GET {{url}}/user

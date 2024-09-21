@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories';
 import { IAuthUserService, IUserRepository, UserRegisterDto, User, UserWithToken } from 'user';
 import { JWTService } from './jwtService';
-import { AuthenticationError } from 'customErrors';
+import { AuthenticationError, ValidationError } from '../types/customErrors';
 
 export class UserAuthService implements IAuthUserService {
   private userRepository: IUserRepository;
@@ -38,12 +38,14 @@ export class UserAuthService implements IAuthUserService {
     });
 
     // Attach token to user object (assuming we want to return it)
-    const userWithToken = { ...user, token };
+    const userWithToken = { ...user, token, password: undefined };
 
     return userWithToken;
   }
 
   async register(userData: UserRegisterDto): Promise<UserWithToken> {
+
+    this.registerValidations(userData);
     // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
@@ -63,5 +65,38 @@ export class UserAuthService implements IAuthUserService {
     const userWithToken = { ...newUser, token };
 
     return userWithToken;
+  }
+
+
+  private registerValidations(userData: UserRegisterDto) {
+    // Validate email
+    if (!userData.email || !userData.email.includes('@')) {
+      throw new ValidationError('email', 'Invalid email', 'INVALID_EMAIL');
+    }
+
+    // Validate password (TODO: Add more validations)
+    if (!userData.password) {
+      throw new ValidationError('password', 'Invalid password', 'INVALID_PASSWORD');
+    }
+
+    // Validate username (TODO: Add more validations)
+    if (!userData.username) {
+      throw new ValidationError('username', 'Invalid username', 'INVALID_USERNAME');
+    }
+
+    // Validate name (TODO: Add more validations)
+    if (!userData.name) {
+      throw new ValidationError('name', 'Invalid name', 'INVALID_NAME');
+    }
+
+    // Validate lastname (TODO: Add more validations)
+    if (!userData.lastname) {
+      throw new ValidationError('lastname', 'Invalid lastname', 'INVALID_LASTNAME');
+    }
+
+    // Validate birthdate (TODO: Add more validations)
+    if (!userData.birthdate) {
+      throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
+    }
   }
 }
