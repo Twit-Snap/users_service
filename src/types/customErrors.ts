@@ -21,3 +21,13 @@ export class ValidationError extends Error {
     this.name = 'ValidationError';
   }
 }
+
+export class EntityAlreadyExistsError extends Error {
+  entityName: string;
+
+  constructor(entityName: string) {
+    super(`${entityName} already exists`);
+    this.entityName = entityName;
+    this.name = 'EntityAlreadyExistsError';
+  }
+}
