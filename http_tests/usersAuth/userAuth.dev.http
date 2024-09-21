@@ -1,0 +1,20 @@
+### login
+curl -X POST http://localhost:3000/auth/login \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "emailOrUsername": "luis4@gmail.com",
+        "password": "isdabnu783"
+    }'
+
+
+### register
+curl -X POST http://localhost:3000/auth/register \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "email": "luis4@gmail.com",
+        "username": "luis4",
+        "password": "isdabnu783",
+        "name": "name test",
+        "lastname": "lastname test",
+        "birthdate": "1990-01-01"
+    }'

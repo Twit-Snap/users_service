@@ -1,18 +1,14 @@
 import express from 'express';
+import { UserAuthService } from '../services/userAuthService';
+import { UserRegisterDto } from 'userAuth';
 
 const router = express.Router();
 
-// Define your routes here
-router.get('/', (req, res) => {
-  res.send('Hello, Auth!');
-});
-
-
 router.post('/login', async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    console.log(email, password);
-    res.send('Login route');
+    const { emailOrUsername, password } = req.body;
+    const user = await new UserAuthService().login(emailOrUsername, password);
+    res.send(user);
   } catch (error) {
     next(error);
   }
@@ -20,9 +16,9 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, password, name } = req.body;
-    console.log(email, password, name);
-    res.send('Register route');
+    const userRegisterDTO: UserRegisterDto = req.body;
+    const user = await new UserAuthService().register(userRegisterDTO);
+    res.send(user);
   } catch (error) {
     next(error);
   }

@@ -1,12 +1,20 @@
+import { UserRegisterDto } from "userAuth";
+
 export interface User {
   id: number;
   username: string;
   email: string;
-  created_at: Date;
+  name: string;
+  lastname: string;
+  birthdate: Date;
+  createdAt: Date;
 }
 
-export interface CreateUserDto {
-  username: string;
-  email: string;
-  password: string;
+export type UserWithPassword = User & { password: string };
+
+export interface IUserRepository {
+  findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
+  getList(): Promise<User[] | null>;
+  get(id: number): Promise<User | null>;
+  create(userData: UserRegisterDto): Promise<User>;
 }
