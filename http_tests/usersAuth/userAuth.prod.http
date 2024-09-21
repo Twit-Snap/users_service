@@ -1,11 +1,12 @@
-@url = http://localhost:3000
+@url = https://twitsnap-users.up.railway.app
+
 
 ### login
 curl -X POST {{url}}/auth/login \
     -H 'Content-Type: application/json' \
     -d '{
-        "emailOrUsername": "luis4@gmail.com",
-        "password": "isdabnu783"
+        "emailOrUsername": "luis@gmail.com",
+        "password": "luis123"
     }'
 
 
@@ -13,9 +14,9 @@ curl -X POST {{url}}/auth/login \
 curl -X POST {{url}}/auth/register \
     -H 'Content-Type: application/json' \
     -d '{
-        "email": "luis4@gmail.com",
-        "username": "luis4",
-        "password": "isdabnu783",
+        "email": "luis@gmail.com",
+        "username": "luis",
+        "password": "luis123",
         "name": "name test",
         "lastname": "lastname test",
         "birthdate": "1990-01-01"

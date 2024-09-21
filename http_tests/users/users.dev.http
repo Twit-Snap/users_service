@@ -1,2 +1,4 @@
+@url = http://localhost:3000
+
 # get all users
-curl -X GET http://localhost:3000/user
+curl -X GET {{url}}/user
