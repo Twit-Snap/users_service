@@ -1,30 +1,38 @@
 import { EntityAlreadyExistsError } from 'customErrors';
 import { Pool, QueryResult } from 'pg';
-import { IUserRepository, UserRegisterDto, User } from 'user';
+import { IUserRepository, UserRegisterDto, User, UserWithPassword } from 'user';
 
-class UserRepository implements IUserRepository{
+export class UserRepository implements IUserRepository{
   private pool: Pool;
 
   constructor(pool: Pool) {
     this.pool = pool;
   }
-
-  async getList(): Promise<User[] | null> {
-    const query = 'SELECT id, username, email, created_at as createdAt FROM users';
-    const result: QueryResult = await this.pool.query(query);
+  async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
+    const query = 'SELECT id, username, email, name, lastname, birthdate, password, created_at AS createdAt FROM users WHERE email = $1 OR username = $1';
+    const result = await this.pool.query<UserWithPassword>(query, [emailOrUsername]);
     if (result.rows.length === 0) {
       return null;
     }
-    return result.rows as User[];
+    return result.rows[0];
+  }
+
+  async getList(): Promise<User[] | null> {
+    const query = 'SELECT id, username, email, name, lastname, birthdate, created_at AS createdAt FROM users';
+    const result = await this.pool.query<User>(query);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows;
   }
 
   async get(id: number): Promise<User | null> {
-    const query = 'SELECT id, username, email, created_at as createdAt FROM users WHERE id = $1';
-    const result: QueryResult = await this.pool.query(query, [id]);
+    const query = 'SELECT id, username, email, name, lastname, birthdate, created_at AS createdAt FROM users WHERE id = $1';
+    const result = await this.pool.query<User>(query, [id]);
     if (result.rows.length === 0) {
       return null;
     }
-    return result.rows[0] as User;
+    return result.rows[0];
   }
 
   async create(userData: UserRegisterDto): Promise<User> {
@@ -32,11 +40,11 @@ class UserRepository implements IUserRepository{
     const query = `
       INSERT INTO users (username, email, name, lastname, birthdate, password)
       VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, email, name, lastname, birthdate, created_at as "createdAt"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
     `;
     
     try {
-      const result: QueryResult = await this.pool.query(query, [
+      const result = await this.pool.query<User>(query, [
         username,
         email,
         name,
@@ -44,7 +52,7 @@ class UserRepository implements IUserRepository{
         birthdate,
         password
       ]);
-      return result.rows[0] as User;
+      return result.rows[0];
     } catch (error) {
       console.error(error);
       const errorAux = error as { code: string, constraint: string };
@@ -61,5 +69,3 @@ class UserRepository implements IUserRepository{
   }
 
 }
-
-export { UserRepository };

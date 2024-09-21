@@ -8,6 +8,9 @@ export interface User {
   createdAt: Date;
 }
 
+export type UserWithPassword = User & { password: string };
+export type UserWithToken = User & { token: string };
+
 export interface UserRegisterDto {
   username: string;
   email: string;
@@ -19,6 +22,7 @@ export interface UserRegisterDto {
 
 
 export interface IUserRepository {
+  findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
   getList(): Promise<User[] | null>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
@@ -27,6 +31,6 @@ export interface IUserRepository {
 
 
 export interface IAuthUserService {
-  login(emailOrUsername: string, password: string): Promise<User>;
-  register(user: UserRegisterDto): Promise<User>;
+  login(emailOrUsername: string, password: string): Promise<UserWithToken>;
+  register(user: UserRegisterDto): Promise<UserWithToken>;
 }

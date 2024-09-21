@@ -1,8 +1,9 @@
 import { IJWTService } from 'auth';
 import bcrypt from 'bcrypt';
 import { userRepository } from '../repositories';
-import { IAuthUserService, IUserRepository, UserRegisterDto, User } from 'user';
+import { IAuthUserService, IUserRepository, UserRegisterDto, User, UserWithToken } from 'user';
 import { JWTService } from './jwtService';
+import { AuthenticationError } from 'customErrors';
 
 export class UserAuthService implements IAuthUserService {
   private userRepository: IUserRepository;
@@ -13,37 +14,36 @@ export class UserAuthService implements IAuthUserService {
     this.jwtService = jwtService ?? new JWTService();
   }
 
-  async login(emailOrUsername: string, password: string): Promise<User> {
-    throw new Error('Method not implemented');
-    // // Find user by email or username
-    // const user = await this.userRepository.findByEmailOrUsername(emailOrUsername);
+  async login(emailOrUsername: string, password: string): Promise<UserWithToken> {
+    // Find user by email or username
+    const user = await this.userRepository.findByEmailOrUsername(emailOrUsername);
 
-    // if (!user) {
-    //   throw new Error('User not found');
-    // }
+    if (!user) {
+      throw new AuthenticationError();
+    }
 
-    // // Verify password
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
+    // Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    // if (!isPasswordValid) {
-    //   throw new Error('Invalid password');
-    // }
+    if (!isPasswordValid) {
+      throw new AuthenticationError();
+    }
 
-    // // Generate JWT token
-    // const token = this.jwtService.sign({
-    //   type: 'user',
-    //   userId: user.id,
-    //   email: user.email,
-    //   username: user.username,
-    // });
+    // Generate JWT token
+    const token = this.jwtService.sign({
+      type: 'user',
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+    });
 
-    // // Attach token to user object (assuming we want to return it)
-    // const userWithToken = { ...user, token };
+    // Attach token to user object (assuming we want to return it)
+    const userWithToken = { ...user, token };
 
-    // return userWithToken;
+    return userWithToken;
   }
 
-  async register(userData: UserRegisterDto): Promise<User> {
+  async register(userData: UserRegisterDto): Promise<UserWithToken> {
     // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
@@ -65,26 +65,3 @@ export class UserAuthService implements IAuthUserService {
     return userWithToken;
   }
 }
-
-// Usage example:
-// const userRepository = new UserRepository();
-// const jwtService = new JWTService();
-// const userAuthService = new UserAuthService(userRepository, jwtService);
-
-// async function loginUser(email: string, password: string) {
-//   try {
-//     const user = await userAuthService.login(email, password);
-//     console.log('Logged in user:', user);
-//   } catch (error) {
-//     console.error('Login failed:', error.message);
-//   }
-// }
-
-// async function registerUser(userData: RegisterUserDto) {
-//   try {
-//     const newUser = await userAuthService.register(userData);
-//     console.log('Registered user:', newUser);
-//   } catch (error) {
-//     console.error('Registration failed:', error.message);
-//   }
-// }

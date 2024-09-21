@@ -31,3 +31,11 @@ export class EntityAlreadyExistsError extends Error {
     this.name = 'EntityAlreadyExistsError';
   }
 }
+
+export class AuthenticationError extends Error {
+
+  constructor() {
+    super('Authentication error');
+    this.name = 'AuthenticationError';
+  }
+}
