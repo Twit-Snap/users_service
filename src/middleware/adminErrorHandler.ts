@@ -7,7 +7,9 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
     if (err instanceof AlreadyExistError) {
         console.warn(`InvalidCredentialsError: ${err.message}`, {
             entityName: err.entityName,
-            entityId: err.entityEmail
+            entityId: err.entityEmail,
+            detail: err.detail
+
         });
 
 
@@ -15,7 +17,7 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
             type: 'about:blank',
             title: `Invalid Credential` ,
             status: 400,
-            detail: `The ${err.entityName} or ${err.entityEmail} already exists`,
+            detail: err.detail,
             instance: req.originalUrl
         });
     } else if (err instanceof ValidationError) {

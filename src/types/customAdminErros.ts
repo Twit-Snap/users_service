@@ -1,12 +1,14 @@
 export class AlreadyExistError extends Error {
     entityName: string;
     entityEmail: string;
+    detail: string
 
-    constructor(entityName: string, entityEmail: string) {
+    constructor(entityName: string, entityEmail: string, detail: string) {
 
         super(`${entityName ? entityName : ''} ${entityEmail ? entityEmail : ''} already exists`);
         this.entityEmail = entityEmail;
         this.entityName = entityName;
+        this.detail = detail
         this.name = 'InvalidCredentials';
     }
 
@@ -34,4 +36,13 @@ export class InvalidCredentialsError extends Error {
         this.name = 'InvalidCredentials';
     }
 
+}
+
+export class NotFoundError extends Error {
+    entityId: string;
+    constructor(entityId: string) {
+        super(`${entityId} not found`);
+        this.entityId = entityId;
+        this.name = 'NotFoundError';
+    }
 }
