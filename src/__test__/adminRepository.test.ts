@@ -1,7 +1,7 @@
 import {createPool}  from '../repositories/db';
 import { AdminRepository } from '../repositories/adminRepository'
 import {Pool, QueryResult} from "pg";
-import {InvalidCredentialsError} from "../types/customAdminErros";
+import {AlreadyExistError} from "../types/customAdminErros";
 
 describe('AdminService - create admin', () => {
     let adminService: AdminRepository;
