@@ -1,6 +1,4 @@
-import { User } from "user";
-
-
+import { User } from 'user';
 
 export type UserWithToken = User & { token: string };
 
@@ -14,6 +12,6 @@ export interface UserRegisterDto {
 }
 
 export interface IAuthUserService {
-    login(emailOrUsername: string, password: string): Promise<UserWithToken>;
-    register(user: UserRegisterDto): Promise<UserWithToken>;
-  }
+  login(emailOrUsername: string, password: string): Promise<UserWithToken>;
+  register(user: UserRegisterDto): Promise<UserWithToken>;
+}

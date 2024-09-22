@@ -7,6 +7,6 @@ dotenv.config();
 export function createPool() {
   console.log('Creating a new database pool', process.env.DATABASE_URL);
   return new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL
   });
 }

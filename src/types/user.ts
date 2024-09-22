@@ -1,4 +1,4 @@
-import { UserRegisterDto } from "userAuth";
+import { UserRegisterDto } from 'userAuth';
 
 export interface User {
   id: number;

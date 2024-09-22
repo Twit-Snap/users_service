@@ -1,15 +1,15 @@
 export interface Admin {
-    username: string;
-    email: string;
+  username: string;
+  email: string;
 }
 
 export interface AdminInfoDto {
-    username: string;
-    email: string;
-    password: string;
+  username: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginAdminDto {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }

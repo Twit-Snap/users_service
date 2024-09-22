@@ -35,7 +35,7 @@ export class UserAuthService implements IAuthUserService {
       type: 'user',
       userId: user.id,
       email: user.email,
-      username: user.username,
+      username: user.username
     });
 
     // Attach token to user object (assuming we want to return it)
@@ -45,21 +45,22 @@ export class UserAuthService implements IAuthUserService {
   }
 
   async register(userData: UserRegisterDto): Promise<UserWithToken> {
-
     this.registerValidations(userData);
     // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
 
-    const newUser = await this.userRepository.create({ ...userData, password: hashedPassword });
-    
+    const newUser = await this.userRepository.create({
+      ...userData,
+      password: hashedPassword
+    });
 
     // Generate JWT token
     const token = this.jwtService.sign({
       type: 'user',
       userId: newUser.id,
       email: newUser.email,
-      username: newUser.username,
+      username: newUser.username
     });
 
     // Attach token to user object (assuming we want to return it)
@@ -67,7 +68,6 @@ export class UserAuthService implements IAuthUserService {
 
     return userWithToken;
   }
-
 
   private registerValidations(userData: UserRegisterDto) {
     // Validate email

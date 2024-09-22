@@ -6,6 +6,7 @@ const router = express.Router();
 // Define your routes here
 router.get('/', async (req, res, next) => {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jwtUser = (req as any).user;
     console.log(jwtUser);
     const users = await userRepository.getList();
@@ -14,7 +15,5 @@ router.get('/', async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 export default router;

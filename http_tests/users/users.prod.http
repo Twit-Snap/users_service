@@ -1,4 +1,9 @@
 @url = https://twitsnap-users.up.railway.app
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6MSwiZW1haWwiOiJsdWlzQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoibHVpcyIsImlhdCI6MTcyNjk2Mzg3OSwiZXhwIjoxNzU4NDk5ODc5fQ.eQIc1w1hQts0HT4YolWAF5_ZHVPArUbIgKBxUlkZ9l0
 
 # get all users
 curl -X GET {{url}}/user
+
+### get all users AUTHORIZED
+curl -X GET {{url}}/user \
+    -H 'Authorization: {{token}}'  

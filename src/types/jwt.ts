@@ -1,4 +1,4 @@
-import { JwtPayload } from "jsonwebtoken";
+import { JwtPayload } from 'jsonwebtoken';
 
 // Interface definition
 export interface IJWTService {
@@ -7,18 +7,17 @@ export interface IJWTService {
   decode(token: string): JwtPayload | string | null;
 }
 
-
 export type JwtCustomPayload = JwtUserPayload | JwtAdminPayload;
 
 export type JwtUserPayload = {
-    type: 'user';
-    userId: number;
-    email: string;
-    username: string;
-}
+  type: 'user';
+  userId: number;
+  email: string;
+  username: string;
+};
 
 export type JwtAdminPayload = {
-    type: 'admin';
-    adminId: number;
-    email: string;
-}
+  type: 'admin';
+  adminId: number;
+  email: string;
+};
