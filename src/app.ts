@@ -8,6 +8,7 @@ import { jwtMiddleware } from './middleware/jwtMiddleware';
 
 dotenv.config();
 
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -36,6 +37,7 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
 }
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // Apply JWT middleware to all routes except /auth
@@ -55,16 +57,6 @@ app.use('/auth/admin', authAdminRoutes);
 // Error handling middleware
 app.use(userErrorHandler);
 app.use(adminErrorHandler);
-
-app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header(
-		"Access-Control-Allow-Methods",
-		"GET, POST, PUT, DELETE, OPTIONS"
-	);
-	res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-	next();
-});
 
 // Start the server and connect to the database
 async function startServer() {
