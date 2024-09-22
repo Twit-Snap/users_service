@@ -1,4 +1,4 @@
-import { adminRepository } from '../repositories/';
+import { adminRepository, userRepository } from '../repositories/';
 import {Admin, AdminInfoDto, LoginAdminDto} from "admin";
 import {InvalidCredentialsError} from "../types/customAdminErros";
 
@@ -14,6 +14,14 @@ export class AdminService{
 
         const { username, email } = admin;
         return { username, email };
+    }
+
+    async getUserList(): Promise<Admin[] | null> {
+        return await userRepository.getList();
+    }
+
+    async getUserById(id: number): Promise<Admin | null> {
+        return await userRepository.get(id);
     }
 
     private validate_password(admin: AdminInfoDto, adminData: LoginAdminDto) {

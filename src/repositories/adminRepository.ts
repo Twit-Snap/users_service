@@ -8,26 +8,6 @@ class AdminRepository {
     constructor(pool: Pool) {
         this.pool = pool;
     }
-    /*
-    async getList(): Promise<Admin[] | null> {
-        const query = 'SELECT username, email FROM users';
-        const result: QueryResult = await this.pool.query(query);
-        if (result.rows.length === 0) {
-            return null;
-        }
-        return result.rows as Admin[];
-    }
-    */
-    /*
-    async get(username: string): Promise<Admin | null> {
-        const query = 'SELECT username, email FROM users WHERE username = $1';
-        const result: QueryResult = await this.pool.query(query, [username]);
-        if (result.rows.length === 0) {
-            return null;
-        }
-        return result.rows[0] as Admin;
-    }
-    */
 
     async create(adminData: AdminInfoDto): Promise<Admin> {
 
