@@ -55,5 +55,7 @@ export const userErrorHandler = (err: Error, req: Request, res: Response, next: 
       detail: 'An unexpected error occurred.',
       instance: req.originalUrl
     });
+  }else {
+      return next(err)
   }
 };

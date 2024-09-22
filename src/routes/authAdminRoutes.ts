@@ -1,5 +1,5 @@
 import express from 'express';
-import {adminRepository} from "../repositories";
+import {adminController} from "../controller";
 
 const router = express.Router();
 
@@ -24,8 +24,9 @@ router.post('/register', async (req, res, next) => {
     try {
         const { username, email, password  } = req.body;
         console.log(email, password, username);
-        const user = await adminRepository.create({username,email,password});
-        res.send(user);
+
+        const user = await adminController.createAdmin(req);
+        res.status(201).json(user);
     } catch (error) {
         next(error);
     }

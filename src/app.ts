@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { authUserRoutes, authAdminRoutes, adminRoutes, userRoutes, } from './routes';
 import { userErrorHandler } from './middleware/userErrorHandler';
+import {adminErrorHandler } from './middleware/adminErrorHandler';
 import { createPool } from './repositories/db';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
 
@@ -57,6 +58,7 @@ app.use('/auth/admin', authAdminRoutes);
 
 // Error handling middleware
 app.use(userErrorHandler);
+app.use(adminErrorHandler);
 
 
 // Start the server and connect to the database
