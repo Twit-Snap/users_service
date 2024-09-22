@@ -5,8 +5,7 @@ import {
     InvalidCredentialsError,
     ValidationError
 } from '../types/customAdminErros';
-import {NotFoundError} from "../types/customUserErrors";
-// import logger from '../utils/logger';
+
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const adminErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
