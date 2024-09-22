@@ -42,7 +42,7 @@ class AdminRepository {
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new AlreadyExistError(username,email);
+            throw new AlreadyExistError(username,email, "Username is already in use");
         }
     }
 
@@ -52,7 +52,7 @@ class AdminRepository {
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new AlreadyExistError(username,email);
+            throw new AlreadyExistError(username,email,"Email is already in use");
         }
     }
 }
