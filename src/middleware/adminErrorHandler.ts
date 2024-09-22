@@ -10,15 +10,12 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
             entityId: err.entityEmail
         });
 
-        const detailMessage = err.entityName && err.entityEmail
-            ? `The ${err.entityName} or ${err.entityEmail} already exists`
-            : 'An error occurred with the provided credentials.';
 
         res.status(400).json({
             type: 'about:blank',
-            title: `${err.entityName} or ${err.entityEmail} invalid`,
+            title: `Invalid Credential` ,
             status: 400,
-            detail: detailMessage,
+            detail: `The ${err.entityName} or ${err.entityEmail} already exists`,
             instance: req.originalUrl
         });
     } else if (err instanceof ValidationError) {
