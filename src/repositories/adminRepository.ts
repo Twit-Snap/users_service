@@ -1,5 +1,5 @@
 import { Pool, QueryResult } from 'pg';
-import { AdminInfoDto, Admin } from 'admin';
+import { Admin, AdminInfoDto } from '../types/admin';
 import { AlreadyExistError, InvalidCredentialsError } from '../types/customAdminErros';
 
 class AdminRepository {
