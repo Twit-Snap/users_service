@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { authRoutes, userRoutes } from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { createPool } from './repositories/db';
+import { jwtMiddleware } from './middleware/jwtMiddleware';
 
 dotenv.config();
 
@@ -35,6 +36,14 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
 
 // Middleware
 app.use(express.json());
+
+// Apply JWT middleware to all routes except /auth
+app.use((req, res, next) => {
+  if (req.path.startsWith('/auth')) {
+    return next();
+  }
+  jwtMiddleware(req, res, next);
+});
 
 // Routes
 app.use('/user', userRoutes);

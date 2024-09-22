@@ -1,4 +1,18 @@
 @url = http://localhost:3000
+@invalidToken = Bearer ey.invalidtoken.signature
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6MTIsImVtYWlsIjoibHVpczRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJsdWlzNCIsImlhdCI6MTcyNjk2MzI5OSwiZXhwIjoxNzU4NDk5Mjk5fQ.7xzYPNiKxPsmYiVT_PUIVwCvZjCVsNjEpWtx-GjiFOA
 
-# get all users
+
+### get all users UNAUTHORIZED
 curl -X GET {{url}}/user
+
+
+### get all users UNAUTHORIZED
+curl -X GET {{url}}/user \
+    -H 'Authorization: {{invalidToken}}'  
+
+
+### get all users UNAUTHORIZED
+curl -X GET {{url}}/user \
+    -H 'Authorization: {{token}}'  
+
