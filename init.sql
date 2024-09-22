@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create the users table if it doesn't exist
+-- Create the admins table if it doesn't exist
 CREATE TABLE IF NOT EXISTS admins (
     username VARCHAR(50) PRIMARY KEY,
     email VARCHAR(100) UNIQUE NOT NULL,

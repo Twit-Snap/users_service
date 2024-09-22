@@ -1,5 +1,5 @@
 import { UserRegisterDto } from 'userAuth';
-import { EntityAlreadyExistsError } from '../types/customErrors';
+import { EntityAlreadyExistsError } from '../types/customUserErrors';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
 
