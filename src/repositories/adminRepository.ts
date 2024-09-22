@@ -32,8 +32,8 @@ class AdminRepository {
     async create(adminData: CreateAdminDto): Promise<Admin> {
 
         const { username, email, password } = adminData;
-        await this.checkUsername(username);
-        await this.checkEmail(email);
+        await this.checkUsername(username, email);
+        await this.checkEmail(username, email);
 
         const query = `
       INSERT INTO admins (username, email, password)
@@ -45,23 +45,23 @@ class AdminRepository {
         return result.rows[0] as Admin;
     }
 
-    private async checkUsername(username: string) {
+    private async checkUsername(username: string, email: string) {
         const checkQuery = `SELECT username FROM admins WHERE username = $1`;
         const checkResult: QueryResult = await this.pool.query(checkQuery, [username]);
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new InvalidCredentialsError(username,'');
+            throw new InvalidCredentialsError(username,email);
         }
     }
 
-    private async checkEmail(email: string) {
+    private async checkEmail(username: string, email: string) {
         const checkQuery = `SELECT email FROM admins WHERE email = $1`;
         const checkResult: QueryResult = await this.pool.query(checkQuery, [email]);
 
         const rowCount = checkResult.rowCount ?? 0;
         if (rowCount > 0) {
-            throw new InvalidCredentialsError('',email);
+            throw new InvalidCredentialsError(username,email);
         }
     }
 }
