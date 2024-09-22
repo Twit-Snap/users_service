@@ -4,8 +4,18 @@ POST http://localhost:3000/auth/admin/register
 Content-Type: application/json
 
 {
-  "username": "usernameTest2",
-  "email": "email2",
+  "username": "usernameTest",
+  "email": "username@prueba.com",
+  "password": "123456"
+}
+
+### admin_register_without_username
+POST http://localhost:3000/auth/admin/register
+Content-Type: application/json
+
+{
+  "username": "",
+  "email": "username@prueba.com",
   "password": "123456"
 }
 
@@ -14,7 +24,19 @@ POST http://localhost:3000/auth/admin/register
 Content-Type: application/json
 
 {
-  "username": "usernameTest2",
-  "email": "email2",
+  "username": "username2Test",
+  "email": "username2@prueba.com",
   "password": ""
 }
+
+### admin_register_without_email
+POST http://localhost:3000/auth/admin/register
+Content-Type: application/json
+
+{
+  "username": "username2Test",
+  "email": "",
+  "password": "12345"
+}
+
+
