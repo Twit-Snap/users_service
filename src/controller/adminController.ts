@@ -11,8 +11,9 @@ export class AdminController {
     }
 
     async createAdmin(req: Request) {
+        const fields = ['username', 'email', 'password'];
 
-        this.checkEmptyCredential(req);
+        this.checkEmptyCredential(req,fields);
         this.checkValidEmail(req);
         const {username, email, password} = req.body;
         const admin = await this.adminService.createAdmin({username, email, password});
@@ -20,9 +21,22 @@ export class AdminController {
         return {data: admin};
     }
 
-    private checkEmptyCredential(req: Request){
-        if (!req.body.username || !req.body.email || !req.body.password) {
-            throw new ValidationError('username, email, password', 'All fields are required');
+    async loginAdmin(req: Request) {
+        const fields = ['email', 'password'];
+
+        this.checkEmptyCredential(req, fields);
+        this.checkValidEmail(req);
+
+        const {email, password} = req.body;
+        const admin = await this.adminService.loginAdmin({email, password});
+
+        return {data: admin};
+    }
+
+    private checkEmptyCredential(req: Request, fields: string[]){
+        const isEmpty = fields.some(field => !req.body[field]);
+        if(isEmpty) {
+            throw new ValidationError(fields.join(', '), `The fields ${fields.join(', ')} are required.`);
         }
     }
 

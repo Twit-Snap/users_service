@@ -1,4 +1,4 @@
-export class InvalidCredentialsError extends Error {
+export class AlreadyExistError extends Error {
     entityName: string;
     entityEmail: string;
 
@@ -22,4 +22,16 @@ export class ValidationError extends Error {
         this.detail = detail;
         this.name = 'ValidationError';
     }
+}
+
+export class InvalidCredentialsError extends Error {
+    detail: string;
+
+    constructor(detail: string) {
+
+        super(`Email or password are incorrect`);
+        this.detail = detail
+        this.name = 'InvalidCredentials';
+    }
+
 }

@@ -19,24 +19,40 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### admin_register_without_password
+### admin_register_invalid_email
 POST http://localhost:3000/auth/admin/register
 Content-Type: application/json
 
 {
   "username": "username2Test",
-  "email": "username2@prueba.com",
-  "password": ""
+  "email": "username2prueba.com",
+  "password": "12345"
 }
 
-### admin_register_without_email
-POST http://localhost:3000/auth/admin/register
+### admin_login_valid
+POST http://localhost:3000/auth/admin/login
 Content-Type: application/json
 
 {
-  "username": "username2Test",
-  "email": "",
-  "password": "12345"
+  "email": "username@prueba.com",
+  "password": "123456"
+}
+### admin_login_without_email
+POST http://localhost:3000/auth/admin/login
+Content-Type: application/json
+
+{
+"email": "",
+"password": "123456"
+}
+
+### invalid_admin_login
+POST http://localhost:3000/auth/admin/login
+Content-Type: application/json
+
+{
+  "email": "invalid@prueba.com",
+  "password": "123456"
 }
 
 

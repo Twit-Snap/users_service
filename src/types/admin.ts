@@ -3,8 +3,13 @@ export interface Admin {
     email: string;
 }
 
-export interface CreateAdminDto {
+export interface AdminInfoDto {
     username: string;
+    email: string;
+    password: string;
+}
+
+export interface LoginAdminDto {
     email: string;
     password: string;
 }
