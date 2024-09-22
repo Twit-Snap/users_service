@@ -38,7 +38,7 @@ export class InvalidCredentialsError extends Error {
 
 }
 
-export class NotFoundError extends Error {
+export class AdminNotFoundError extends Error {
     entityId: string;
     constructor(entityId: string) {
         super(`${entityId} not found`);
