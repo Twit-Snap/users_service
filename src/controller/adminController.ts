@@ -33,6 +33,17 @@ export class AdminController {
         return {data: admin};
     }
 
+    async getUserList() {
+        const admin = await this.adminService.getUserList();
+        return {data: admin};
+    }
+
+    async getUserById(id: string){
+        const id_num = parseInt(id);
+        const admin = await this.adminService.getUserById(id_num);
+        return {data: admin};
+    }
+
     private checkEmptyCredential(req: Request, fields: string[]){
         const isEmpty = fields.some(field => !req.body[field]);
         if(isEmpty) {
