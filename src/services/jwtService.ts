@@ -4,10 +4,8 @@ import { AuthenticationError } from '../types/customUserErrors';
 
 // JWT Service class implementation
 export class JWTService implements IJWTService {
-
-    readonly expiresIn = '365 days';
-    readonly secret = process.env.JWT_SECRET_KEY!;
-    
+  readonly expiresIn = '365 days';
+  readonly secret = process.env.JWT_SECRET_KEY!;
 
   sign(payload: JwtCustomPayload): string {
     return jwt.sign(payload, this.secret, { expiresIn: this.expiresIn });
@@ -16,7 +14,7 @@ export class JWTService implements IJWTService {
   verify(token: string): JwtPayload | string {
     try {
       return jwt.verify(token, this.secret);
-    } catch (error) {
+    } catch {
       throw new AuthenticationError();
     }
   }

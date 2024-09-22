@@ -1,6 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
-import { NotFoundError, ValidationError } from '../types/customUserErrors';
-import { EntityAlreadyExistsError, AuthenticationError } from '../types/customUserErrors';
+import { NextFunction, Request, Response } from 'express';
+import {
+  AuthenticationError,
+  EntityAlreadyExistsError,
+  NotFoundError,
+  ValidationError
+} from '../types/customUserErrors';
 // import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -18,7 +22,10 @@ export const userErrorHandler = (err: Error, req: Request, res: Response, next: 
       instance: req.originalUrl
     });
   } else if (err instanceof ValidationError) {
-    console.warn(`ValidationError: ${err.message}`, { field: err.field, detail: err.detail });
+    console.warn(`ValidationError: ${err.message}`, {
+      field: err.field,
+      detail: err.detail
+    });
     res.status(400).json({
       type: err.type,
       title: 'Validation Error',
@@ -28,7 +35,9 @@ export const userErrorHandler = (err: Error, req: Request, res: Response, next: 
       'custom-field': err.field
     });
   } else if (err instanceof EntityAlreadyExistsError) {
-    console.warn(`EntityAlreadyExistsError: ${err.message}`, { entityName: err.entityName });
+    console.warn(`EntityAlreadyExistsError: ${err.message}`, {
+      entityName: err.entityName
+    });
     res.status(409).json({
       type: 'about:blank',
       title: 'Conflict',
@@ -46,7 +55,7 @@ export const userErrorHandler = (err: Error, req: Request, res: Response, next: 
       detail: 'Authentication error.',
       instance: req.originalUrl
     });
-  }else {
-      return next(err)
+  } else {
+    return next(err);
   }
 };

@@ -1,6 +1,6 @@
 import express from 'express';
-import { UserAuthService } from '../services/userAuthService';
 import { UserRegisterDto } from 'userAuth';
+import { UserAuthService } from '../services/userAuthService';
 
 const router = express.Router();
 
@@ -23,6 +23,5 @@ router.post('/register', async (req, res, next) => {
     next(error);
   }
 });
-
 
 export default router;

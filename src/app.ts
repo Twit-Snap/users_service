@@ -1,8 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { authUserRoutes, authAdminRoutes, adminRoutes, userRoutes, } from './routes';
+import { authUserRoutes, authAdminRoutes, adminRoutes, userRoutes } from './routes';
 import { userErrorHandler } from './middleware/userErrorHandler';
-import {adminErrorHandler } from './middleware/adminErrorHandler';
+import { adminErrorHandler } from './middleware/adminErrorHandler';
 import { createPool } from './repositories/db';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
 
@@ -24,18 +24,16 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
       console.log('Successfully connected to the database');
       return;
     } catch (err) {
-      console.error(`Failed to connect to the database. Retries left: ${retries}`);
+      console.error(`Failed to connect to the database. Retries left: ${retries}`, err);
       retries--;
       if (retries === 0) {
         console.error('Max retries reached. Exiting.');
         process.exit(1);
       }
-      await new Promise(res => setTimeout(res, delay));
+      await new Promise((res) => setTimeout(res, delay));
     }
   }
 }
-
-
 
 // Middleware
 app.use(express.json());
@@ -54,17 +52,14 @@ app.use('/auth', authUserRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth/admin', authAdminRoutes);
 
-
-
 // Error handling middleware
 app.use(userErrorHandler);
 app.use(adminErrorHandler);
 
-
 // Start the server and connect to the database
 async function startServer() {
   await testDatabaseConnection();
-  
+
   app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
   });
