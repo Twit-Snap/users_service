@@ -1,5 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import {AlreadyExistError, InvalidCredentialsError, ValidationError} from '../types/customAdminErros';
+import {
+    AdminNotFoundError,
+    AlreadyExistError,
+    InvalidCredentialsError,
+    ValidationError
+} from '../types/customAdminErros';
+import {NotFoundError} from "../types/customUserErrors";
 // import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,7 +17,6 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
             detail: err.detail
 
         });
-
 
         res.status(400).json({
             type: 'about:blank',
@@ -27,10 +32,9 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
             title: 'Validation Error',
             status: 400,
             detail: err.detail,
-            instance: req.originalUrl,
-            'custom-field': err.field
+            instance: req.originalUrl
         });
-    } else if(err instanceof InvalidCredentialsError){
+    } else if(err instanceof InvalidCredentialsError) {
         console.warn(`InvalidCredentialsError: ${err.message}`, {detail: err.detail});
         res.status(401).json({
             type: 'about:blank',
@@ -39,6 +43,16 @@ export const adminErrorHandler = (err: Error, req: Request, res: Response, next:
             detail: err.detail,
             instance: req.originalUrl
         });
+    }else if(err instanceof AdminNotFoundError) {
+        console.warn(`NotFoundError: ${err.message}`, {entityId: err.entityId});
+        res.status(404).json({
+            type: 'about:blank',
+            title: `Not Found`,
+            status: 404,
+            detail: `The user with ID ${err.entityId} was not found.`,
+            instance: req.originalUrl
+        });
+
     } else {
         {
             console.error(`Unexpected error: ${err.message}`, {stack: err.stack});
