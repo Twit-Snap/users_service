@@ -6,6 +6,8 @@ const router = express.Router();
 // Define your routes here
 router.get('/', async (req, res, next) => {
   try {
+    const jwtUser = (req as any).user;
+    console.log(jwtUser);
     const users = await userRepository.getList();
     res.send(users);
   } catch (error) {

@@ -1,5 +1,6 @@
 import { IJWTService, JwtCustomPayload } from 'jwt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { AuthenticationError } from '../types/customErrors';
 
 // JWT Service class implementation
 export class JWTService implements IJWTService {
@@ -16,7 +17,7 @@ export class JWTService implements IJWTService {
     try {
       return jwt.verify(token, this.secret);
     } catch (error) {
-      throw new Error('Invalid token');
+      throw new AuthenticationError();
     }
   }
 
