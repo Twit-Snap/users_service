@@ -32,5 +32,17 @@ router.post('/register', async (req, res, next) => {
     }
 });
 
+router.post('/login', async (req, res, next) => {
+    try {
+        const {email, password} = req.body;
+        console.log(email, password);
+
+        const user = await adminController.loginAdmin(req);
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+
+});
 
 export default router;
