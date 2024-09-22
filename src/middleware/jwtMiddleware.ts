@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { JWTService } from '../services/jwtService';
-import { AuthenticationError } from '../types/customErrors';
+import { AuthenticationError } from '../types/customUserErrors';
 
 export const jwtMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];

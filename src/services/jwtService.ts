@@ -1,6 +1,6 @@
 import { IJWTService, JwtCustomPayload } from 'jwt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { AuthenticationError } from '../types/customErrors';
+import { AuthenticationError } from '../types/customUserErrors';
 
 // JWT Service class implementation
 export class JWTService implements IJWTService {
