@@ -1,6 +1,8 @@
 import { AdminService } from '../services/adminService';
-import { Request } from 'express';
-import { ValidationError } from '../types/customAdminErros';
+import {Request} from 'express';
+import {ValidationError} from "../types/customAdminErros";
+import {AdminInfoDto} from "../types/admin";
+
 
 export class AdminController {
   private adminService: AdminService;
@@ -9,17 +11,12 @@ export class AdminController {
     this.adminService = new AdminService();
   }
 
-  async createAdmin(req: Request) {
-    const fields = ['username', 'email', 'password'];
-
-    this.checkEmptyCredential(req, fields);
-    this.checkValidEmail(req);
-    const { username, email, password } = req.body;
-    const admin = await this.adminService.createAdmin({
-      username,
-      email,
-      password
-    });
+    async createAdmin(req: Request) {
+        const fields = ['username', 'email', 'password'];
+        this.checkEmptyCredential(req,fields);
+        this.checkValidEmail(req);
+        const adminDTO: AdminInfoDto = req.body;
+        const admin = await this.adminService.createAdmin(adminDTO);
 
     return { data: admin };
   }
