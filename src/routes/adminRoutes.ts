@@ -3,7 +3,7 @@ import { adminController } from '../controller';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/users', async (req, res, next) => {
   try {
     const user = await adminController.getUserList();
     res.send(user);
@@ -12,7 +12,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/users/:id', async (req, res, next) => {
   const id = req.params.id;
   try {
     const user = await adminController.getUserById(id);
