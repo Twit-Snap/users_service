@@ -1,0 +1,12 @@
+
+@url = https://twitsnap-users.up.railway.app/
+### admin_register_valid
+
+POST http://{{url}}/auth/admin/register
+Content-Type: application/json
+
+{
+  "username": "MartinCwikla",
+  "email": "tincho@gmail.com",
+  "password": "123456"
+}
