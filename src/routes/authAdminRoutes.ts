@@ -1,15 +1,11 @@
 import express from 'express';
-import {adminController} from "../controller";
-import {UserRegisterDto} from "userAuth";
+import {adminAuthController} from "../controller";
 
 const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
     try {
-        const { username, email, password  } = req.body;
-        console.log(email, password, username);
-        //const userRegisterDTO: UserRegisterDto = req.body;
-        const user = await adminController.createAdmin(req);
+        const user = await adminAuthController.createAdmin(req);
         res.status(201).json(user);
     } catch (error) {
         next(error);
@@ -17,15 +13,13 @@ router.post('/register', async (req, res, next) => {
 });
 
 router.post('/login', async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    console.log(email, password);
+    try {
+        const user = await adminAuthController.loginAdmin(req);
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
 
-    const user = await adminController.loginAdmin(req);
-    res.status(200).json(user);
-  } catch (error) {
-    next(error);
-  }
 });
 
 export default router;
