@@ -1,5 +1,5 @@
 import { AdminService } from '../services/adminService';
-import {ValidationError} from "customAdminErros";
+import {ValidationError} from "../types/customAdminErros";
 
 export class AdminController {
   private adminService: AdminService;
