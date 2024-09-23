@@ -8,6 +8,7 @@ import { jwtMiddleware } from './middleware/jwtMiddleware';
 
 dotenv.config();
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
