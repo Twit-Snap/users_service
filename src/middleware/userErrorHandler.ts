@@ -4,7 +4,7 @@ import {
   EntityAlreadyExistsError,
   NotFoundError,
   ValidationError
-} from '../types/customUserErrors';
+} from 'customErrors';
 // import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
