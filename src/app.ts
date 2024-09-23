@@ -50,10 +50,10 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/user', userRoutes);
+app.use('/users', userRoutes);
 app.use('/auth', authUserRoutes);
-app.use('/admin', adminRoutes);
-app.use('/auth/admin', authAdminRoutes);
+app.use('/admins', adminRoutes);
+app.use('/auth/admins', authAdminRoutes);
 
 // Error handling middleware
 app.use(userErrorHandler);
