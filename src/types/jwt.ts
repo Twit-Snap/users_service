@@ -17,7 +17,7 @@ export type JwtUserPayload = {
 };
 
 export type JwtAdminPayload = {
-    type: 'admin';
-    username: string;
-    email: string;
-}
+  type: 'admin';
+  username: string;
+  email: string;
+};
