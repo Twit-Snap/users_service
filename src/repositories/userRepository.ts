@@ -72,4 +72,14 @@ export class UserRepository implements IUserRepository {
       throw error;
     }
   }
+
+  async getByUsername(username: string) {
+    const query =
+      'SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1';
+    const result = await this.pool.query<User>(query, [username]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0];
+  }
 }

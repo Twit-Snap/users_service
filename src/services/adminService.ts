@@ -8,16 +8,13 @@ export class AdminService {
     return await userRepository.getList();
   }
 
-  async getUserById(id: number): Promise<Admin | null> {
-    const user = await userRepository.get(id);
-    const invalid_id = id.toString();
-    this.validate_id(user, invalid_id);
+  async getUserByUsername(username: string) {
+    const user = await userRepository.getByUsername(username);
+    this.validate_username(user, username);
     return user;
   }
 
-  private validate_id(user: User | null, invalid_id: string) {
-    if (!user) {
-      throw new AdminNotFoundError(invalid_id);
-    }
+  private validate_username(user: User | null , username: string) {
+    if (!user) throw new AdminNotFoundError(username);
   }
 }
