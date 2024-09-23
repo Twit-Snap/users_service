@@ -1,4 +1,5 @@
 import { AdminService } from '../services/adminService';
+import {ValidationError} from "customAdminErros";
 
 export class AdminController {
   private adminService: AdminService;
@@ -12,9 +13,13 @@ export class AdminController {
     return { data: admin };
   }
 
-  async getUserById(id: string) {
-    const id_num = parseInt(id);
-    const admin = await this.adminService.getUserById(id_num);
+  async getUserByUsername(username: string) {
+    this.validateUsername(username);
+    const admin = await this.adminService.getUserByUsername(username);
     return { data: admin };
+  }
+
+  private validateUsername(username: string) {
+    if (!username) throw new ValidationError(username,'Username is required');
   }
 }

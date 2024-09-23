@@ -1,7 +1,7 @@
 import { AdminAuthService } from '../services/adminAtuhService';
 import { Request } from 'express';
 import { ValidationError } from '../types/customAdminErros';
-import { AdminInfoDto } from '../types/admin';
+import { AdminWithPassword } from '../types/admin';
 
 export class AdminAuthController {
   private adminService: AdminAuthService;
@@ -11,39 +11,49 @@ export class AdminAuthController {
   }
 
   async createAdmin(req: Request) {
-    const fields = ['username', 'email', 'password'];
-    this.checkEmptyCredential(req, fields);
-    this.checkValidEmail(req);
-    const adminDTO: AdminInfoDto = req.body;
+    this.verifyCreateCredentials(req);
+    this.verifyEmailStructure(req);
+    const adminDTO: AdminWithPassword = req.body;
     const admin = await this.adminService.createAdmin(adminDTO);
 
     return { data: admin };
   }
 
   async loginAdmin(req: Request) {
-    const fields = ['email', 'password'];
+    this.verifyLoginCredentials(req);
+    this.verifyEmailStructure(req);
 
-    this.checkEmptyCredential(req, fields);
-    this.checkValidEmail(req);
+    const { email, username, password } = req.body;
+    const emailOrUsername = email || username;
 
-    const { email, password } = req.body;
-    const admin = await this.adminService.loginAdmin({ email, password });
+    const admin = await this.adminService.loginAdmin(emailOrUsername, password);
 
     return { data: admin };
   }
 
-  private checkEmptyCredential(req: Request, fields: string[]) {
-    const isEmpty = fields.some((field) => !req.body[field]);
-    if (isEmpty) {
-      throw new ValidationError(fields.join(', '), `The fields ${fields.join(', ')} are required.`);
+  private verifyLoginCredentials(req: Request) {
+    if (!req.body.password) {
+      throw new ValidationError('password', 'Password is required');
+    }
+
+    if (!req.body.email && !req.body.username) {
+      throw new ValidationError('email or username', 'Email or username are required');
     }
   }
 
-  private checkValidEmail(req: Request) {
+  private verifyEmailStructure(req: Request) {
     const email = req.body.email;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new ValidationError('email', 'Invalid email');
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        throw new ValidationError('email', 'Invalid email');
+      }
+    }
+  }
+
+  private verifyCreateCredentials(req: Request) {
+    if (!req.body.email || !req.body.username || !req.body.password) {
+      throw new ValidationError('email, username, password', 'All fields are required');
     }
   }
 }

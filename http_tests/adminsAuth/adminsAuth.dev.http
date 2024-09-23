@@ -1,6 +1,6 @@
 ### admin_register_valid
 
-POST http://localhost:3000/auth/admin/register
+POST http://localhost:3000/auth/admins/register
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ### admin_register_without_username
-POST http://localhost:3000/auth/admin/register
+POST http://localhost:3000/auth/admins/register
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ### admin_register_invalid_email
-POST http://localhost:3000/auth/admin/register
+POST http://localhost:3000/auth/admins/register
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### admin_login_valid
-POST http://localhost:3000/auth/admin/login
+POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
   "password": "123456"
 }
 ### admin_login_without_email
-POST http://localhost:3000/auth/admin/login
+POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
@@ -47,7 +47,7 @@ Content-Type: application/json
 }
 
 ### invalid_admin_login
-POST http://localhost:3000/auth/admin/login
+POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
@@ -56,7 +56,7 @@ Content-Type: application/json
 }
 
 ### admin_login_with_invalid_password
-POST http://localhost:3000/auth/admin/login
+POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
