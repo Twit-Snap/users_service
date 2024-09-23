@@ -1,10 +1,10 @@
-import express from 'express';
 import dotenv from 'dotenv';
-import { authUserRoutes, authAdminRoutes, adminRoutes, userRoutes } from './routes';
-import { userErrorHandler } from './middleware/userErrorHandler';
+import express from 'express';
 import { adminErrorHandler } from './middleware/adminErrorHandler';
-import { createPool } from './repositories/db';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
+import { userErrorHandler } from './middleware/userErrorHandler';
+import { createPool } from './repositories/db';
+import { adminRoutes, authAdminRoutes, authUserRoutes, userRoutes } from './routes';
 
 dotenv.config();
 
@@ -50,10 +50,10 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/user', userRoutes);
+app.use('/users', userRoutes);
 app.use('/auth', authUserRoutes);
-app.use('/admin', adminRoutes);
-app.use('/auth/admin', authAdminRoutes);
+app.use('/admins', adminRoutes);
+app.use('/auth/admins', authAdminRoutes);
 
 // Error handling middleware
 app.use(userErrorHandler);
