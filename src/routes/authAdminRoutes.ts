@@ -1,30 +1,14 @@
 import express from 'express';
 import {adminController} from "../controller";
+import {UserRegisterDto} from "userAuth";
 
 const router = express.Router();
-
-// Define your routes here
-router.get('/', (req, res) => {
-    res.send('Hello, Auth!');
-});
-/*
-router.post('/admin/login', async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        console.log(email, password);
-        res.send('Login route');
-    } catch (error) {
-        next(error);
-    }
-});
-*/
-
 
 router.post('/register', async (req, res, next) => {
     try {
         const { username, email, password  } = req.body;
         console.log(email, password, username);
-
+        //const userRegisterDTO: UserRegisterDto = req.body;
         const user = await adminController.createAdmin(req);
         res.status(201).json(user);
     } catch (error) {

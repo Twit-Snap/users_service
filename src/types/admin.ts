@@ -3,6 +3,8 @@ export interface Admin {
     email: string;
 }
 
+export type adminWithToken = Admin & { token: string };
+
 export interface AdminInfoDto {
     username: string;
     email: string;
@@ -13,3 +15,4 @@ export interface LoginAdminDto {
     email: string;
     password: string;
 }
+

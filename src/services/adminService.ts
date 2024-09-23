@@ -1,20 +1,48 @@
 import { adminRepository, userRepository } from '../repositories/';
-import {Admin, AdminInfoDto, LoginAdminDto} from "admin";
+import {Admin, AdminInfoDto, LoginAdminDto, adminWithToken} from "admin";
 import {InvalidCredentialsError, AdminNotFoundError} from "../types/customAdminErros";
-import {User} from "user";
+import {IUserRepository, User} from "user";
+import { JWTService } from './jwtService';
+import {IJWTService} from "jwt";
 
 export class AdminService{
+    private jwtService: IJWTService;
 
-    async createAdmin(adminData: AdminInfoDto): Promise<Admin> {
-        return await adminRepository.create(adminData);
+    constructor(jwtService?: IJWTService) {
+        this.jwtService = jwtService ?? new JWTService();
     }
-    async loginAdmin(adminData: LoginAdminDto): Promise<Admin> {
+
+    async createAdmin(adminData: AdminInfoDto): Promise<adminWithToken> {
+        const admin = await adminRepository.create(adminData);
+
+        // Generate JWT token
+        const token = this.jwtService.sign({
+            type: 'admin',
+            email: admin.email,
+            username: admin.username,
+        });
+
+        // Attach token to user object (assuming we want to return it)
+        const userWithToken = { ...admin, token, password: undefined };
+
+        return userWithToken;
+
+    }
+    async loginAdmin(adminData: LoginAdminDto): Promise<adminWithToken> {
 
         const admin = await adminRepository.getAdminByEmail(adminData.email);
         this.validate_password(admin, adminData);
 
-        const { username, email } = admin;
-        return { username, email };
+        const token = this.jwtService.sign({
+            type: 'admin',
+            email: admin.email,
+            username: admin.username,
+        });
+
+        // Attach token to user object (assuming we want to return it)
+        const userWithToken = { ...admin, token, password: undefined };
+
+        return userWithToken;
     }
 
     async getUserList(): Promise<Admin[] | null> {
