@@ -1,5 +1,5 @@
 import { adminRepository } from '../repositories/';
-import { AdminInfoDto, LoginAdminDto, adminWithToken } from 'admin';
+import { AdminInfoDto, LoginAdminDto, adminWithToken, Admin } from 'admin';
 import { InvalidCredentialsError } from '../types/customAdminErros';
 import { JWTService } from './jwtService';
 import { IJWTService } from 'jwt';
@@ -11,20 +11,8 @@ export class AdminAuthService {
     this.jwtService = jwtService ?? new JWTService();
   }
 
-  async createAdmin(adminData: AdminInfoDto): Promise<adminWithToken> {
-    const admin = await adminRepository.create(adminData);
-
-    // Generate JWT token
-    const token = this.jwtService.sign({
-      type: 'admin',
-      email: admin.email,
-      username: admin.username
-    });
-
-    // Attach token to user object (assuming we want to return it)
-    const userWithToken = { ...admin, token, password: undefined };
-
-    return userWithToken;
+  async createAdmin(adminData: AdminInfoDto): Promise<Admin> {
+    return await adminRepository.create(adminData);
   }
   async loginAdmin(adminData: LoginAdminDto): Promise<adminWithToken> {
     const admin = await adminRepository.getAdminByEmail(adminData.email);

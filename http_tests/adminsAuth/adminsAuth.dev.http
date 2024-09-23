@@ -64,13 +64,3 @@ Content-Type: application/json
   "password": "12345"
 }
 
-### admin_list_users
-GET http://localhost:3000/admin/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4iLCJlbWFpbCI6InVzZXJuYW1lQHBydWViYS5jb20iLCJ1c2VybmFtZSI6InVzZXJuYW1lVGVzdCIsImlhdCI6MTcyNzA1MjYzMiwiZXhwIjoxNzU4NTg4NjMyfQ.nC9wrbHI7yWrX4jrLcrlh6ymDdLc8NenfRhpsb0e6pA
-Content-Type: application/json
-
-### admin_get_user_by_id
-GET http://localhost:3000/admin/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4iLCJlbWFpbCI6InVzZXJuYW1lQHBydWViYS5jb20iLCJ1c2VybmFtZSI6InVzZXJuYW1lVGVzdCIsImlhdCI6MTcyNzA1MjYzMiwiZXhwIjoxNzU4NTg4NjMyfQ.nC9wrbHI7yWrX4jrLcrlh6ymDdLc8NenfRhpsb0e6pA
-Content-Type: application/json
-
