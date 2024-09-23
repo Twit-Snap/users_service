@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from 'pg';
-import { Admin, AdminInfoDto } from '../types/admin';
-import { AlreadyExistError, InvalidCredentialsError } from '../types/customAdminErros';
+import { Admin, AdminWithPassword } from '../types/admin';
+import { AlreadyExistError } from '../types/customAdminErros';
 
 class AdminRepository {
   private pool: Pool;
@@ -9,7 +9,7 @@ class AdminRepository {
     this.pool = pool;
   }
 
-  async create(adminData: AdminInfoDto): Promise<Admin> {
+  async create(adminData: AdminWithPassword): Promise<Admin> {
     const { username, email, password } = adminData;
     await this.checkUsername(username, email);
     await this.checkEmail(username, email);
@@ -24,14 +24,14 @@ class AdminRepository {
     return result.rows[0] as Admin;
   }
 
-  async getAdminByEmail(email: string): Promise<AdminInfoDto> {
-    const query = ` SELECT username, email, password FROM admins WHERE email = $1`;
-
-    const result: QueryResult = await this.pool.query(query, [email]);
+  async findByEmailOrUsername(emailOrUsername: string): Promise<AdminWithPassword | null> {
+    const query =
+      'SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = $1 OR username = $1';
+    const result = await this.pool.query(query, [emailOrUsername]);
     if (result.rows.length === 0) {
-      throw new InvalidCredentialsError('Invalid email');
+      return null;
     }
-    return result.rows[0] as AdminInfoDto;
+    return result.rows[0] as AdminWithPassword;
   }
 
   private async checkUsername(username: string, email: string) {

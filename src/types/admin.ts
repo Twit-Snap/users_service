@@ -3,15 +3,6 @@ export interface Admin {
   email: string;
 }
 
-export type adminWithToken = Admin & { token: string };
+export type AdminWithToken = Admin & { token: string };
 
-export interface AdminInfoDto {
-  username: string;
-  email: string;
-  password: string;
-}
-
-export interface LoginAdminDto {
-  email: string;
-  password: string;
-}
+export type AdminWithPassword = Admin & { password: string };
