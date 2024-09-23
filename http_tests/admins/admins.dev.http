@@ -1,9 +1,9 @@
 @url = localhost:3000
-@validToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4iLCJlbWFpbCI6InVzZXJuYW1lQHBydWViYS5jb20iLCJ1c2VybmFtZSI6InVzZXJuYW1lVGVzdCIsImlhdCI6MTcyNzA1MjYzMiwiZXhwIjoxNzU4NTg4NjMyfQ.nC9wrbHI7yWrX4jrLcrlh6ymDdLc8NenfRhpsb0e6pA
+@validToken =Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWRtaW4iLCJlbWFpbCI6InVzZXJuYW1lQHBydWViYS5jb20iLCJ1c2VybmFtZSI6InVzZXJuYW1lVGVzdCIsImlhdCI6MTcyNzEyMDcyOCwiZXhwIjoxNzU4NjU2NzI4fQ.Qyr8IpXKib-8-tAQgkr_nl4odMkVU45bQgIdPp2rxZg
 
 ### admin list users with authorization
 GET http://{{url}}/admin/
-Authorization: validToken
+Authorization: {{validToken}}
 Content-Type: application/json
 
 ### admin get user by id with authorization
