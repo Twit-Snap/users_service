@@ -1,62 +1,95 @@
-### admin_register_valid
+@url = localhost:3000
 
-POST http://localhost:3000/auth/admins/register
+### valid admin register
+POST http://{{url}}/auth/admins/register
 Content-Type: application/json
 
 {
   "username": "usernameTest",
   "email": "username@prueba.com",
-  "password": "123456"
+  "password": "123"
 }
 
-### admin_register_without_username
-POST http://localhost:3000/auth/admins/register
+### invalid admin register: register without username
+POST http://{{url}}/auth/admins/register
 Content-Type: application/json
 
 {
   "username": "",
-  "email": "username@prueba.com",
-  "password": "123456"
+  "email": "username2@prueba.com",
+  "password": "123"
 }
 
-### admin_register_invalid_email
-POST http://localhost:3000/auth/admins/register
+### invalid admin register: register without email
+POST http://{{url}}/auth/admins/register
+Content-Type: application/json
+
+{
+  "username": "username2Test",
+  "email": "",
+  "password": "123"
+}
+
+### invalid admin register: register without password
+POST http://{{url}}/auth/admins/register
+Content-Type: application/json
+
+{
+  "username": "username2Test",
+  "email": "username2@prueba.com",
+  "password": ""
+}
+
+### invalid admin register: register with invalid email
+POST http://{{url}}/auth/admins/register
 Content-Type: application/json
 
 {
   "username": "username2Test",
   "email": "username2prueba.com",
-  "password": "12345"
+  "password": "123"
 }
 
-### admin_login_valid
-POST http://localhost:3000/auth/admins/login
+
+
+### valid admin login
+POST http://{{url}}/auth/admins/login
 Content-Type: application/json
 
 {
   "emailOrUsername": "username@prueba.com",
-  "password": "123456"
+  "password": "123"
 }
-### admin_login_without_email
-POST http://localhost:3000/auth/admins/login
+
+### invalid admin login: admin login without email
+POST http://{{url}}/auth/admins/login
 Content-Type: application/json
 
 {
 "emailOrUsername": "",
-"password": "123456"
+"password": "123"
 }
 
-### invalid_admin_login
-POST http://localhost:3000/auth/admins/login
+### invalid admin login: admin login without password
+POST http://{{url}}/auth/admins/login
+Content-Type: application/json
+
+{
+"email": "username@prueba.com",
+"password": ""
+}
+
+### invalid admin login: admin login with invalid email
+POST http://{{url}}/auth/admins/login
 Content-Type: application/json
 
 {
   "emailOrUsername": "invalid@prueba.com",
-  "password": "123456"
+  "password": "123"
 }
 
 ### admin_login_with_invalid_password
-POST http://localhost:3000/auth/admins/login
+POST http://{{url}}/auth/admins/login
 Content-Type: application/json
 
 {
