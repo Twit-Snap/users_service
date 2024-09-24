@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from 'pg';
 import { Admin, AdminWithPassword } from '../types/admin';
-import { AlreadyExistError } from '../types/customAdminErros';
+import { EntityAlreadyExistsError } from '../types/customErrors';
 
 class AdminRepository {
   private pool: Pool;
@@ -11,8 +11,8 @@ class AdminRepository {
 
   async create(adminData: AdminWithPassword): Promise<Admin> {
     const { username, email, password } = adminData;
-    await this.checkUsername(username, email);
-    await this.checkEmail(username, email);
+    await this.checkUsername(username);
+    await this.checkEmail(username);
 
     const query = `
       INSERT INTO admins (username, email, password)
@@ -34,23 +34,23 @@ class AdminRepository {
     return result.rows[0] as AdminWithPassword;
   }
 
-  private async checkUsername(username: string, email: string) {
+  private async checkUsername(username: string) {
     const checkQuery = `SELECT username FROM admins WHERE username = $1`;
     const checkResult: QueryResult = await this.pool.query(checkQuery, [username]);
 
     const rowCount = checkResult.rowCount ?? 0;
     if (rowCount > 0) {
-      throw new AlreadyExistError(username, email, 'Username is already in use');
+      throw new EntityAlreadyExistsError(username, 'Username is already in use');
     }
   }
 
-  private async checkEmail(username: string, email: string) {
+  private async checkEmail(email: string) {
     const checkQuery = `SELECT email FROM admins WHERE email = $1`;
     const checkResult: QueryResult = await this.pool.query(checkQuery, [email]);
 
     const rowCount = checkResult.rowCount ?? 0;
     if (rowCount > 0) {
-      throw new AlreadyExistError(username, email, 'Email is already in use');
+      throw new EntityAlreadyExistsError(email, 'Email is already in use');
     }
   }
 }
