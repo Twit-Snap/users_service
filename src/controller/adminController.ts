@@ -1,5 +1,6 @@
 import { AdminService } from '../services/adminService';
-import {ValidationError} from "../types/customAdminErros";
+import { ValidationError } from '../types/customErrors';
+
 
 export class AdminController {
   private adminService: AdminService;
@@ -20,6 +21,6 @@ export class AdminController {
   }
 
   private validateUsername(username: string) {
-    if (!username) throw new ValidationError(username,'Username is required');
+    if (!username) throw new ValidationError(username,'Username is required','EMPTY USERNAME');
   }
 }
