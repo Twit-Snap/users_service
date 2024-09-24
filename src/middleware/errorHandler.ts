@@ -42,7 +42,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       type: 'about:blank',
       title: 'Conflict',
       status: 409,
-      detail: `${err.entityName} already exists.`,
+      detail: err.detail,
       instance: req.originalUrl,
       'custom-field': err.entityName
     });
