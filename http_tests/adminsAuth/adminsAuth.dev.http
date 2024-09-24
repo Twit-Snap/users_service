@@ -88,21 +88,12 @@ Content-Type: application/json
   "password": "123"
 }
 
-### admin_login_with_invalid_password
+### invalid admin login:admin login with invalid password
 POST http://{{url}}/auth/admins/login
 Content-Type: application/json
 
 {
   "emailOrUsername": "username@prueba.com",
-  "password": "12345"
-}
-
-### admin_login_with_invalid_password
-POST http://localhost:3000/auth/admins/login
-Content-Type: application/json
-
-{
-  "emailOrUsername": "usernameTest",
   "password": "12345"
 }
 

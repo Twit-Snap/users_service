@@ -23,7 +23,7 @@ export class AdminAuthController {
     this.verifyLoginCredentials(req);
 
     const { emailOrUsername, password } = req.body;
-    this.verifyEmailStructure(emailOrUsername)
+    this.verfiyEmailOrUsername(emailOrUsername)
 
     const admin = await this.adminService.loginAdmin(emailOrUsername, password);
 
@@ -32,27 +32,34 @@ export class AdminAuthController {
 
   private verifyLoginCredentials(req: Request) {
     if (!req.body.password) {
-      throw new ValidationError('password', 'Password is required','INVALID PASSWORD');
+      throw new ValidationError('password', 'Password is required', 'INVALID PASSWORD');
     }
 
     if (!req.body.emailOrUsername) {
-      throw new ValidationError('email/username', 'Email/username is required','INVALID EMAIL/USERNAME');
+      throw new ValidationError('email/username', 'Email/username is required', 'INVALID EMAIL/USERNAME');
     }
   }
 
-  private verifyEmailStructure(emailOrUsername: string) {
-
+  private verfiyEmailOrUsername(emailOrUsername: string) {
     if (emailOrUsername.includes('@')) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(emailOrUsername)) {
-        throw new ValidationError('email', 'Invalid email','INVALID EMAIL');
-      }
+      this.verifyEmailStructure(emailOrUsername);
+    }
+  }
+
+  private verifyEmailStructure(email: string) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new ValidationError('email', 'Invalid email', 'INVALID EMAIL');
     }
   }
 
   private verifyCreateCredentials(req: Request) {
     if (!req.body.email || !req.body.username || !req.body.password) {
-      throw new ValidationError('email, username, password', 'All fields are required','INVALID CREDENTIALS');
+      throw new ValidationError('email, username, password', 'All fields are required', 'INVALID CREDENTIALS');
     }
   }
+
+
+
+
 }
