@@ -37,7 +37,7 @@ export class AdminAuthController {
     }
 
     if (!req.body.email && !req.body.username) {
-      throw new ValidationError('email or username', 'Email or username are required','INVALID EMAIL OR USERNAME');
+      throw new ValidationError('email/username', 'Email/username is required','INVALID EMAIL/USERNAME');
     }
   }
 
