@@ -34,7 +34,7 @@ POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
-  "email": "username@prueba.com",
+  "emailOrUsername": "username@prueba.com",
   "password": "123456"
 }
 ### admin_login_without_email
@@ -42,7 +42,7 @@ POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
-"email": "",
+"emailOrUsername": "",
 "password": "123456"
 }
 
@@ -51,7 +51,7 @@ POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
-  "email": "invalid@prueba.com",
+  "emailOrUsername": "invalid@prueba.com",
   "password": "123456"
 }
 
@@ -60,7 +60,16 @@ POST http://localhost:3000/auth/admins/login
 Content-Type: application/json
 
 {
-  "email": "username@prueba.com",
+  "emailOrUsername": "username@prueba.com",
+  "password": "12345"
+}
+
+### admin_login_with_invalid_password
+POST http://localhost:3000/auth/admins/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "usernameTest",
   "password": "12345"
 }
 

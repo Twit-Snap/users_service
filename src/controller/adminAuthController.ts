@@ -12,8 +12,8 @@ export class AdminAuthController {
 
   async createAdmin(req: Request) {
     this.verifyCreateCredentials(req);
-    this.verifyEmailStructure(req);
     const adminDTO: AdminWithPassword = req.body;
+    this.verifyEmailStructure(adminDTO.email);
     const admin = await this.adminService.createAdmin(adminDTO);
 
     return { data: admin };
@@ -21,10 +21,9 @@ export class AdminAuthController {
 
   async loginAdmin(req: Request) {
     this.verifyLoginCredentials(req);
-    this.verifyEmailStructure(req);
 
-    const { email, username, password } = req.body;
-    const emailOrUsername = email || username;
+    const { emailOrUsername, password } = req.body;
+    this.verifyEmailStructure(emailOrUsername)
 
     const admin = await this.adminService.loginAdmin(emailOrUsername, password);
 
@@ -36,16 +35,16 @@ export class AdminAuthController {
       throw new ValidationError('password', 'Password is required');
     }
 
-    if (!req.body.email && !req.body.username) {
+    if (!req.body.emailOrUsername) {
       throw new ValidationError('email or username', 'Email or username are required');
     }
   }
 
-  private verifyEmailStructure(req: Request) {
-    const email = req.body.email;
-    if (email) {
+  private verifyEmailStructure(emailOrUsername: string) {
+
+    if (emailOrUsername.includes('@')) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
+      if (!emailRegex.test(emailOrUsername)) {
         throw new ValidationError('email', 'Invalid email');
       }
     }
