@@ -11,18 +11,30 @@ class AdminRepository {
 
   async create(adminData: AdminWithPassword): Promise<Admin> {
     const { username, email, password } = adminData;
-    await this.checkUsername(username);
-    await this.checkEmail(username);
-
     const query = `
       INSERT INTO admins (username, email, password)
       VALUES ($1, $2, $3)
       RETURNING username, email
     `;
-
-    const result: QueryResult = await this.pool.query(query, [username, email, password]);
-    return result.rows[0] as Admin;
+    try {
+      const result: QueryResult = await this.pool.query(query, [username, email, password]);
+      return result.rows[0] as Admin;
+    } catch (error) {
+        console.error(error);
+        const errorAux = error as { code: string; constraint: string };
+        if (errorAux.code === '23505') {
+          // PostgreSQL unique constraint violation error code
+          if (errorAux.constraint?.includes('admins_pkey')) {
+            throw new EntityAlreadyExistsError('Username', 'Username is already in use');
+          } else if (errorAux.constraint?.includes('email')) {
+            throw new EntityAlreadyExistsError('Email', 'Email is already in use');
+          }
+        }
+        // If it's not a unique constraint violation, re-throw the original error
+        throw error;
+    }
   }
+
 
   async findByEmailOrUsername(emailOrUsername: string): Promise<AdminWithPassword | null> {
     const query =
@@ -32,26 +44,6 @@ class AdminRepository {
       return null;
     }
     return result.rows[0] as AdminWithPassword;
-  }
-
-  private async checkUsername(username: string) {
-    const checkQuery = `SELECT username FROM admins WHERE username = $1`;
-    const checkResult: QueryResult = await this.pool.query(checkQuery, [username]);
-
-    const rowCount = checkResult.rowCount ?? 0;
-    if (rowCount > 0) {
-      throw new EntityAlreadyExistsError(username, 'Username is already in use');
-    }
-  }
-
-  private async checkEmail(email: string) {
-    const checkQuery = `SELECT email FROM admins WHERE email = $1`;
-    const checkResult: QueryResult = await this.pool.query(checkQuery, [email]);
-
-    const rowCount = checkResult.rowCount ?? 0;
-    if (rowCount > 0) {
-      throw new EntityAlreadyExistsError(email, 'Email is already in use');
-    }
   }
 }
 
