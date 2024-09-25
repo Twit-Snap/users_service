@@ -2,7 +2,7 @@ import { adminRepository } from '../repositories/';
 import { Admin, AdminWithPassword, AdminWithToken } from 'admin';
 import { JWTService } from './jwtService';
 import { IJWTService } from 'jwt';
-import { AuthenticationError } from '../types/customUserErrors';
+import { AuthenticationError } from '../types/customErrors';
 import bcrypt from 'bcrypt';
 
 export class AdminAuthService {
@@ -29,10 +29,9 @@ export class AdminAuthService {
 
   async loginAdmin(emailOrUsername: string, password: string): Promise<AdminWithToken> {
     const admin = await adminRepository.findByEmailOrUsername(emailOrUsername);
-    if (!admin) {
-      throw new AuthenticationError();
-    }
-    this.veryfyPassword(password, admin);
+    if (!admin) throw new AuthenticationError();
+
+    await this.veryfyPassword(password, admin);
 
     const token = this.jwtService.sign({
       type: 'admin',
@@ -46,11 +45,10 @@ export class AdminAuthService {
     return userWithToken;
   }
 
-  private veryfyPassword(password: string, admin: AdminWithPassword) {
-    const isPasswordValid = bcrypt.compare(password, admin.password);
+  private async veryfyPassword(password: string, admin: AdminWithPassword) {
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
 
-    if (!isPasswordValid) {
-      throw new AuthenticationError();
-    }
+    if (!isPasswordValid) throw new AuthenticationError();
+
   }
 }

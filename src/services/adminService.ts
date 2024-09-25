@@ -1,6 +1,6 @@
 import { userRepository } from '../repositories/';
 import { Admin } from 'admin';
-import { AdminNotFoundError } from '../types/customAdminErros';
+import { NotFoundError } from '../types/customErrors';
 import { User } from 'user';
 
 export class AdminService {
@@ -15,6 +15,6 @@ export class AdminService {
   }
 
   private validate_username(user: User | null , username: string) {
-    if (!user) throw new AdminNotFoundError(username);
+    if (!user) throw new NotFoundError(username,'');
   }
 }

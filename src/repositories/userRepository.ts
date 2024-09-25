@@ -1,5 +1,5 @@
 import { UserRegisterDto } from 'userAuth';
-import { EntityAlreadyExistsError } from '../types/customUserErrors';
+import { EntityAlreadyExistsError } from '../types/customErrors';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
 
@@ -63,9 +63,9 @@ export class UserRepository implements IUserRepository {
       if (errorAux.code === '23505') {
         // PostgreSQL unique constraint violation error code
         if (errorAux.constraint?.includes('username')) {
-          throw new EntityAlreadyExistsError('Username');
+          throw new EntityAlreadyExistsError('Username', 'Username is already in use');
         } else if (errorAux.constraint?.includes('email')) {
-          throw new EntityAlreadyExistsError('Email');
+          throw new EntityAlreadyExistsError('Email', 'Email is already in use');
         }
       }
       // If it's not a unique constraint violation, re-throw the original error

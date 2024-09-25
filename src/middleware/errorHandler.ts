@@ -4,11 +4,11 @@ import {
   EntityAlreadyExistsError,
   NotFoundError,
   ValidationError
-} from '../types/customUserErrors';
+} from '../types/customErrors';
 // import logger from '../utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const userErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof NotFoundError) {
     console.warn(`NotFoundError: ${err.message}`, {
       entityName: err.entityName,
@@ -42,7 +42,7 @@ export const userErrorHandler = (err: Error, req: Request, res: Response, next: 
       type: 'about:blank',
       title: 'Conflict',
       status: 409,
-      detail: `${err.entityName} already exists.`,
+      detail: err.detail,
       instance: req.originalUrl,
       'custom-field': err.entityName
     });
