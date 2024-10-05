@@ -4,17 +4,20 @@ import { JWTService } from './jwtService';
 import { IJWTService } from 'jwt';
 import { AuthenticationError } from '../types/customErrors';
 import bcrypt from 'bcrypt';
+import { AdminRepository } from '../repositories/adminRepository';
 
 export class AdminAuthService {
   private jwtService: IJWTService;
+  private adminRepository: AdminRepository;
 
-  constructor(jwtService?: IJWTService) {
+  constructor(repository?: AdminRepository,jwtService?: IJWTService) {
     this.jwtService = jwtService ?? new JWTService();
+    this.adminRepository = repository ?? adminRepository;
   }
 
   async createAdmin(adminData: AdminWithPassword): Promise<Admin> {
     const hashedPassword = await this.encodePassword(adminData);
-    const newAdmin = await adminRepository.create({
+    const newAdmin = await this.adminRepository.create({
       ...adminData,
       password: hashedPassword
     });
@@ -28,7 +31,7 @@ export class AdminAuthService {
   }
 
   async loginAdmin(emailOrUsername: string, password: string): Promise<AdminWithToken> {
-    const admin = await adminRepository.findByEmailOrUsername(emailOrUsername);
+    const admin = await this.adminRepository.findByEmailOrUsername(emailOrUsername);
     if (!admin) throw new AuthenticationError();
 
     await this.veryfyPassword(password, admin);

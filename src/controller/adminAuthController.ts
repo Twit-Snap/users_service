@@ -1,4 +1,4 @@
-import { AdminAuthService } from '../services/adminAtuhService';
+import { AdminAuthService } from '../services/adminAuthService';
 import { Request } from 'express';
 import { ValidationError } from '../types/customErrors';
 import { AdminWithPassword } from '../types/admin';
