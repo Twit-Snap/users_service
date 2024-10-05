@@ -1,11 +1,11 @@
-import { AdminService } from '../services/adminService';
-import { NotFoundError } from '../types/customErrors';
-import { UserRepository } from '../repositories/userRepository';
+import { AdminService } from '../../services/adminService';
+import { NotFoundError } from 'customErrors';
+import { UserRepository } from '../../repositories/userRepository';
 import { User } from 'user';
 
 
-jest.mock('../repositories/adminRepository');
-jest.mock('../services/jwtService');
+jest.mock('../../repositories/adminRepository');
+jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 
 describe('AdminService', () => {

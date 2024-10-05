@@ -1,8 +1,8 @@
 import * as httpMocks from 'node-mocks-http';
-import { AdminController } from '../controller/adminController';
-import { AdminService } from '../services/adminService';
+import { AdminController } from '../../controller/adminController';
+import { AdminService } from '../../services/adminService';
 
-jest.mock('../services/adminService');
+jest.mock('../../services/adminService');
 
 describe('AdminController', () => {
   let controller: AdminController;
