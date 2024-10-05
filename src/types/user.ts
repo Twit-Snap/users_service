@@ -12,6 +12,8 @@ export interface User {
 
 export type UserWithPassword = User & { password: string };
 
+export type PublicUser = Omit<User, 'id' | 'email' | 'name' | 'lastname' >;
+
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
   getList(): Promise<User[] | null>;
