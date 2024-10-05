@@ -1,5 +1,5 @@
 import { AdminService } from '../../services/adminService';
-import { NotFoundError } from 'customErrors';
+import { NotFoundError } from '../../types/customErrors';
 import { UserRepository } from '../../repositories/userRepository';
 import { User } from 'user';
 
