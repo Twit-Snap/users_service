@@ -23,7 +23,7 @@ describe('UserService', () => {
 
     dbServiceMock = {
       //getList: jest.fn().mockResolvedValue(mockUsers),
-      getPublicInfoByUsername: jest.fn().mockResolvedValue(aMockUser),
+      getByUsername: jest.fn().mockResolvedValue(aMockUser),
     } as unknown as jest.Mocked<UserRepository>;
 
     service = new UserService(dbServiceMock);
@@ -50,7 +50,7 @@ describe('UserService', () => {
     });
 
     it('should throw an error if user is not found', async () => {
-      dbServiceMock.getPublicInfoByUsername.mockResolvedValue(null);
+      dbServiceMock.getByUsername.mockResolvedValue(null);
       await expect(service.getUserByUsername('nonExistentUser')).rejects.toThrow(NotFoundError);
     });
 

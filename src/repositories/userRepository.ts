@@ -1,7 +1,7 @@
 import { UserRegisterDto } from 'userAuth';
 import { EntityAlreadyExistsError } from '../types/customErrors';
 import { Pool } from 'pg';
-import { IUserRepository, User, UserWithPassword } from 'user';
+import { IUserRepository, PublicUser, User, UserWithPassword } from 'user';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;

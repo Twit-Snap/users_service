@@ -1,6 +1,6 @@
 import { UserRepository } from '../repositories/userRepository';
 import { userRepository } from '../repositories';
-import { PublicUser } from 'user';
+import { PublicUser, User } from 'user';
 import { NotFoundError } from '../types/customErrors';
 
 export class UserService {
@@ -11,13 +11,29 @@ export class UserService {
   }
 
   async getUserByUsername(username: string){
-   const user =  await this.repository.getPublicInfoByUsername(username);
-   this.validate_username(user,username);
+   const user =  await this.repository.getByUsername(username);
+   const validUser = this.validate_username(user,username);
+   this.getPublicUser(validUser);
    return user;
   }
 
-  private validate_username(user: PublicUser | null , username: string) {
-    if (!user) throw new NotFoundError(username,'');
+  private validate_username(user: User | null , username: string) {
+    if (!user) throw new NotFoundError(username,'')
+    else return user
   }
+
+  private getPublicUser(user: User ){
+    const { username, birthdate, createdAt} = user;
+    const publicUser: PublicUser = {
+      username,
+      birthdate,
+      createdAt,
+    };
+
+    return publicUser;
+
+  }
+
+
 
 }
