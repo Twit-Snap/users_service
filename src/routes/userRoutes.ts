@@ -16,4 +16,12 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+router.get('/:username', async (req, res, next) => {
+
+  try{
+    const jwtUser = (req as any).user;
+    const user = await
+  }
+});
+
 export default router;
