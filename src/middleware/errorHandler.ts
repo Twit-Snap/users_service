@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   AuthenticationError,
   EntityAlreadyExistsError,
-  NotFoundError,
+  NotFoundError, ServiceUnavailableError,
   ValidationError
 } from '../types/customErrors';
 // import logger from '../utils/logger';
@@ -55,6 +55,15 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       detail: 'Authentication error.',
       instance: req.originalUrl
     });
+  } else if (err instanceof ServiceUnavailableError) {
+    console.warn(`ServiceUnavailableError: ${err.message}`);
+    res.status(503).json({
+      title: 'Service Unavailable',
+      status: 503,
+      detail: 'The requested service is temporarily unavailable. Please try again later.',
+      instance: req.originalUrl
+    })
+
   } else{
     console.error(`Unexpected error: ${err.message}`, { stack: err.stack });
     res.status(500).json({

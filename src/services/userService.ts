@@ -1,7 +1,7 @@
 import { UserRepository } from '../repositories/userRepository';
 import { userRepository } from '../repositories';
 import { PublicUser, PublicUserProfile, User } from 'user';
-import { NotFoundError } from '../types/customErrors';
+import { NotFoundError, ServiceUnavailableError } from '../types/customErrors';
 import axios from 'axios';
 import * as process from 'node:process';
 
@@ -28,7 +28,7 @@ export class UserService {
         twits: twits
       };
     } catch (error) {
-      throw new Error('Failed to fetch tweets from the tweet service');
+      throw new ServiceUnavailableError();
     }
   }
 

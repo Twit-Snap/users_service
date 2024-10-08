@@ -1,5 +1,5 @@
 import { UserService } from '../../services/userService';
-import { NotFoundError } from '../../types/customErrors'
+import { NotFoundError, ServiceUnavailableError } from '../../types/customErrors';
 import { UserRepository } from '../../repositories/userRepository';
 import { PublicUserProfile } from 'user';
 import axios from 'axios';
@@ -80,7 +80,7 @@ describe('UserService', () => {
 
     it('should throw an error if the request to the twits service fail', async () => {
       (axios.get as jest.Mock).mockRejectedValue(new Error('Tweet service is down'));
-      await expect(service.getUserPublicProfile(username)).rejects.toThrow(Error);
+      await expect(service.getUserPublicProfile(username)).rejects.toThrow(ServiceUnavailableError);
     });
   });
 

@@ -44,5 +44,12 @@ export class AuthenticationError extends Error {
   }
 }
 
+export class ServiceUnavailableError extends Error {
+  constructor() {
+    super('Service Unavailable Error');
+    this.name = 'ServiceUnavailableError';
+  }
+}
+
 
 
