@@ -13,6 +13,17 @@ export interface User {
 export type UserWithPassword = User & { password: string };
 
 export type PublicUser = Omit<User, 'id' | 'email' | 'name' | 'lastname' >;
+export type TwitUser = Omit<User, 'email' | 'birthdate' | 'createdAt' | 'lastname'>
+
+export type PublicUserProfile = PublicUser & { twits: Array<{
+    id: number;
+    user: TwitUser;
+    content: string;
+    createdAt: Date;
+  }>;
+};
+
+
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;

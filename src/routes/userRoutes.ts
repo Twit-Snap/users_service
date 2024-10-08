@@ -1,6 +1,6 @@
 import express from 'express';
 import { userRepository } from '../repositories';
-import { adminController } from '../controller';
+import { userController } from '../controller';
 
 const router = express.Router();
 
@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
 router.get('/:username', async (req, res, next) => {
   const username = req.params.username;
   try {
-    const user = await adminController.getUserByUsername(username);
+    const user = await userController.getUserByUsername(username);
     res.send(user);
   } catch (error) {
     next(error);

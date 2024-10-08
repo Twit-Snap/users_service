@@ -1,23 +1,39 @@
 import { UserController } from '../../controller/userController';
 import { UserService } from '../../services/userService';
-import { PublicUser } from 'user';
+import { PublicUserProfile } from 'user';
+import { ValidationError } from '../../types/customErrors';
 
-jest.mock('../../services/adminService');
+jest.mock('../../services/userService');
 
 describe('UserController', () => {
   let controller: UserController;
 
+  const username = 'usernameTest'
+  const aMockTwitUser = {
+    id: 1,
+    username: username,
+    name: 'user',
+  }
 
-  const aMockUser: PublicUser = {
-    username: 'aUser',
+  const aMockTwit = {
+    id: 1,
+    createdAt: new Date(),
+    user: aMockTwitUser,
+    content: 'Hello word',
+  }
+
+  const aMockUserProfile: PublicUserProfile = {
+    username: username,
     birthdate: new Date(),
     createdAt: new Date(),
+    twits: [aMockTwit],
   }
+
 
   beforeEach(() => {
 
     const serviceMock = {
-      getUserByUsername: jest.fn().mockResolvedValue(aMockUser),
+      getUserPublicProfile: jest.fn().mockResolvedValue(aMockUserProfile),
     } as unknown as jest.Mocked<UserService>;
 
     controller = new UserController(serviceMock);
@@ -29,13 +45,13 @@ describe('UserController', () => {
 
       const validaUsername = 'aUser'
       const response = await controller.getUserByUsername(validaUsername);
-      expect(response).toEqual({ data: aMockUser });
+      expect(response).toEqual({ data: aMockUserProfile });
     });
 
     it('should raise an error if the username is empty', async() => {
-      const invalidaUsername = 'invalidaUsername'
-      const response = await controller.getUserByUsername(invalidaUsername);
-      expect(response).toEqual({ data: aMockUser });
+      const invalidaUsername = '';
+      await expect(controller.getUserByUsername(invalidaUsername)).rejects.toThrow(ValidationError);
+
     });
 
   });
