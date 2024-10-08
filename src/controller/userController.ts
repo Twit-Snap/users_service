@@ -10,12 +10,13 @@ export class UserController{
   }
 
   async getUserByUsername(username: string){
+    console.log(username);
     this.validateUsername(username);
      const publicUser: PublicUserProfile = await this.userService.getUserPublicProfile(username);
      return {data: publicUser};
   }
 
   private validateUsername(username: string) {
-    if (!username) throw new ValidationError(username,'Username is required','EMPTY USERNAME');
+    if (username.length === 0 || typeof username === 'undefined' || username.trim() === '') throw new ValidationError(username,'Username is required','EMPTY USERNAME');
   }
 }
