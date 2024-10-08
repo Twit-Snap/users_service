@@ -55,7 +55,14 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       detail: 'Authentication error.',
       instance: req.originalUrl
     });
-  } else {
-    return next(err);
+  } else{
+    console.error(`Unexpected error: ${err.message}`, { stack: err.stack });
+    res.status(500).json({
+      type: 'about:blank',
+      title: 'Internal Server Error',
+      status: 500,
+      detail: 'An unexpected error occurred.',
+      instance: req.originalUrl
+    });
   }
 };

@@ -28,7 +28,6 @@ export class UserService {
         twits: twits
       };
     } catch (error) {
-      console.error('Error fetching tweets:', error);
       throw new Error('Failed to fetch tweets from the tweet service');
     }
   }

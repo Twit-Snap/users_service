@@ -77,6 +77,11 @@ describe('UserService', () => {
       dbServiceMock.getByUsername.mockResolvedValue(null);
       await expect(service.getUserPublicProfile('nonExistentUser')).rejects.toThrow(NotFoundError);
     });
+
+    it('should throw an error if the request to the twits service fail', async () => {
+      (axios.get as jest.Mock).mockRejectedValue(new Error('Tweet service is down'));
+      await expect(service.getUserPublicProfile(username)).rejects.toThrow(Error);
+    });
   });
 
 
