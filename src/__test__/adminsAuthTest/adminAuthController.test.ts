@@ -1,11 +1,11 @@
 
 import * as httpMocks from 'node-mocks-http';
-import { AdminAuthController } from '../controller/adminAuthController';
-import { AdminAuthService } from '../services/adminAuthService';
-import { ValidationError } from '../types/customErrors';
+import { AdminAuthController } from '../../controllers/adminAuthController';
+import { AdminAuthService } from '../../services/adminAuthService';
+import { ValidationError } from '../../types/customErrors';
 
 
-jest.mock('../services/adminAuthService');
+jest.mock('../../services/adminAuthService');
 
 describe('AdminAuthController', () => {
   let controller: AdminAuthController;

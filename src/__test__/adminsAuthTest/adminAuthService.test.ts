@@ -1,12 +1,12 @@
-import { AdminAuthService } from '../services/adminAuthService';
-import { AuthenticationError } from '../types/customErrors';
-import { AdminRepository } from '../repositories/adminRepository';
-import { JWTService } from '../services/jwtService';
+import { AdminAuthService } from '../../services/adminAuthService';
+import { AuthenticationError } from '../../types/customErrors';
+import { AdminRepository } from '../../repositories/adminRepository';
+import { JWTService } from '../../services/jwtService';
 import bcrypt from 'bcrypt';
 
 
-jest.mock('../repositories/adminRepository');
-jest.mock('../services/jwtService');
+jest.mock('../../repositories/adminRepository');
+jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 
 describe('AdminAuthService', () => {
