@@ -1,6 +1,6 @@
 
 import * as httpMocks from 'node-mocks-http';
-import { AdminAuthController } from '../../controller/adminAuthController';
+import { AdminAuthController } from '../../controllers/adminAuthController';
 import { AdminAuthService } from '../../services/adminAuthService';
 import { ValidationError } from '../../types/customErrors';
 

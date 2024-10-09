@@ -30,4 +30,5 @@ export interface IUserRepository {
   getList(): Promise<User[] | null>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
+  getByUsername(username: string): Promise<User | null>
 }

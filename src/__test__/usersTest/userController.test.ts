@@ -1,4 +1,4 @@
-import { UserController } from '../../controller/userController';
+import { UserController } from '../../controllers/userController';
 import { UserService } from '../../services/userService';
 import { PublicUserProfile } from 'user';
 import { ValidationError } from '../../types/customErrors';

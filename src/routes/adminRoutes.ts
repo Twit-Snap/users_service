@@ -1,5 +1,5 @@
 import express from 'express';
-import { AdminController } from '../controller/adminController';
+import { AdminController } from '../controllers/adminController';
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
 import * as httpMocks from 'node-mocks-http';
-import { AdminController } from '../../controller/adminController';
+import { AdminController } from '../../controllers/adminController';
 import { AdminService } from '../../services/adminService';
 
 jest.mock('../../services/adminService');
