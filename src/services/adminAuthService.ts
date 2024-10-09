@@ -1,18 +1,17 @@
-import { adminRepository } from '../repositories/';
 import { Admin, AdminWithPassword, AdminWithToken } from 'admin';
-import { JWTService } from './jwtService';
-import { IJWTService } from 'jwt';
-import { AuthenticationError } from '../types/customErrors';
 import bcrypt from 'bcrypt';
+import { IJWTService } from 'jwt';
 import { AdminRepository } from '../repositories/adminRepository';
+import { AuthenticationError } from '../types/customErrors';
+import { JWTService } from './jwtService';
 
 export class AdminAuthService {
   private jwtService: IJWTService;
   private adminRepository: AdminRepository;
 
-  constructor(repository?: AdminRepository,jwtService?: IJWTService) {
+  constructor(repository?: AdminRepository, jwtService?: IJWTService) {
     this.jwtService = jwtService ?? new JWTService();
-    this.adminRepository = repository ?? adminRepository;
+    this.adminRepository = repository ?? new AdminRepository();
   }
 
   async createAdmin(adminData: AdminWithPassword): Promise<Admin> {
@@ -52,6 +51,5 @@ export class AdminAuthService {
     const isPasswordValid = await bcrypt.compare(password, admin.password);
 
     if (!isPasswordValid) throw new AuthenticationError();
-
   }
 }
