@@ -1,21 +1,37 @@
+import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/userRepository';
-import { userRepository } from '../repositories';
-import { PublicUser, PublicUserProfile, User } from 'user';
+import { IUserRepository, User, UserWithPassword, PublicUser, PublicUserProfile } from '../types/user';
 import { NotFoundError, ServiceUnavailableError } from '../types/customErrors';
 import axios from 'axios';
 import * as process from 'node:process';
 
 export class UserService {
-  private repository: UserRepository
+  private userRepository: IUserRepository;
 
-  constructor(aUserRepository?:UserRepository) {
-    this.repository = aUserRepository ?? userRepository;
+  constructor(userRepository?: IUserRepository) {
+    this.userRepository = userRepository || new UserRepository();
+  }
+
+  async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
+    return this.userRepository.findByEmailOrUsername(emailOrUsername);
+  }
+
+  async getList(): Promise<User[] | null> {
+    return this.userRepository.getList();
+  }
+
+  async get(id: number): Promise<User | null> {
+    return this.userRepository.get(id);
+  }
+
+  async create(userData: UserRegisterDto): Promise<User> {
+    return this.userRepository.create(userData);
   }
 
   async getUserPublicProfile(username: string) : Promise<PublicUserProfile>{
-   const user =  await this.repository.getByUsername(username);
-   const validUser = this.validate_username(user,username);
-   return await this.createUserProfileWithTwits(username, validUser);
+    const user =  await this.userRepository.getByUsername(username);
+    const validUser = this.validate_username(user,username);
+    return await this.createUserProfileWithTwits(username, validUser);
   }
 
   private async createUserProfileWithTwits(username: string, validUser: User) {
@@ -53,7 +69,4 @@ export class UserService {
     return publicUser;
 
   }
-
-
-
 }

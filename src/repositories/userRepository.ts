@@ -1,13 +1,14 @@
+import { Pool } from 'pg';
+import { IUserRepository, User, UserWithPassword, PublicUser } from 'user';
 import { UserRegisterDto } from 'userAuth';
 import { EntityAlreadyExistsError } from '../types/customErrors';
-import { Pool } from 'pg';
-import { IUserRepository, PublicUser, User, UserWithPassword } from 'user';
+import { DatabasePool } from './db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
 
-  constructor(pool: Pool) {
-    this.pool = pool;
+  constructor(pool?: Pool) {
+    this.pool = pool || DatabasePool.getInstance();
   }
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
     const query =

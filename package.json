@@ -4,8 +4,8 @@
   "description": "Users service",
   "main": "src/app.ts",
   "scripts": {
-    "start": "node dist/app.js",
-    "dev": "docker-compose up -d db && nodemon src/app.ts",
+    "start": "NODE_ENV=production node dist/app.js",
+    "dev": "docker-compose up -d db && NODE_ENV=development nodemon src/app.ts",
     "build": "tsc",
     "lint": "prettier --write \"src/**/*.ts\" && eslint .",
     "test": "jest --maxWorkers=1 --coverage",
