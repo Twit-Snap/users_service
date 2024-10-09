@@ -17,12 +17,15 @@ export class DatabasePool {
   }
 
   private static createPool() {
-    console.log('Creating a new database pool', process.env.DATABASE_URL);
-    if (!process.env.DATABASE_URL) {
+    const databaseUrl = process.env.DATABASE_URL;
+    const displayUrl = process.env.NODE_ENV === 'development' ? databaseUrl : '****';
+
+    console.log('Creating a new database pool', displayUrl);
+    if (!databaseUrl) {
       throw new Error('DATABASE_URL environment variable is not set');
     }
     DatabasePool.instance = new Pool({
-      connectionString: process.env.DATABASE_URL
+      connectionString: databaseUrl
     });
 
     DatabasePool.instance.on('error', (err) => {
