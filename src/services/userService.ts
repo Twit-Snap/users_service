@@ -49,7 +49,7 @@ export class UserService {
   }
 
   private async getTwits(username: string) {
-    const twitsResponse = await axios.get(`${process.env.TWEET_SERVICE_URL}/snaps/by_username/${username}`);
+    const twitsResponse = await axios.get(`${process.env.TWITSNAP_SERVICE_URL}/snaps/by_username/${username}`);
     return twitsResponse.data.data;
   }
 
