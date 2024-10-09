@@ -10,7 +10,6 @@ export class UserController{
   }
 
   async getUserByUsername(username: string){
-    console.log(username);
     this.validateUsername(username);
      const publicUser: PublicUserProfile = await this.userService.getUserPublicProfile(username);
      return {data: publicUser};

@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { IUserRepository, User, UserWithPassword, PublicUser } from 'user';
+import { IUserRepository, User, UserWithPassword } from 'user';
 import { UserRegisterDto } from 'userAuth';
 import { EntityAlreadyExistsError } from '../types/customErrors';
 import { DatabasePool } from './db';
