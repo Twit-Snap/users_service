@@ -1,12 +1,13 @@
 import { Pool, QueryResult } from 'pg';
 import { Admin, AdminWithPassword } from '../types/admin';
 import { EntityAlreadyExistsError } from '../types/customErrors';
+import { DatabasePool } from './db';
 
 class AdminRepository {
   private pool: Pool;
 
-  constructor(pool: Pool) {
-    this.pool = pool;
+  constructor(pool?: Pool) {
+    this.pool = pool || DatabasePool.getInstance();
   }
 
   async create(adminData: AdminWithPassword): Promise<Admin> {
@@ -20,21 +21,20 @@ class AdminRepository {
       const result: QueryResult = await this.pool.query(query, [username, email, password]);
       return result.rows[0] as Admin;
     } catch (error) {
-        console.error(error);
-        const errorAux = error as { code: string; constraint: string };
-        if (errorAux.code === '23505') {
-          // PostgreSQL unique constraint violation error code
-          if (errorAux.constraint?.includes('admins_pkey')) {
-            throw new EntityAlreadyExistsError('Username', 'Username is already in use');
-          } else if (errorAux.constraint?.includes('email')) {
-            throw new EntityAlreadyExistsError('Email', 'Email is already in use');
-          }
+      console.error(error);
+      const errorAux = error as { code: string; constraint: string };
+      if (errorAux.code === '23505') {
+        // PostgreSQL unique constraint violation error code
+        if (errorAux.constraint?.includes('admins_pkey')) {
+          throw new EntityAlreadyExistsError('Username', 'Username is already in use');
+        } else if (errorAux.constraint?.includes('email')) {
+          throw new EntityAlreadyExistsError('Email', 'Email is already in use');
         }
-        // If it's not a unique constraint violation, re-throw the original error
-        throw error;
+      }
+      // If it's not a unique constraint violation, re-throw the original error
+      throw error;
     }
   }
-
 
   async findByEmailOrUsername(emailOrUsername: string): Promise<AdminWithPassword | null> {
     const query =

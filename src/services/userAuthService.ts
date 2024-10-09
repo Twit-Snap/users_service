@@ -1,17 +1,17 @@
-import { IJWTService } from 'jwt';
 import bcrypt from 'bcrypt';
-import { userRepository } from '../repositories';
-import { JWTService } from './jwtService';
-import { AuthenticationError, ValidationError } from '../types/customErrors';
-import { IAuthUserService, UserWithToken, UserRegisterDto } from 'userAuth';
+import { IJWTService } from 'jwt';
 import { IUserRepository } from 'user';
+import { IAuthUserService, UserRegisterDto, UserWithToken } from 'userAuth';
+import { UserRepository } from '../repositories/userRepository';
+import { AuthenticationError, ValidationError } from '../types/customErrors';
+import { JWTService } from './jwtService';
 
 export class UserAuthService implements IAuthUserService {
   private userRepository: IUserRepository;
   private jwtService: IJWTService;
 
   constructor(userRepositoryArg?: IUserRepository, jwtService?: IJWTService) {
-    this.userRepository = userRepositoryArg ?? userRepository;
+    this.userRepository = userRepositoryArg ?? new UserRepository();
     this.jwtService = jwtService ?? new JWTService();
   }
 
