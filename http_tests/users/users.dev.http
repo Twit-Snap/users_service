@@ -1,18 +1,18 @@
 @url = http://localhost:3000
 @invalidToken = Bearer ey.invalidtoken.signature
-@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6MTIsImVtYWlsIjoibHVpczRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJsdWlzNCIsImlhdCI6MTcyNjk2MzI5OSwiZXhwIjoxNzU4NDk5Mjk5fQ.7xzYPNiKxPsmYiVT_PUIVwCvZjCVsNjEpWtx-GjiFOA
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6MSwiZW1haWwiOiJsdWlzNEBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Imx1aXM0IiwiaWF0IjoxNzI4NDM2MzA3LCJleHAiOjE3NTk5NzIzMDd9.X1KKcxVZ6-QVM3cOq2JQxCCyZF8bXYy1nW3sfdw02kY
 
 
 ### get all users UNAUTHORIZED
-curl -X GET {{url}}/user
+curl -X GET {{url}}/users
 
 
 ### get all users UNAUTHORIZED
-curl -X GET {{url}}/user \
-    -H 'Authorization: {{invalidToken}}'  
+curl -X GET {{url}}/users \
+    -H 'Authorization: {{invalidToken}}'
 
 
-### get all users UNAUTHORIZED
-curl -X GET {{url}}/user \
-    -H 'Authorization: {{token}}'  
+### get all users AUTHORIZED
+curl -X GET {{url}}/users \
+    -H 'Authorization: {{token}}'
 

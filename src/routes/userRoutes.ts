@@ -1,5 +1,5 @@
 import express from 'express';
-import { userRepository } from '../repositories';
+import { UserService } from '../services/userService';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.get('/', async (req, res, next) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jwtUser = (req as any).user;
     console.log(jwtUser);
-    const users = await userRepository.getList();
+    const users = await new UserService().getList();
     res.send(users);
   } catch (error) {
     next(error);
