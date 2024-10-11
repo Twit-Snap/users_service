@@ -1,3 +1,4 @@
+import { FollowersResponse, FollowersReturn, FollowReturn } from 'follow';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
 import { UserRegisterDto } from 'userAuth';
@@ -82,5 +83,80 @@ export class UserRepository implements IUserRepository {
       return null;
     }
     return result.rows[0];
+  }
+
+  async createFollow(userId: number, followId: number): Promise<FollowReturn> {
+    const query = `
+      INSERT INTO follows (userId, followedId)
+      VALUES ($1, $2)
+      RETURNING created_at AS "createdAt"
+    `;
+    try {
+      const result = await this.pool.query<FollowReturn>(query, [userId, followId]);
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+
+      const errorAux = error as { code: string; constraint: string };
+      if (errorAux.code === '23505') {
+        // PostgreSQL unique constraint violation error code
+        throw new EntityAlreadyExistsError('Follow', `(user, followed) key alredy exists`);
+      }
+
+      throw error;
+    }
+  }
+
+  async deleteFollow(userId: number, followId: number): Promise<void> {
+    const query = `
+      DELETE FROM follows
+      WHERE userId = $1 AND followedId = $2
+    `;
+
+    try {
+      await this.pool.query<FollowReturn>(query, [userId, followId]);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getFollow(userId: number, followId: number): Promise<FollowReturn> {
+    const query = `
+      SELECT created_at AS createdAt
+      FROM follows
+      WHERE userId = $1 AND followedId = $2
+    `;
+
+    try {
+      const result = await this.pool.query<FollowReturn>(query, [userId, followId]);
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getFollowers(userId: number): Promise<FollowersResponse[]> {
+    const query = `
+      SELECT username, name, follows.created_at AS createdAt
+      FROM follows
+      INNER JOIN users ON follows.followedId = users.id
+      WHERE userId = $1
+    `;
+
+    try {
+      const result = await this.pool.query<FollowersReturn>(query, [userId]);
+      return result.rows.map((row: FollowersReturn) => ({
+        follower: {
+          username: row.username,
+          name: row.name
+        },
+        createdAt: row.createdAt
+      }));
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
