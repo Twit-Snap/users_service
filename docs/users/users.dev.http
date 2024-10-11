@@ -16,3 +16,7 @@ curl -X GET {{url}}/users \
 curl -X GET {{url}}/users \
     -H 'Authorization: {{token}}'
 
+### get user AUTHORIZED
+curl -X GET {{url}}/users/luis4 \
+    -H 'Authorization: {{token}}'
+
