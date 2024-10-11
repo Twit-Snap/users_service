@@ -64,8 +64,8 @@ export class UserService {
 
     this.validateUsersToFollow(user.id, followedUser.id);
 
-    let follow = await this.userRepository.getFollow(user.id, followedUser.id);
-    follow = this.validateFollow(follow, user, followedUser);
+    const follow = await this.userRepository.getFollow(user.id, followedUser.id);
+    this.validateFollow(follow, user, followedUser);
 
     await this.userRepository.deleteFollow(user.id, followedUser.id);
   }

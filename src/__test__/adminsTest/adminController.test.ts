@@ -21,18 +21,16 @@ describe('AdminController', () => {
   });
 
   it('should get user by username successfully', async () => {
-    const aUser = { username: 'admin1', email: 'admin1@example.com'};
+    const aUser = { username: 'admin1', email: 'admin1@example.com' };
     (AdminService.prototype.getUserByUsername as jest.Mock).mockResolvedValue(aUser);
 
     const req = httpMocks.createRequest({
       method: 'GET',
       url: '/admins/users/admin1',
-      params: { username: 'admin1' },
+      params: { username: 'admin1' }
     });
 
     const response = await controller.getUserByUsername(req.params.username);
     expect(response).toEqual({ data: aUser });
   });
-
-
 });
