@@ -1,9 +1,8 @@
 import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/userRepository';
-import { IUserRepository, User, UserWithPassword, PublicUser, PublicUserProfile } from '../types/user';
-import { NotFoundError, ServiceUnavailableError } from '../types/customErrors';
-import axios from 'axios';
-import * as process from 'node:process';
+import { IUserRepository, User, UserWithPassword, PublicUser } from '../types/user';
+import { NotFoundError } from '../types/customErrors';
+
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -28,29 +27,10 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getUserPublicProfile(username: string) : Promise<PublicUserProfile>{
+  async getPublicUser(username: string) : Promise<PublicUser>{
     const user =  await this.userRepository.getByUsername(username);
     const validUser = this.validate_username(user,username);
-    return await this.createUserProfileWithTwits(username, validUser);
-  }
-
-  private async createUserProfileWithTwits(username: string, validUser: User) {
-    try {
-      const twits = await this.getTwits(username);
-      const publicUser = this.getPublicUser(validUser);
-
-      return {
-        ...publicUser,
-        twits: twits
-      };
-    } catch (error) {
-      throw new ServiceUnavailableError();
-    }
-  }
-
-  private async getTwits(username: string) {
-    const twitsResponse = await axios.get(`${process.env.TWITS_SERVICE_URL}/snaps/by_username/${username}`);
-    return twitsResponse.data.data;
+    return this.preparePublicUser(validUser);
   }
 
   private validate_username(user: User | null , username: string) {
@@ -58,10 +38,11 @@ export class UserService {
     else return user
   }
 
-  private getPublicUser(user: User ){
-    const { username, birthdate, createdAt} = user;
+  private preparePublicUser(user: User ){
+    const { username, name, birthdate, createdAt} = user;
     const publicUser: PublicUser = {
       username,
+      name,
       birthdate,
       createdAt,
     };

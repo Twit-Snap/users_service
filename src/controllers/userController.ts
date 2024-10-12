@@ -1,6 +1,6 @@
 import {UserService} from '../services/userService';
 import { ValidationError } from '../types/customErrors';
-import {PublicUserProfile} from 'user';
+import {PublicUser} from 'user';
 
 export class UserController{
   private userService: UserService
@@ -11,7 +11,7 @@ export class UserController{
 
   async getUserByUsername(username: string){
     this.validateUsername(username);
-     const publicUser: PublicUserProfile = await this.userService.getUserPublicProfile(username);
+     const publicUser: PublicUser = await this.userService.getPublicUser(username);
      return {data: publicUser};
   }
 
