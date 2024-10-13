@@ -2,8 +2,8 @@ import { FollowersResponse, FollowersReturn, FollowReturn } from 'follow';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
 import { UserRegisterDto } from 'userAuth';
-import { EntityAlreadyExistsError } from '../types/customErrors';
-import { DatabasePool } from './db';
+import { EntityAlreadyExistsError } from '../../types/customErrors';
+import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
@@ -55,7 +55,7 @@ export class UserRepository implements IUserRepository {
         email,
         name,
         lastname,
-        birthdate,
+        birthdate.toISOString(),
         password
       ]);
       return result.rows[0];

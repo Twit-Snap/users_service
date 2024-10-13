@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { IJWTService } from 'jwt';
 import { IUserRepository } from 'user';
 import { IAuthUserService, UserRegisterDto, UserWithToken } from 'userAuth';
-import { UserRepository } from '../repositories/userRepository';
+import { UserRepository } from '../repositories/user/userRepository';
 import { AuthenticationError, ValidationError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 

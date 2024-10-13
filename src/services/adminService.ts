@@ -1,6 +1,6 @@
 import { Admin } from 'admin';
 import { User } from 'user';
-import { UserRepository } from '../repositories/userRepository';
+import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError } from '../types/customErrors';
 
 export class AdminService {

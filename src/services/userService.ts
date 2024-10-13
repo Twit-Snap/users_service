@@ -88,6 +88,7 @@ export class UserService {
         twits: twits
       };
     } catch (error) {
+      console.error(error);
       throw new ServiceUnavailableError();
     }
   }

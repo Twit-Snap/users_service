@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { PublicUserProfile } from 'user';
-import { UserRepository } from '../../repositories/userRepository';
+import { UserRepository } from '../../repositories/user/userRepository';
 import { UserService } from '../../services/userService';
 import { NotFoundError, ServiceUnavailableError, ValidationError } from '../../types/customErrors';
 
-jest.mock('../../repositories/userRepository');
+jest.mock('../../repositories/user/userRepository');
 jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 jest.mock('axios'); // Mock axios for external HTTP calls
