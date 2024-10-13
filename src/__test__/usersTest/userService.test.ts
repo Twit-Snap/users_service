@@ -1,11 +1,10 @@
+import axios from 'axios';
+import { PublicUserProfile } from 'user';
+import { UserRepository } from '../../repositories/user/userRepository';
 import { UserService } from '../../services/userService';
 import { NotFoundError, ServiceUnavailableError } from '../../types/customErrors';
-import { UserRepository } from '../../repositories/userRepository';
-import { PublicUserProfile } from 'user';
-import axios from 'axios';
 
-
-jest.mock('../../repositories/userRepository');
+jest.mock('../../repositories/user/userRepository');
 jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 jest.mock('axios'); // Mock axios for external HTTP calls
@@ -14,43 +13,39 @@ describe('UserService', () => {
   let service: UserService;
   let dbServiceMock: jest.Mocked<UserRepository>;
 
-  const username = 'usernameTest'
+  const username = 'usernameTest';
 
   const aMockTwitUser = {
     id: 1,
     username: username,
-    name: 'user',
-  }
+    name: 'user'
+  };
 
   const aMockTwit = {
     id: 1,
     createdAt: new Date(),
     user: aMockTwitUser,
-    content: 'Hello word',
-  }
+    content: 'Hello word'
+  };
 
   const aMockUserProfile: PublicUserProfile = {
     username: username,
     birthdate: new Date(),
     createdAt: new Date(),
-    twits: [aMockTwit],
-  }
+    twits: [aMockTwit]
+  };
 
   beforeEach(() => {
-
     dbServiceMock = {
-      getByUsername: jest.fn().mockResolvedValue(aMockUserProfile),
+      getByUsername: jest.fn().mockResolvedValue(aMockUserProfile)
     } as unknown as jest.Mocked<UserRepository>;
 
     service = new UserService(dbServiceMock);
-
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
-
-
 
   describe('getUserList', () => {
     it('should return a list of users', async () => {
@@ -61,12 +56,11 @@ describe('UserService', () => {
 
   describe('getPublicUserByUsername', () => {
     it('should return a user', async () => {
-
       // Mock axios call to the tweet service
       (axios.get as jest.Mock).mockResolvedValue({
         data: {
-          data: [aMockTwit],
-        },
+          data: [aMockTwit]
+        }
       });
 
       const result = await service.getUserPublicProfile(username);
@@ -83,7 +77,4 @@ describe('UserService', () => {
       await expect(service.getUserPublicProfile(username)).rejects.toThrow(ServiceUnavailableError);
     });
   });
-
-
-
 });

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as process from 'node:process';
 import { UserRegisterDto } from 'userAuth';
-import { UserRepository } from '../repositories/userRepository';
+import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ServiceUnavailableError } from '../types/customErrors';
 import {
   IUserRepository,
