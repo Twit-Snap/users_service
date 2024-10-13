@@ -1,4 +1,4 @@
-import { FollowersResponse, FollowersReturn, FollowReturn } from 'follow';
+import { FollowersResponse, FollowReturn } from 'follow';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
 import { UserRegisterDto } from 'userAuth';
@@ -89,7 +89,7 @@ export class UserRepository implements IUserRepository {
     const query = `
       INSERT INTO follows (userId, followedId)
       VALUES ($1, $2)
-      RETURNING created_at AS "createdAt"
+      RETURNING userId, followedId, created_at AS "createdAt"
     `;
     try {
       const result = await this.pool.query<FollowReturn>(query, [userId, followId]);
@@ -121,9 +121,9 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async getFollow(userId: number, followId: number): Promise<FollowReturn> {
+  async getFollow(userId: number, followId: number): Promise<FollowReturn | undefined> {
     const query = `
-      SELECT created_at AS createdAt
+      SELECT userId, followedId, created_at AS "createdAt"
       FROM follows
       WHERE userId = $1 AND followedId = $2
     `;
@@ -139,21 +139,16 @@ export class UserRepository implements IUserRepository {
 
   async getFollowers(userId: number): Promise<FollowersResponse[]> {
     const query = `
-      SELECT username, name, follows.created_at AS createdAt
+      SELECT id, username, name, follows.created_at AS followCreatedAt
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
       WHERE userId = $1
+      ORDER BY follows.created_at BY DESC
     `;
 
     try {
-      const result = await this.pool.query<FollowersReturn>(query, [userId]);
-      return result.rows.map((row: FollowersReturn) => ({
-        follower: {
-          username: row.username,
-          name: row.name
-        },
-        createdAt: row.createdAt
-      }));
+      const result = await this.pool.query<FollowersResponse>(query, [userId]);
+      return result.rows;
     } catch (error) {
       console.error(error);
       throw error;

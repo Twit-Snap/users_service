@@ -1,5 +1,3 @@
-import { TwitUser } from 'user';
-
 export type FollowResponse = {
   username: string;
   followedUsername: string;
@@ -7,17 +5,14 @@ export type FollowResponse = {
 };
 
 export type FollowReturn = {
+  userId: number;
+  followedId: number;
   createdAt: string;
 };
 
 export type FollowersResponse = {
-  follower: Omit<TwitUser, 'id'>;
-  createdAt: string;
-};
-
-export type FollowersReturn = {
   id: number;
-  username: string;
   name: string;
-  createdAt: string;
+  username: string;
+  followCreatedAt: string;
 };
