@@ -194,4 +194,106 @@ describe('UserRepository', () => {
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
   });
+
+  describe('createFollow', () => {
+    it('should create a follow successfully', async () => {
+      const mockResult = {
+        rows: [
+          {
+            userId: 1,
+            followedId: 2,
+            createdAt: new Date('2023-01-01T00:00:00Z')
+          }
+        ]
+      };
+      mockPool.query.mockResolvedValueOnce(mockResult);
+
+      const result = await userRepository.createFollow(1, 2);
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should throw EntityAlreadyExistsError when follow already exists', async () => {
+      const mockError = { code: '23505', constraint: 'unique_follow' };
+      mockPool.query.mockRejectedValueOnce(mockError);
+
+      await expect(userRepository.createFollow(1, 2)).rejects.toThrowErrorMatchingSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
+
+  describe('deleteFollow', () => {
+    it('should delete a follow successfully', async () => {
+      mockPool.query.mockResolvedValueOnce({ rowCount: 1 });
+
+      await expect(userRepository.deleteFollow(1, 2)).resolves.toBeUndefined();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
+
+  describe('getFollow', () => {
+    it('should get a follow successfully', async () => {
+      const mockResult = {
+        rows: [
+          {
+            userId: 1,
+            followedId: 2,
+            createdAt: new Date('2023-01-01T00:00:00Z')
+          }
+        ]
+      };
+      mockPool.query.mockResolvedValueOnce(mockResult);
+
+      const result = await userRepository.getFollow(1, 2);
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should return undefined when follow does not exist', async () => {
+      const mockResult = { rows: [] };
+      mockPool.query.mockResolvedValueOnce(mockResult);
+
+      const result = await userRepository.getFollow(1, 2);
+      expect(result).toBeUndefined();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
+
+  describe('getFollowers', () => {
+    it('should get followers successfully', async () => {
+      const mockResult = {
+        rows: [
+          {
+            id: 2,
+            username: 'user1',
+            name: 'User One',
+            followCreatedAt: new Date('2023-01-01T00:00:00Z')
+          },
+          {
+            id: 3,
+            username: 'user2',
+            name: 'User Two',
+            followCreatedAt: new Date('2023-01-02T00:00:00Z')
+          }
+        ]
+      };
+      mockPool.query.mockResolvedValueOnce(mockResult);
+
+      const result = await userRepository.getFollowers(1);
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
 });
