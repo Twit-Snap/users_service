@@ -261,7 +261,7 @@ exports[`UserRepository getFollowers should get followers successfully: Interpol
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
       WHERE userId = 1
-      ORDER BY follows.created_at BY DESC
+      ORDER BY follows.created_at DESC
     "
 `;
 

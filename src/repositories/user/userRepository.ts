@@ -143,7 +143,7 @@ export class UserRepository implements IUserRepository {
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
       WHERE userId = $1
-      ORDER BY follows.created_at BY DESC
+      ORDER BY follows.created_at DESC
     `;
 
     try {
