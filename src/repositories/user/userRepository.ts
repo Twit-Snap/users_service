@@ -42,7 +42,9 @@ export class UserRepository implements IUserRepository {
   }
 
   async create(userData: UserRegisterDto): Promise<User> {
-    const { username, email, name, lastname, birthdate, password } = userData;
+    const { username, email, name, lastname, password } = userData;
+    const birthdate = new Date(userData.birthdate).toISOString();
+
     const query = `
       INSERT INTO users (username, email, name, lastname, birthdate, password)
       VALUES ($1, $2, $3, $4, $5, $6)
@@ -55,7 +57,7 @@ export class UserRepository implements IUserRepository {
         email,
         name,
         lastname,
-        birthdate.toISOString(),
+        birthdate,
         password
       ]);
       return result.rows[0];
