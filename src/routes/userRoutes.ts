@@ -26,9 +26,11 @@ router.get('/:username', async (req, res, next) => {
   }
 });
 
-router.post('/followers', async (req, res, next) => {
+router.post('/:username/followers', async (req, res, next) => {
   try {
-    const { username, followedUsername } = req.body;
+    const { username } = req.params;
+
+    const { followedUsername } = req.body;
 
     const controller = new UserController();
 
@@ -42,9 +44,11 @@ router.post('/followers', async (req, res, next) => {
   }
 });
 
-router.delete('/followers', async (req, res, next) => {
+router.delete('/:username/followers', async (req, res, next) => {
   try {
-    const { username, followedUsername } = req.body;
+    const { username } = req.params;
+
+    const { followedUsername } = req.body;
 
     const controller = new UserController();
 
