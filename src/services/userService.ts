@@ -78,6 +78,20 @@ export class UserService {
     return followers;
   }
 
+  async getFollow(username: string, followedUsername: string): Promise<FollowReturn> {
+    let user = await this.userRepository.getByUsername(username);
+    let followedUser = await this.userRepository.getByUsername(followedUsername);
+
+    user = this.validate_username(user, username);
+    followedUser = this.validate_username(followedUser, followedUsername);
+
+    this.validateUsersToFollow(user.id, followedUser.id);
+
+    let follow = await this.userRepository.getFollow(user.id, followedUser.id);
+    follow = this.validateFollow(follow, user, followedUser);
+    return follow;
+  }
+
   private async createUserProfileWithTwits(username: string, validUser: User) {
     try {
       const twits = await this.getTwits(username);

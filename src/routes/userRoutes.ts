@@ -76,4 +76,20 @@ router.get('/:username/followers/', async (req, res, next) => {
   }
 });
 
+router.get('/:username/followers/:followedUsername', async (req, res, next) => {
+  try {
+    const { username, followedUsername } = req.params;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.validateUsername(followedUsername);
+
+    const data = await new UserService().getFollow(username, followedUsername);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
