@@ -86,7 +86,9 @@ describe('UserService', () => {
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
           .mockResolvedValueOnce({ id: 2, username: 'juan' }),
 
-        createFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' })
+        createFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
       service = new UserService(dbServiceMock);
@@ -95,8 +97,8 @@ describe('UserService', () => {
 
       expect(ret).toEqual({
         createdAt: '2024-09-21T23:29:16.260Z',
-        username: 'pepe',
-        followedUsername: 'juan'
+        userId: 1,
+        followedId: 2
       });
     });
 
@@ -104,7 +106,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
-        createFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' })
+        createFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
       service = new UserService(dbServiceMock);
@@ -119,7 +123,9 @@ describe('UserService', () => {
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
           .mockResolvedValueOnce(null),
 
-        createFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' })
+        createFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
       service = new UserService(dbServiceMock);
@@ -131,7 +137,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
-        createFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' })
+        createFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
       service = new UserService(dbServiceMock);
@@ -148,7 +156,9 @@ describe('UserService', () => {
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
           .mockResolvedValueOnce({ id: 2, username: 'juan' }),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -163,7 +173,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -179,7 +191,9 @@ describe('UserService', () => {
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
           .mockResolvedValueOnce(null),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -192,7 +206,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -226,7 +242,7 @@ describe('UserService', () => {
         getFollowers: jest
           .fn()
           .mockResolvedValue([
-            { follower: { username: 'juan', name: 'juan' }, createdAt: '2024-09-21T23:29:16.260Z' }
+            { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -236,7 +252,7 @@ describe('UserService', () => {
 
       expect(dbServiceMock.getFollowers).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
-        { follower: { username: 'juan', name: 'juan' }, createdAt: '2024-09-21T23:29:16.260Z' }
+        { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
       ]);
     });
 
@@ -247,7 +263,7 @@ describe('UserService', () => {
         getFollowers: jest
           .fn()
           .mockResolvedValue([
-            { follower: { username: 'juan', name: 'juan' }, createdAt: '2024-09-21T23:29:16.260Z' }
+            { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -282,7 +298,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -298,7 +316,9 @@ describe('UserService', () => {
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
           .mockResolvedValueOnce(null),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
@@ -311,7 +331,9 @@ describe('UserService', () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
-        getFollow: jest.fn().mockResolvedValue({ createdAt: '2024-09-21T23:29:16.260Z' }),
+        getFollow: jest
+          .fn()
+          .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' }),
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 

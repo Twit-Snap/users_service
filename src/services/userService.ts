@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FollowersResponse, FollowResponse, FollowReturn } from 'follow';
+import { FollowersResponse, FollowReturn } from 'follow';
 import * as process from 'node:process';
 import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
@@ -41,7 +41,7 @@ export class UserService {
     return await this.createUserProfileWithTwits(username, validUser);
   }
 
-  async followUser(username: string, followedUsername: string): Promise<FollowResponse> {
+  async followUser(username: string, followedUsername: string): Promise<FollowReturn> {
     let user = await this.userRepository.getByUsername(username);
     let followedUser = await this.userRepository.getByUsername(followedUsername);
 
@@ -52,7 +52,7 @@ export class UserService {
 
     const ret = await this.userRepository.createFollow(user.id, followedUser.id);
 
-    return { ...ret, username: user.username, followedUsername: followedUser.username };
+    return ret;
   }
 
   async unfollowUser(username: string, followedUsername: string): Promise<void> {
