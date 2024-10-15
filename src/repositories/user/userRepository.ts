@@ -79,7 +79,7 @@ export class UserRepository implements IUserRepository {
 
   async getByUsername(username: string) {
     const query =
-      'SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1';
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1';
     const result = await this.pool.query<User>(query, [username]);
     if (result.rows.length === 0) {
       return null;
