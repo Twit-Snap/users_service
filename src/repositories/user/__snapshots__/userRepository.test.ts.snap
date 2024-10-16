@@ -183,11 +183,11 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
+exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
 [
-  "SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
   [
     "testuser",
   ],
@@ -201,11 +201,11 @@ exports[`UserRepository getByUsername should get user by username: User result 1
 }
 `;
 
-exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
+exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
 
 exports[`UserRepository getByUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
   [
     "nonexistent",
   ],
