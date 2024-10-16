@@ -1,6 +1,6 @@
 import express from 'express';
-import { UserService } from '../services/userService';
 import { UserController } from '../controllers/userController';
+import { UserService } from '../services/userService';
 const router = express.Router();
 
 // Define your routes here
@@ -21,6 +21,72 @@ router.get('/:username', async (req, res, next) => {
   try {
     const user = await new UserController().getUserByUsername(username);
     res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/:username/followers', async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const { followedUsername } = req.body;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.validateUsername(followedUsername);
+
+    const follow = await new UserService().followUser(username, followedUsername);
+    res.status(201).json(follow);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/:username/followers', async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const { followedUsername } = req.body;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.validateUsername(followedUsername);
+
+    await new UserService().unfollowUser(username, followedUsername);
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:username/followers/', async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    new UserController().validateUsername(username);
+
+    const data = await new UserService().getAllFollowers(username);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:username/followers/:followedUsername', async (req, res, next) => {
+  try {
+    const { username, followedUsername } = req.params;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.validateUsername(followedUsername);
+
+    const data = await new UserService().getFollow(username, followedUsername);
+    res.status(200).json(data);
   } catch (error) {
     next(error);
   }

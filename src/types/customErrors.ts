@@ -28,7 +28,6 @@ export class EntityAlreadyExistsError extends Error {
   entityName: string;
   detail: string;
 
-
   constructor(entityName: string, detail: string) {
     super(`${entityName} already exists`);
     this.entityName = entityName;
@@ -50,6 +49,3 @@ export class ServiceUnavailableError extends Error {
     this.name = 'ServiceUnavailableError';
   }
 }
-
-
-

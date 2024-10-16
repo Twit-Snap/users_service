@@ -1,3 +1,4 @@
+import { FollowersResponse, FollowReturn } from 'follow';
 import { UserRegisterDto } from 'userAuth';
 
 export interface User {
@@ -12,10 +13,11 @@ export interface User {
 
 export type UserWithPassword = User & { password: string };
 
-export type PublicUser = Omit<User, 'id' | 'email' | 'name' | 'lastname' >;
-export type TwitUser = Omit<User, 'email' | 'birthdate' | 'createdAt' | 'lastname'>
+export type PublicUser = Omit<User, 'id' | 'email' | 'name' | 'lastname'>;
+export type TwitUser = Omit<User, 'email' | 'birthdate' | 'createdAt' | 'lastname'>;
 
-export type PublicUserProfile = PublicUser & { twits: Array<{
+export type PublicUserProfile = PublicUser & {
+  twits: Array<{
     id: number;
     user: TwitUser;
     content: string;
@@ -23,12 +25,14 @@ export type PublicUserProfile = PublicUser & { twits: Array<{
   }>;
 };
 
-
-
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
   getList(): Promise<User[] | null>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
-  getByUsername(username: string): Promise<User | null>
+  getByUsername(username: string): Promise<User | null>;
+  createFollow(userId: number, followId: number): Promise<FollowReturn>;
+  deleteFollow(userId: number, followId: number): Promise<void>;
+  getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
+  getFollowers(userId: number): Promise<FollowersResponse[]>;
 }

@@ -1,9 +1,7 @@
-
 import * as httpMocks from 'node-mocks-http';
 import { AdminAuthController } from '../../controllers/adminAuthController';
 import { AdminAuthService } from '../../services/adminAuthService';
 import { ValidationError } from '../../types/customErrors';
-
 
 jest.mock('../../services/adminAuthService');
 
@@ -15,7 +13,6 @@ describe('AdminAuthController', () => {
   });
 
   describe('CreateAdmin', () => {
-
     it('should create an admin successfully', async () => {
       const adminData = { username: 'admin1', email: 'admin1@example.com' };
       (AdminAuthService.prototype.createAdmin as jest.Mock).mockResolvedValue(adminData);
@@ -26,8 +23,8 @@ describe('AdminAuthController', () => {
         body: {
           username: 'admin1',
           email: 'admin1@example.com',
-          password: 'securepassword',
-        },
+          password: 'securepassword'
+        }
       });
 
       const response = await controller.createAdmin(req);
@@ -43,8 +40,8 @@ describe('AdminAuthController', () => {
         body: {
           username: '',
           email: 'admin1@example.com',
-          password: 'securepassword',
-        },
+          password: 'securepassword'
+        }
       });
 
       await expect(controller.createAdmin(req)).rejects.toThrow(ValidationError);
@@ -57,8 +54,8 @@ describe('AdminAuthController', () => {
         body: {
           username: 'admin1',
           email: '',
-          password: 'securepassword',
-        },
+          password: 'securepassword'
+        }
       });
 
       await expect(controller.createAdmin(req)).rejects.toThrow(ValidationError);
@@ -71,8 +68,8 @@ describe('AdminAuthController', () => {
         body: {
           username: 'admin1',
           email: 'admin1@example.com',
-          password: '',
-        },
+          password: ''
+        }
       });
 
       await expect(controller.createAdmin(req)).rejects.toThrow(ValidationError);
@@ -85,102 +82,104 @@ describe('AdminAuthController', () => {
         body: {
           username: 'admin1',
           email: 'admin1example.com',
-          password: 'securepassword',
-        },
+          password: 'securepassword'
+        }
       });
 
       await expect(controller.createAdmin(req)).rejects.toThrow(ValidationError);
     });
+  });
+
+  describe('LoginAdmin', () => {
+    it('should login an admin successfully with username and password', async () => {
+      const mockAdminWithToken = {
+        username: 'admin1',
+        email: 'admin1@example.com',
+        token: 'mocked-jwt-token',
+        password: undefined
+      };
+      (AdminAuthService.prototype.loginAdmin as jest.Mock).mockResolvedValue(mockAdminWithToken);
+
+      const reqLogin = httpMocks.createRequest({
+        method: 'POST',
+        url: '/admin/login',
+        body: {
+          emailOrUsername: 'admin1',
+          password: 'securepassword'
+        }
+      });
+
+      const response = await controller.loginAdmin(reqLogin);
+      expect(response).toEqual({ data: mockAdminWithToken });
+      expect(AdminAuthService.prototype.loginAdmin).toHaveBeenCalledWith(
+        'admin1',
+        'securepassword'
+      );
     });
 
+    it('should login an admin successfully with email and password', async () => {
+      const mockAdminWithToken = {
+        username: 'admin1',
+        email: 'admin1@example.com',
+        token: 'mocked-jwt-token',
+        password: undefined
+      };
+      (AdminAuthService.prototype.loginAdmin as jest.Mock).mockResolvedValue(mockAdminWithToken);
 
-    describe('LoginAdmin', () => {
-
-      it('should login an admin successfully with username and password', async () => {
-
-        const mockAdminWithToken = {
-          username: 'admin1',
-          email: 'admin1@example.com',
-          token: 'mocked-jwt-token',
-          password: undefined,
-        };
-        (AdminAuthService.prototype.loginAdmin as jest.Mock).mockResolvedValue(mockAdminWithToken);
-
-        const reqLogin = httpMocks.createRequest({
-          method: 'POST',
-          url: '/admin/login',
-          body: {
-            emailOrUsername: 'admin1',
-            password: 'securepassword',
-          },
-        });
-
-        const response = await controller.loginAdmin(reqLogin);
-        expect(response).toEqual({ data: mockAdminWithToken });
-        expect(AdminAuthService.prototype.loginAdmin).toHaveBeenCalledWith('admin1', 'securepassword');
+      const reqLogin = httpMocks.createRequest({
+        method: 'POST',
+        url: '/admin/login',
+        body: {
+          emailOrUsername: 'admin1@example.com',
+          password: 'securepassword'
+        }
       });
 
-      it('should login an admin successfully with email and password', async () => {
+      const response = await controller.loginAdmin(reqLogin);
+      expect(response).toEqual({ data: mockAdminWithToken });
+      expect(AdminAuthService.prototype.loginAdmin).toHaveBeenCalledWith(
+        'admin1@example.com',
+        'securepassword'
+      );
+    });
 
-        const mockAdminWithToken = {
-          username: 'admin1',
-          email: 'admin1@example.com',
-          token: 'mocked-jwt-token',
-          password: undefined,
-        };
-        (AdminAuthService.prototype.loginAdmin as jest.Mock).mockResolvedValue(mockAdminWithToken);
-
-        const reqLogin = httpMocks.createRequest({
-          method: 'POST',
-          url: '/admin/login',
-          body: {
-            emailOrUsername: 'admin1@example.com',
-            password: 'securepassword',
-          },
-        });
-
-        const response = await controller.loginAdmin(reqLogin);
-        expect(response).toEqual({ data: mockAdminWithToken });
-        expect(AdminAuthService.prototype.loginAdmin).toHaveBeenCalledWith('admin1@example.com', 'securepassword');
+    it('login should throw an error if emailOrUsername is empty', async () => {
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        url: '/admin/login',
+        body: {
+          emailOrUsername: '',
+          password: 'securepassword'
+        }
       });
 
-      it('login should throw an error if emailOrUsername is empty', async () => {
-        const req = httpMocks.createRequest({
-          method: 'POST',
-          url: '/admin/login',
-          body: {
-            emailOrUsername: '',
-            password: 'securepassword',
-          },
-        });
+      await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
+    });
 
-        await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
+    it('login should throw an error if password is empty', async () => {
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        url: '/admin/login',
+        body: {
+          emailOrUsername: 'admin1',
+          password: ''
+        }
       });
 
-      it('login should throw an error if password is empty', async () => {
-        const req = httpMocks.createRequest({
-          method: 'POST',
-          url: '/admin/login',
-          body: {
-            emailOrUsername: 'admin1',
-            password: '',
-          },
-        });
+      await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
+    });
 
-        await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
+    it('login should throw an error if emailOrUsername is invalid', async () => {
+      const req = httpMocks.createRequest({
+        method: 'POST',
+        url: '/admin/login',
+        body: {
+          emailOrUsername: 'admin1@example',
+          password: 'securepassword'
+        }
       });
 
-      it('login should throw an error if emailOrUsername is invalid', async () => {
-        const req = httpMocks.createRequest({
-          method: 'POST',
-          url: '/admin/login',
-          body: {
-            emailOrUsername: 'admin1@example',
-            password: 'securepassword',
-          },
-        });
-
-        await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
-      });
+      await expect(controller.loginAdmin(req)).rejects.toThrow(ValidationError);
     });
   });
+});

@@ -86,6 +86,39 @@ exports[`UserRepository create should throw EntityAlreadyExistsError for duplica
 ]
 `;
 
+exports[`UserRepository createFollow should create a follow successfully 1`] = `
+{
+  "createdAt": 2023-01-01T00:00:00.000Z,
+  "followedId": 2,
+  "userId": 1,
+}
+`;
+
+exports[`UserRepository createFollow should create a follow successfully: Interpolated SQL query 1`] = `
+"
+      INSERT INTO follows (userId, followedId)
+      VALUES (1, 2)
+      RETURNING userId, followedId, created_at AS "createdAt"
+    "
+`;
+
+exports[`UserRepository createFollow should throw EntityAlreadyExistsError when follow already exists 1`] = `"Follow already exists"`;
+
+exports[`UserRepository createFollow should throw EntityAlreadyExistsError when follow already exists: Interpolated SQL query 1`] = `
+"
+      INSERT INTO follows (userId, followedId)
+      VALUES (1, 2)
+      RETURNING userId, followedId, created_at AS "createdAt"
+    "
+`;
+
+exports[`UserRepository deleteFollow should delete a follow successfully: Interpolated SQL query 1`] = `
+"
+      DELETE FROM follows
+      WHERE userId = 1 AND followedId = 2
+    "
+`;
+
 exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
 
 exports[`UserRepository findByEmailOrUsername should find user by email or username: SQL query 1`] = `
@@ -150,11 +183,11 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
+exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
 [
-  "SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
   [
     "testuser",
   ],
@@ -168,11 +201,11 @@ exports[`UserRepository getByUsername should get user by username: User result 1
 }
 `;
 
-exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
+exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
 
 exports[`UserRepository getByUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
   [
     "nonexistent",
   ],
@@ -180,6 +213,57 @@ exports[`UserRepository getByUsername should return null when user not found: SQ
 `;
 
 exports[`UserRepository getByUsername should return null when user not found: User result 1`] = `null`;
+
+exports[`UserRepository getFollow should get a follow successfully 1`] = `
+{
+  "createdAt": 2023-01-01T00:00:00.000Z,
+  "followedId": 2,
+  "userId": 1,
+}
+`;
+
+exports[`UserRepository getFollow should get a follow successfully: Interpolated SQL query 1`] = `
+"
+      SELECT userId, followedId, created_at AS "createdAt"
+      FROM follows
+      WHERE userId = 1 AND followedId = 2
+    "
+`;
+
+exports[`UserRepository getFollow should return undefined when follow does not exist: Interpolated SQL query 1`] = `
+"
+      SELECT userId, followedId, created_at AS "createdAt"
+      FROM follows
+      WHERE userId = 1 AND followedId = 2
+    "
+`;
+
+exports[`UserRepository getFollowers should get followers successfully 1`] = `
+[
+  {
+    "followCreatedAt": 2023-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "User One",
+    "username": "user1",
+  },
+  {
+    "followCreatedAt": 2023-01-02T00:00:00.000Z,
+    "id": 3,
+    "name": "User Two",
+    "username": "user2",
+  },
+]
+`;
+
+exports[`UserRepository getFollowers should get followers successfully: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS followCreatedAt
+      FROM follows
+      INNER JOIN users ON follows.followedId = users.id
+      WHERE userId = 1
+      ORDER BY follows.created_at DESC
+    "
+`;
 
 exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users"`;
 

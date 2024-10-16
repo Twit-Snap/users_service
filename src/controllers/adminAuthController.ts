@@ -23,7 +23,7 @@ export class AdminAuthController {
     this.verifyLoginCredentials(req);
 
     const { emailOrUsername, password } = req.body;
-    this.verfiyEmailOrUsername(emailOrUsername)
+    this.verfiyEmailOrUsername(emailOrUsername);
 
     const admin = await this.adminService.loginAdmin(emailOrUsername, password);
 
@@ -36,7 +36,11 @@ export class AdminAuthController {
     }
 
     if (!req.body.emailOrUsername) {
-      throw new ValidationError('email/username', 'Email/username is required', 'INVALID EMAIL/USERNAME');
+      throw new ValidationError(
+        'email/username',
+        'Email/username is required',
+        'INVALID EMAIL/USERNAME'
+      );
     }
   }
 
@@ -55,11 +59,11 @@ export class AdminAuthController {
 
   private verifyCreateCredentials(req: Request) {
     if (!req.body.email || !req.body.username || !req.body.password) {
-      throw new ValidationError('email, username, password', 'All fields are required', 'INVALID CREDENTIALS');
+      throw new ValidationError(
+        'email, username, password',
+        'All fields are required',
+        'INVALID CREDENTIALS'
+      );
     }
   }
-
-
-
-
 }
