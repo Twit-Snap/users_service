@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import {
   AuthenticationError,
   EntityAlreadyExistsError,
-  NotFoundError, ServiceUnavailableError,
+  NotFoundError,
   ValidationError
 } from '../types/customErrors';
 // import logger from '../utils/logger';
