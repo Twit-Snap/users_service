@@ -1,6 +1,6 @@
 import { UserController } from '../../controllers/userController';
 import { UserService } from '../../services/userService';
-import { PublicUserProfile } from 'user';
+import { PublicUser } from 'user';
 import { ValidationError } from '../../types/customErrors';
 
 jest.mock('../../services/userService');
@@ -9,29 +9,17 @@ describe('UserController', () => {
   let controller: UserController;
 
   const username = 'usernameTest';
-  const aMockTwitUser = {
-    id: 1,
-    username: username,
-    name: 'user'
-  };
 
-  const aMockTwit = {
-    id: 1,
-    createdAt: new Date(),
-    user: aMockTwitUser,
-    content: 'Hello word'
-  };
-
-  const aMockUserProfile: PublicUserProfile = {
+  const aMockUserProfile: PublicUser = {
     username: username,
+    name: 'user',
     birthdate: new Date(),
     createdAt: new Date(),
-    twits: [aMockTwit]
-  };
+  }
 
   beforeEach(() => {
     const serviceMock = {
-      getUserPublicProfile: jest.fn().mockResolvedValue(aMockUserProfile)
+      getPublicUser: jest.fn().mockResolvedValue(aMockUserProfile),
     } as unknown as jest.Mocked<UserService>;
 
     controller = new UserController(serviceMock);

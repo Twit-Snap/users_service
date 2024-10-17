@@ -1,13 +1,10 @@
-import axios from 'axios';
-import { FollowersResponse, FollowReturn } from 'follow';
-import * as process from 'node:process';
 import { UserRegisterDto } from 'userAuth';
+import { FollowersResponse, FollowReturn } from 'follow';
 import { UserRepository } from '../repositories/user/userRepository';
-import { NotFoundError, ServiceUnavailableError, ValidationError } from '../types/customErrors';
+import { NotFoundError, ValidationError } from '../types/customErrors';
 import {
   IUserRepository,
   PublicUser,
-  PublicUserProfile,
   User,
   UserWithPassword
 } from '../types/user';
@@ -35,10 +32,10 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getUserPublicProfile(username: string): Promise<PublicUserProfile> {
-    const user = await this.userRepository.getByUsername(username);
-    const validUser = this.validate_username(user, username);
-    return await this.createUserProfileWithTwits(username, validUser);
+  async getPublicUser(username: string) : Promise<PublicUser>{
+    const user =  await this.userRepository.getByUsername(username);
+    const validUser = this.validate_username(user,username);
+    return this.preparePublicUser(validUser);
   }
 
   async followUser(username: string, followedUsername: string): Promise<FollowReturn> {
@@ -92,37 +89,17 @@ export class UserService {
     return follow;
   }
 
-  private async createUserProfileWithTwits(username: string, validUser: User) {
-    try {
-      const twits = await this.getTwits(username);
-      const publicUser = this.getPublicUser(validUser);
-
-      return {
-        ...publicUser,
-        twits: twits
-      };
-    } catch (error) {
-      console.error(error);
-      throw new ServiceUnavailableError();
-    }
-  }
-
-  private async getTwits(username: string) {
-    const twitsResponse = await axios.get(
-      `${process.env.TWITS_SERVICE_URL}/snaps/by_username/${username}`
-    );
-    return twitsResponse.data.data;
-  }
 
   private validate_username(user: User | null, username: string) {
     if (!user) throw new NotFoundError(username, '');
     else return user;
   }
 
-  private getPublicUser(user: User) {
-    const { username, birthdate, createdAt } = user;
+  private preparePublicUser(user: User ){
+    const { username, name, birthdate, createdAt} = user;
     const publicUser: PublicUser = {
       username,
+      name,
       birthdate,
       createdAt
     };
