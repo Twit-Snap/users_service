@@ -1,3 +1,4 @@
+import { FollowersResponse, FollowReturn } from 'follow';
 import { UserRegisterDto } from 'userAuth';
 
 export interface User {
@@ -19,5 +20,9 @@ export interface IUserRepository {
   getList(): Promise<User[] | null>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
-  getByUsername(username: string): Promise<User | null>
+  getByUsername(username: string): Promise<User | null>;
+  createFollow(userId: number, followId: number): Promise<FollowReturn>;
+  deleteFollow(userId: number, followId: number): Promise<void>;
+  getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
+  getFollowers(userId: number): Promise<FollowersResponse[]>;
 }

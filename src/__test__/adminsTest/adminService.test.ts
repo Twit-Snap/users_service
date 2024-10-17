@@ -1,8 +1,7 @@
+import { User } from 'user';
+import { UserRepository } from '../../repositories/user/userRepository';
 import { AdminService } from '../../services/adminService';
 import { NotFoundError } from '../../types/customErrors';
-import { UserRepository } from '../../repositories/userRepository';
-import { User } from 'user';
-
 
 jest.mock('../../repositories/adminRepository');
 jest.mock('../../services/jwtService');
@@ -19,8 +18,8 @@ describe('AdminService', () => {
     name: 'aUser',
     lastname: 'aUserLastName',
     birthdate: new Date(),
-    createdAt: new Date(),
-  }
+    createdAt: new Date()
+  };
 
   const anotherMockUser: User = {
     id: 1,
@@ -29,20 +28,18 @@ describe('AdminService', () => {
     name: 'anotherUser',
     lastname: 'anotherUserLastName',
     birthdate: new Date(),
-    createdAt: new Date(),
-  }
+    createdAt: new Date()
+  };
 
   const mockUsers = [aMockUser, anotherMockUser];
 
   beforeEach(() => {
-
     dbServiceMock = {
       getList: jest.fn().mockResolvedValue(mockUsers),
-      getByUsername: jest.fn().mockResolvedValue(aMockUser),
+      getByUsername: jest.fn().mockResolvedValue(aMockUser)
     } as unknown as jest.Mocked<UserRepository>;
 
     service = new AdminService(dbServiceMock);
-
   });
 
   afterEach(() => {
@@ -67,5 +64,4 @@ describe('AdminService', () => {
       await expect(service.getUserByUsername('nonExistentUser')).rejects.toThrow(NotFoundError);
     });
   });
-
 });

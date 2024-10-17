@@ -5,5 +5,9 @@
 curl -X GET {{url}}/user
 
 ### get all users AUTHORIZED
-curl -X GET {{url}}/user \
-    -H 'Authorization: {{token}}'  
+curl -X GET {{url}}/users \
+    -H 'Authorization: {{token}}'
+
+### get user by username
+curl -X GET {{url}}/users/jmpo \
+    -H 'Authorization: {{token}}'
