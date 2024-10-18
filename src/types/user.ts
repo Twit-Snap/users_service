@@ -9,11 +9,14 @@ export interface User {
   lastname: string;
   birthdate: Date;
   createdAt: Date;
+  following?: boolean;
+  followersCount?: number;
+  followingCount?: number;
 }
 
 export type UserWithPassword = User & { password: string };
 
-export type PublicUser = Omit<User, 'id' | 'email' | 'lastname' >;
+export type PublicUser = Omit<User, 'id' | 'email' | 'lastname'>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;

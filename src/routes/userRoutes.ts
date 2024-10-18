@@ -19,7 +19,9 @@ router.get('/', async (req, res, next) => {
 router.get('/:username', async (req, res, next) => {
   const username = req.params.username;
   try {
-    const user = await new UserController().getUserByUsername(username);
+    const authUser = (req as any).user;
+
+    const user = await new UserController().getUserByUsername(username, authUser);
     res.send(user);
   } catch (error) {
     next(error);
