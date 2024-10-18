@@ -27,5 +27,5 @@ export interface IUserRepository {
   createFollow(userId: number, followId: number): Promise<FollowReturn>;
   deleteFollow(userId: number, followId: number): Promise<void>;
   getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
-  getFollowers(userId: number): Promise<FollowersResponse[]>;
+  getFollows(userId: number, byFollowers: boolean): Promise<FollowersResponse[]>;
 }

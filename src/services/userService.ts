@@ -3,12 +3,7 @@ import { JwtUserPayload } from 'jwt';
 import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import {
-  IUserRepository,
-  PublicUser,
-  User,
-  UserWithPassword
-} from '../types/user';
+import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -71,11 +66,11 @@ export class UserService {
     await this.userRepository.deleteFollow(user.id, followedUser.id);
   }
 
-  async getAllFollowers(username: string): Promise<FollowersResponse[]> {
+  async getAllFollows(username: string, byFollowers: boolean): Promise<FollowersResponse[]> {
     let user = await this.userRepository.getByUsername(username);
     user = this.validate_username(user, username);
 
-    const followers = await this.userRepository.getFollowers(user.id);
+    const followers = await this.userRepository.getFollows(user.id, byFollowers);
     return followers;
   }
 
@@ -107,13 +102,17 @@ export class UserService {
     else return user;
   }
 
-  private preparePublicUser(user: User ){
-    const { username, name, birthdate, createdAt} = user;
+  private preparePublicUser(user: User) {
+    const { username, name, birthdate, createdAt, following, followersCount, followingCount } =
+      user;
     const publicUser: PublicUser = {
       username,
       name,
       birthdate,
-      createdAt
+      createdAt,
+      following,
+      followersCount,
+      followingCount
     };
 
     return publicUser;

@@ -68,10 +68,10 @@ router.delete('/:username/followers', async (req, res, next) => {
 router.get('/:username/followers/', async (req, res, next) => {
   try {
     const { username } = req.params;
-
+    const byFollowers: boolean = req.query.byFollowers === 'true' ? true : false;
     new UserController().validateUsername(username);
 
-    const data = await new UserService().getAllFollowers(username);
+    const data = await new UserService().getAllFollows(username, byFollowers);
     res.status(200).json(data);
   } catch (error) {
     next(error);
