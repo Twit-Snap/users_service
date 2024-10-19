@@ -4,7 +4,7 @@ import path from 'path';
 import { errorHandler } from './middleware/errorHandler';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
 import { DatabasePool } from './repositories/db';
-import { adminRoutes, authAdminRoutes, userAuthRoutes, userRoutes } from './routes';
+import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
 
 // Función para inicializar el entorno
 function initializeEnvironment() {
@@ -75,10 +75,11 @@ async function startServer() {
   });
 
   // Routes
-  app.use('/users', userRoutes);
   app.use('/auth', userAuthRoutes);
+  app.use('/users', userRoutes);
   app.use('/admins', adminRoutes);
   app.use('/auth/admins', authAdminRoutes);
+  app.use('/auth/sso', authSSORoutes);
 
   // Error handling middleware
   app.use(errorHandler);
