@@ -20,7 +20,7 @@ export type PublicUser = Omit<User, 'id' | 'email' | 'lastname'>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
-  getList(): Promise<User[] | null>;
+  getList(has: string): Promise<User[]>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
   getByUsername(username: string): Promise<User | null>;

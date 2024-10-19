@@ -8,8 +8,8 @@ export class AdminController {
     this.adminService = new AdminService();
   }
 
-  async getUserList() {
-    const admin = await this.adminService.getUserList();
+  async getUserList(has: string) {
+    const admin = await this.adminService.getUserList(has);
     return { data: admin };
   }
 

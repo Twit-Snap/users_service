@@ -1,4 +1,5 @@
 import express from 'express';
+import { User } from 'user';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 const router = express.Router();
@@ -9,7 +10,10 @@ router.get('/', async (req, res, next) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jwtUser = (req as any).user;
     console.log(jwtUser);
-    const users = await new UserService().getList();
+
+    const has: string = req.query.has ? req.query.has.toString() : '';
+
+    const users: User[] = await new UserService().getList(has);
     res.send(users);
   } catch (error) {
     next(error);
