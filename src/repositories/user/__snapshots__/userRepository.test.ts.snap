@@ -238,7 +238,7 @@ exports[`UserRepository getFollow should return undefined when follow does not e
     "
 `;
 
-exports[`UserRepository getFollowers should get followers successfully 1`] = `
+exports[`UserRepository getFollows should get followers users successfully 1`] = `
 [
   {
     "followCreatedAt": 2023-01-01T00:00:00.000Z,
@@ -255,7 +255,34 @@ exports[`UserRepository getFollowers should get followers successfully 1`] = `
 ]
 `;
 
-exports[`UserRepository getFollowers should get followers successfully: Interpolated SQL query 1`] = `
+exports[`UserRepository getFollows should get followers users successfully: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS followCreatedAt
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1
+      ORDER BY follows.created_at DESC
+    "
+`;
+
+exports[`UserRepository getFollows should get following users successfully 1`] = `
+[
+  {
+    "followCreatedAt": 2023-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "User One",
+    "username": "user1",
+  },
+  {
+    "followCreatedAt": 2023-01-02T00:00:00.000Z,
+    "id": 3,
+    "name": "User Two",
+    "username": "user2",
+  },
+]
+`;
+
+exports[`UserRepository getFollows should get following users successfully: Interpolated SQL query 1`] = `
 "
       SELECT id, username, name, follows.created_at AS followCreatedAt
       FROM follows

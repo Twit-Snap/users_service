@@ -269,8 +269,8 @@ describe('UserRepository', () => {
     });
   });
 
-  describe('getFollowers', () => {
-    it('should get followers successfully', async () => {
+  describe('getFollows', () => {
+    it('should get following users successfully', async () => {
       const mockResult = {
         rows: [
           {
@@ -289,7 +289,33 @@ describe('UserRepository', () => {
       };
       mockPool.query.mockResolvedValueOnce(mockResult);
 
-      const result = await userRepository.getFollowers(1);
+      const result = await userRepository.getFollows(1, false);
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should get followers users successfully', async () => {
+      const mockResult = {
+        rows: [
+          {
+            id: 2,
+            username: 'user1',
+            name: 'User One',
+            followCreatedAt: new Date('2023-01-01T00:00:00Z')
+          },
+          {
+            id: 3,
+            username: 'user2',
+            name: 'User Two',
+            followCreatedAt: new Date('2023-01-02T00:00:00Z')
+          }
+        ]
+      };
+      mockPool.query.mockResolvedValueOnce(mockResult);
+
+      const result = await userRepository.getFollows(1, true);
       expect(result).toMatchSnapshot();
       const [query, params] = mockPool.query.mock.calls[0];
       const interpolatedQuery = interpolateQuery(query, params);

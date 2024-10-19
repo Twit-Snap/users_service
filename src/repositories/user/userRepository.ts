@@ -139,12 +139,15 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async getFollowers(userId: number): Promise<FollowersResponse[]> {
+  async getFollows(userId: number, byFollowers: boolean): Promise<FollowersResponse[]> {
+    const condition = byFollowers ? 'followedId = $1' : 'userId = $1';
+    const join = byFollowers ? 'userId' : 'followedId';
+
     const query = `
       SELECT id, username, name, follows.created_at AS followCreatedAt
       FROM follows
-      INNER JOIN users ON follows.followedId = users.id
-      WHERE userId = $1
+      INNER JOIN users ON follows.${join} = users.id
+      WHERE ${condition}
       ORDER BY follows.created_at DESC
     `;
 

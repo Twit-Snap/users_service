@@ -1,13 +1,9 @@
-import { UserRegisterDto } from 'userAuth';
 import { FollowersResponse, FollowReturn } from 'follow';
+import { JwtUserPayload } from 'jwt';
+import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import {
-  IUserRepository,
-  PublicUser,
-  User,
-  UserWithPassword
-} from '../types/user';
+import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -32,10 +28,13 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getPublicUser(username: string) : Promise<PublicUser>{
-    const user =  await this.userRepository.getByUsername(username);
-    const validUser = this.validate_username(user,username);
-    return this.preparePublicUser(validUser);
+  async getUser(username: string, authUser: JwtUserPayload): Promise<User | PublicUser> {
+    const user = await this.userRepository.getByUsername(username);
+    let validUser = this.validate_username(user, username);
+
+    validUser = await this.addFollowState(authUser, validUser);
+
+    return authUser.username === username ? validUser : this.preparePublicUser(validUser);
   }
 
   async followUser(username: string, followedUsername: string): Promise<FollowReturn> {
@@ -67,11 +66,11 @@ export class UserService {
     await this.userRepository.deleteFollow(user.id, followedUser.id);
   }
 
-  async getAllFollowers(username: string): Promise<FollowersResponse[]> {
+  async getAllFollows(username: string, byFollowers: boolean): Promise<FollowersResponse[]> {
     let user = await this.userRepository.getByUsername(username);
     user = this.validate_username(user, username);
 
-    const followers = await this.userRepository.getFollowers(user.id);
+    const followers = await this.userRepository.getFollows(user.id, byFollowers);
     return followers;
   }
 
@@ -89,19 +88,31 @@ export class UserService {
     return follow;
   }
 
+  private async addFollowState(authUser: JwtUserPayload, user: User) {
+    return {
+      ...user,
+      following: (await this.userRepository.getFollow(authUser.userId, user.id)) ? true : false,
+      followersCount: (await this.userRepository.getFollows(user.id, true)).length,
+      followingCount: (await this.userRepository.getFollows(user.id, false)).length
+    };
+  }
 
   private validate_username(user: User | null, username: string) {
     if (!user) throw new NotFoundError(username, '');
     else return user;
   }
 
-  private preparePublicUser(user: User ){
-    const { username, name, birthdate, createdAt} = user;
+  private preparePublicUser(user: User) {
+    const { username, name, birthdate, createdAt, following, followersCount, followingCount } =
+      user;
     const publicUser: PublicUser = {
       username,
       name,
       birthdate,
-      createdAt
+      createdAt,
+      following,
+      followersCount,
+      followingCount
     };
 
     return publicUser;
