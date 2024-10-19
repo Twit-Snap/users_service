@@ -16,8 +16,13 @@ export class UserService {
     return this.userRepository.findByEmailOrUsername(emailOrUsername);
   }
 
-  async getList(has: string): Promise<User[]> {
-    return this.userRepository.getList(has);
+  async getList(jwtUser: JwtUserPayload, has: string): Promise<User[]> {
+    const data = await this.userRepository.getList(has);
+    const dataFollows = await Promise.all(
+      data.map(async (item) => await this.addFollowState(jwtUser, item))
+    );
+
+    return dataFollows;
   }
 
   async get(id: number): Promise<User | null> {
@@ -95,19 +100,25 @@ export class UserService {
   }
 
   private async addFollowState(authUser: JwtUserPayload, user: User) {
-    const following: boolean = (await this.userRepository.getFollow(authUser.userId, user.id))
-      ? true
-      : false;
-    const followed: boolean = (await this.userRepository.getFollow(user.id, authUser.userId))
-      ? true
-      : false;
+    const following: boolean | undefined =
+      authUser.type === 'user'
+        ? (await this.userRepository.getFollow(authUser.userId, user.id))
+          ? true
+          : false
+        : undefined;
+    const followed: boolean | undefined =
+      authUser.type === 'user'
+        ? (await this.userRepository.getFollow(user.id, authUser.userId))
+          ? true
+          : false
+        : undefined;
 
     return {
       ...user,
       following: following,
+      followed: followed,
       followersCount: (await this.userRepository.getFollows(user.id, true)).length,
-      followingCount: (await this.userRepository.getFollows(user.id, false)).length,
-      followed: followed
+      followingCount: (await this.userRepository.getFollows(user.id, false)).length
     };
   }
 
@@ -118,6 +129,7 @@ export class UserService {
 
   private preparePublicUser(user: User) {
     const {
+      id,
       username,
       name,
       birthdate,
@@ -128,8 +140,8 @@ export class UserService {
       followed
     } = user;
     const publicUser: PublicUser = {
-      username,
       id,
+      username,
       name,
       birthdate,
       createdAt,

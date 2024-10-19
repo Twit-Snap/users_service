@@ -9,11 +9,10 @@ router.get('/', async (req, res, next) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const jwtUser = (req as any).user;
-    console.log(jwtUser);
 
     const has: string = req.query.has ? req.query.has.toString() : '';
 
-    const users: User[] = await new UserService().getList(has);
+    const users: User[] = await new UserService().getList(jwtUser, has);
     res.send(users);
   } catch (error) {
     next(error);
