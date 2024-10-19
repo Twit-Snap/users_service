@@ -9,18 +9,19 @@ export interface User {
   lastname: string;
   birthdate: Date;
   createdAt: Date;
-  following?: boolean;
+  following?: boolean; // Auth user is following the requested user?
   followersCount?: number;
   followingCount?: number;
+  followed?: boolean; // Auth user is followed by the requested user?
 }
 
 export type UserWithPassword = User & { password: string };
 
-export type PublicUser = Omit<User, 'id' | 'email' | 'lastname'>;
+export type PublicUser = Omit<User, 'email' | 'lastname'>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
-  getList(): Promise<User[] | null>;
+  getList(has: string): Promise<User[]>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterDto): Promise<User>;
   getByUsername(username: string): Promise<User | null>;

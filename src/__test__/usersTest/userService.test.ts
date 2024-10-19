@@ -58,7 +58,8 @@ describe('UserService', () => {
         ...aMockUser,
         followersCount: undefined,
         following: false,
-        followingCount: undefined
+        followingCount: undefined,
+        followed: false
       });
     });
 
@@ -66,12 +67,78 @@ describe('UserService', () => {
       const result = await service.getUser('notEqualUsername', { ...authUser, type: 'user' });
       expect(result).toEqual({
         ...aMockUser,
-        id: undefined,
         email: undefined,
         lastname: undefined,
         followersCount: undefined,
         following: false,
-        followingCount: undefined
+        followingCount: undefined,
+        followed: false
+      });
+    });
+
+    it('should return following & followed equal to true if both users follows', async () => {
+      const dbServiceMockAux = {
+        getByUsername: jest.fn().mockResolvedValue(aMockUser),
+        getFollow: jest.fn().mockResolvedValue(true),
+        getFollows: jest.fn().mockResolvedValue(0)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const result = await new UserService(dbServiceMockAux).getUser('notEqualUsername', {
+        ...authUser,
+        type: 'user'
+      });
+      expect(result).toEqual({
+        ...aMockUser,
+        email: undefined,
+        lastname: undefined,
+        followersCount: undefined,
+        following: true,
+        followingCount: undefined,
+        followed: true
+      });
+    });
+
+    it('should return following equal to true if authUser is following the requested user', async () => {
+      const dbServiceMockAux = {
+        getByUsername: jest.fn().mockResolvedValue(aMockUser),
+        getFollow: jest.fn().mockResolvedValueOnce(true).mockResolvedValueOnce(false),
+        getFollows: jest.fn().mockResolvedValue(0)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const result = await new UserService(dbServiceMockAux).getUser('notEqualUsername', {
+        ...authUser,
+        type: 'user'
+      });
+      expect(result).toEqual({
+        ...aMockUser,
+        email: undefined,
+        lastname: undefined,
+        followersCount: undefined,
+        following: true,
+        followingCount: undefined,
+        followed: false
+      });
+    });
+
+    it('should return followed equal to true if authUser is followed by the requested user', async () => {
+      const dbServiceMockAux = {
+        getByUsername: jest.fn().mockResolvedValue(aMockUser),
+        getFollow: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true),
+        getFollows: jest.fn().mockResolvedValue(0)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const result = await new UserService(dbServiceMockAux).getUser('notEqualUsername', {
+        ...authUser,
+        type: 'user'
+      });
+      expect(result).toEqual({
+        ...aMockUser,
+        email: undefined,
+        lastname: undefined,
+        followersCount: undefined,
+        following: false,
+        followingCount: undefined,
+        followed: true
       });
     });
 
@@ -239,7 +306,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('getAllFolowers', () => {
+  describe('getAllFollows', () => {
     it('should return all the users that an user with username "pepe" is following', async () => {
       dbServiceMock = {
         getByUsername: jest.fn().mockResolvedValueOnce({ id: 1, username: 'pepe' }),
@@ -253,7 +320,7 @@ describe('UserService', () => {
 
       service = new UserService(dbServiceMock);
 
-      const ret = await service.getAllFollows('pepe', false);
+      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false);
 
       expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
@@ -274,7 +341,7 @@ describe('UserService', () => {
 
       service = new UserService(dbServiceMock);
 
-      const ret = await service.getAllFollows('pepe', true);
+      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', true);
 
       expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
@@ -295,7 +362,48 @@ describe('UserService', () => {
 
       service = new UserService(dbServiceMock);
 
-      await expect(service.getAllFollows('pepe', false)).rejects.toThrow(NotFoundError);
+      await expect(
+        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false)
+      ).rejects.toThrow(NotFoundError);
+    });
+
+    it('should raise a ValidationError if authUser and requested user dont follow each other', async () => {
+      dbServiceMock = {
+        getByUsername: jest.fn().mockResolvedValueOnce({ id: 255, username: 'pepe' }),
+        getFollow: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(false),
+        getFollows: jest
+          .fn()
+          .mockResolvedValue([
+            { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
+          ])
+      } as unknown as jest.Mocked<UserRepository>;
+
+      service = new UserService(dbServiceMock);
+
+      await expect(
+        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false)
+      ).rejects.toThrow(ValidationError);
+    });
+
+    it('should not raise a ValidationError if authUser is the requested user', async () => {
+      dbServiceMock = {
+        getByUsername: jest
+          .fn()
+          .mockResolvedValueOnce({ id: authUser.userId, username: authUser.username }),
+        getFollow: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(false),
+        getFollows: jest
+          .fn()
+          .mockResolvedValue([
+            { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
+          ])
+      } as unknown as jest.Mocked<UserRepository>;
+
+      service = new UserService(dbServiceMock);
+      const response = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false);
+
+      expect(response).toEqual([
+        { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
+      ]);
     });
   });
 

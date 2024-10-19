@@ -292,11 +292,61 @@ exports[`UserRepository getFollows should get following users successfully: Inte
     "
 `;
 
-exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users"`;
+exports[`UserRepository getList should get list of users that match "has" partially: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user%'"`;
+
+exports[`UserRepository getList should get list of users that match "has" partially: SQL query 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "user%",
+  ],
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" partially: Users list result 1`] = `
+[
+  {
+    "email": "user1@example.com",
+    "id": 1,
+    "username": "user1",
+  },
+  {
+    "email": "user2@example.com",
+    "id": 2,
+    "username": "user2",
+  },
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user1%'"`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: SQL query 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "user1%",
+  ],
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: Users list result 1`] = `
+[
+  {
+    "email": "user1@example.com",
+    "id": 1,
+    "username": "user1",
+  },
+]
+`;
+
+exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
 
 exports[`UserRepository getList should get list of users: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "%",
+  ],
 ]
 `;
 
@@ -315,12 +365,15 @@ exports[`UserRepository getList should get list of users: Users list result 1`] 
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users"`;
+exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
 
 exports[`UserRepository getList should return null when no users found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "%",
+  ],
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Users list result 1`] = `null`;
+exports[`UserRepository getList should return null when no users found: Users list result 1`] = `[]`;

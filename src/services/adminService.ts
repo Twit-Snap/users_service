@@ -10,8 +10,8 @@ export class AdminService {
     this.repository = aUserRepository ?? new UserRepository();
   }
 
-  async getUserList(): Promise<Admin[] | null> {
-    return await this.repository.getList();
+  async getUserList(has: string): Promise<Admin[] | null> {
+    return await this.repository.getList(has);
   }
 
   async getUserByUsername(username: string) {
