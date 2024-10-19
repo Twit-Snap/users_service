@@ -28,7 +28,7 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getPublicUser(username: string, authUser: JwtUserPayload): Promise<PublicUser> {
+  async getUser(username: string, authUser: JwtUserPayload): Promise<User | PublicUser> {
     const user = await this.userRepository.getByUsername(username);
     let validUser = this.validate_username(user, username);
 
