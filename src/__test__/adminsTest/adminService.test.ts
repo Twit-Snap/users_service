@@ -48,7 +48,8 @@ describe('AdminService', () => {
 
   describe('getUserList', () => {
     it('should return a list of users', async () => {
-      const result = await service.getUserList();
+      const has: string = '';
+      const result = await service.getUserList(has);
       expect(result).toEqual(mockUsers);
     });
   });

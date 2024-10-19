@@ -58,7 +58,41 @@ describe('UserRepository', () => {
       ];
       mockPool.query.mockResolvedValueOnce({ rows: mockUsers });
 
-      const result = await userRepository.getList();
+      const has: string = ''
+      const result = await userRepository.getList(has);
+      expect(result).toMatchSnapshot('Users list result');
+      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should get list of users that match "has" totally', async () => {
+      const mockUsers = [
+        { id: 1, username: 'user1', email: 'user1@example.com' },
+        { id: 2, username: 'user2', email: 'user2@example.com' }
+      ];
+      mockPool.query.mockResolvedValueOnce({ rows: [mockUsers[0]] });
+
+      const has: string = 'user1'
+      const result = await userRepository.getList(has);
+      expect(result).toMatchSnapshot('Users list result');
+      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should get list of users that match "has" partially', async () => {
+      const mockUsers = [
+        { id: 1, username: 'user1', email: 'user1@example.com' },
+        { id: 2, username: 'user2', email: 'user2@example.com' },
+        { id: 3, username: 'test', email: 'user3@example.com' }
+      ];
+      mockPool.query.mockResolvedValueOnce({ rows: [mockUsers[0], mockUsers[1]] });
+
+      const has: string = 'user'
+      const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
       const [query, params] = mockPool.query.mock.calls[0];
@@ -69,7 +103,8 @@ describe('UserRepository', () => {
     it('should return null when no users found', async () => {
       mockPool.query.mockResolvedValueOnce({ rows: [] });
 
-      const result = await userRepository.getList();
+      const has: string = ''
+      const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
       const [query, params] = mockPool.query.mock.calls[0];
