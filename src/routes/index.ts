@@ -1,7 +1,7 @@
 // src/routes/index.ts
-import userRoutes from './userRoutes';
-import authUserRoutes from './authUserRoutes';
-import authAdminRoutes from './authAdminRoutes';
 import adminRoutes from './adminRoutes';
+import authAdminRoutes from './authAdminRoutes';
+import userAuthRoutes from './userAuthRoutes';
+import userRoutes from './userRoutes';
 
-export { userRoutes, authUserRoutes, authAdminRoutes, adminRoutes };
+export { adminRoutes, authAdminRoutes, userAuthRoutes, userRoutes };

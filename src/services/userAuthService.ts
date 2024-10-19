@@ -3,7 +3,7 @@ import { IJWTService } from 'jwt';
 import { IUserRepository } from 'user';
 import { IAuthUserService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
-import { AuthenticationError, ValidationError } from '../types/customErrors';
+import { AuthenticationError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 
 export class UserAuthService implements IAuthUserService {
@@ -45,7 +45,6 @@ export class UserAuthService implements IAuthUserService {
   }
 
   async register(userData: UserRegisterDto): Promise<UserWithToken> {
-    this.registerValidations(userData);
     // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
@@ -67,37 +66,5 @@ export class UserAuthService implements IAuthUserService {
     const userWithToken = { ...newUser, token };
 
     return userWithToken;
-  }
-
-  private registerValidations(userData: UserRegisterDto) {
-    // Validate email
-    if (!userData.email || !userData.email.includes('@')) {
-      throw new ValidationError('email', 'Invalid email', 'INVALID_EMAIL');
-    }
-
-    // Validate password (TODO: Add more validations)
-    if (!userData.password) {
-      throw new ValidationError('password', 'Invalid password', 'INVALID_PASSWORD');
-    }
-
-    // Validate username (TODO: Add more validations)
-    if (!userData.username) {
-      throw new ValidationError('username', 'Invalid username', 'INVALID_USERNAME');
-    }
-
-    // Validate name (TODO: Add more validations)
-    if (!userData.name) {
-      throw new ValidationError('name', 'Invalid name', 'INVALID_NAME');
-    }
-
-    // Validate lastname (TODO: Add more validations)
-    if (!userData.lastname) {
-      throw new ValidationError('lastname', 'Invalid lastname', 'INVALID_LASTNAME');
-    }
-
-    // Validate birthdate (TODO: Add more validations)
-    if (!userData.birthdate) {
-      throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
-    }
   }
 }
