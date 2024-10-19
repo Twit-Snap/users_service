@@ -9,9 +9,10 @@ export interface User {
   lastname: string;
   birthdate: Date;
   createdAt: Date;
-  following?: boolean;
+  following?: boolean; // Auth user is following the requested user?
   followersCount?: number;
   followingCount?: number;
+  followed?: boolean; // Auth user is followed by the requested user?
 }
 
 export type UserWithPassword = User & { password: string };

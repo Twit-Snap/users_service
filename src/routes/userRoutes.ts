@@ -75,7 +75,9 @@ router.get('/:username/followers/', async (req, res, next) => {
     const byFollowers: boolean = req.query.byFollowers === 'true' ? true : false;
     new UserController().validateUsername(username);
 
-    const data = await new UserService().getAllFollows(username, byFollowers);
+    const authUser = (req as any).user;
+
+    const data = await new UserService().getAllFollows(authUser, username, byFollowers);
     res.status(200).json(data);
   } catch (error) {
     next(error);
