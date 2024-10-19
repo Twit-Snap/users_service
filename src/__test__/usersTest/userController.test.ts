@@ -17,6 +17,7 @@ describe('UserController', () => {
   const username = 'usernameTest';
 
   const aMockUserProfile: PublicUser = {
+    id: 1,
     username: username,
     name: 'user',
     birthdate: new Date(),

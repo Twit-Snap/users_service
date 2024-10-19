@@ -67,7 +67,6 @@ describe('UserService', () => {
       const result = await service.getUser('notEqualUsername', { ...authUser, type: 'user' });
       expect(result).toEqual({
         ...aMockUser,
-        id: undefined,
         email: undefined,
         lastname: undefined,
         followersCount: undefined,
@@ -90,7 +89,6 @@ describe('UserService', () => {
       });
       expect(result).toEqual({
         ...aMockUser,
-        id: undefined,
         email: undefined,
         lastname: undefined,
         followersCount: undefined,
@@ -113,7 +111,6 @@ describe('UserService', () => {
       });
       expect(result).toEqual({
         ...aMockUser,
-        id: undefined,
         email: undefined,
         lastname: undefined,
         followersCount: undefined,
@@ -136,7 +133,6 @@ describe('UserService', () => {
       });
       expect(result).toEqual({
         ...aMockUser,
-        id: undefined,
         email: undefined,
         lastname: undefined,
         followersCount: undefined,
