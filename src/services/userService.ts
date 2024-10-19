@@ -129,6 +129,7 @@ export class UserService {
     } = user;
     const publicUser: PublicUser = {
       username,
+      id,
       name,
       birthdate,
       createdAt,
