@@ -11,7 +11,7 @@ export interface UserRegisterDto {
   password: string;
 }
 
-export interface IAuthUserService {
+export interface IUserAuthService {
   login(emailOrUsername: string, password: string): Promise<UserWithToken>;
   register(user: UserRegisterDto): Promise<UserWithToken>;
 }

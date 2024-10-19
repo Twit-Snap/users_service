@@ -1,12 +1,12 @@
 import bcrypt from 'bcrypt';
 import { IJWTService } from 'jwt';
 import { IUserRepository } from 'user';
-import { IAuthUserService, UserRegisterDto, UserWithToken } from 'userAuth';
+import { IUserAuthService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { AuthenticationError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 
-export class UserAuthService implements IAuthUserService {
+export class UserAuthSSOService implements IUserAuthService {
   private userRepository: IUserRepository;
   private jwtService: IJWTService;
 
