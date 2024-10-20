@@ -1,13 +1,7 @@
-import { UserRegisterDto } from 'userAuth';
 import { FollowersResponse, FollowReturn } from 'follow';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import {
-  IUserRepository,
-  PublicUser,
-  User,
-  UserWithPassword
-} from '../types/user';
+import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -28,13 +22,13 @@ export class UserService {
     return this.userRepository.get(id);
   }
 
-  async create(userData: UserRegisterDto): Promise<User> {
+  async create(userData: UserRegisterRepository): Promise<User> {
     return this.userRepository.create(userData);
   }
 
-  async getPublicUser(username: string) : Promise<PublicUser>{
-    const user =  await this.userRepository.getByUsername(username);
-    const validUser = this.validate_username(user,username);
+  async getPublicUser(username: string): Promise<PublicUser> {
+    const user = await this.userRepository.getByUsername(username);
+    const validUser = this.validate_username(user, username);
     return this.preparePublicUser(validUser);
   }
 
@@ -89,14 +83,13 @@ export class UserService {
     return follow;
   }
 
-
   private validate_username(user: User | null, username: string) {
     if (!user) throw new NotFoundError(username, '');
     else return user;
   }
 
-  private preparePublicUser(user: User ){
-    const { username, name, birthdate, createdAt} = user;
+  private preparePublicUser(user: User) {
+    const { username, name, birthdate, createdAt } = user;
     const publicUser: PublicUser = {
       username,
       name,

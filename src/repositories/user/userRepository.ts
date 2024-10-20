@@ -1,7 +1,7 @@
 import { FollowersResponse, FollowReturn } from 'follow';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
-import { UserRegisterDto } from 'userAuth';
+import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { DatabasePool } from '../db';
 
@@ -15,6 +15,16 @@ export class UserRepository implements IUserRepository {
     const query =
       'SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1';
     const result = await this.pool.query<UserWithPassword>(query, [emailOrUsername]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0];
+  }
+
+  async findBySSOuid(uid: string): Promise<User | null> {
+    const query =
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE ssoUid = $1';
+    const result = await this.pool.query<User>(query, [uid]);
     if (result.rows.length === 0) {
       return null;
     }
@@ -41,7 +51,7 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
 
-  async create(userData: UserRegisterDto): Promise<User> {
+  async create(userData: UserRegisterRepository): Promise<User> {
     const { username, email, name, lastname, password } = userData;
     const birthdate = new Date(userData.birthdate).toISOString();
 

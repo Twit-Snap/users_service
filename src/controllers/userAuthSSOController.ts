@@ -12,8 +12,8 @@ export class AuthSSOController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { idToken } = req.body;
-      const user = await this.userAuthSSOService.login(idToken);
+      const userSSODto: UserSSORegisterDto = req.body;
+      const user = await this.userAuthSSOService.login(userSSODto);
       res.send(user);
     } catch (error) {
       next(error);
@@ -33,32 +33,23 @@ export class AuthSSOController {
 
   private registerValidations(userData: UserSSORegisterDto) {
     // Validate idToken
-    if (!userData.idToken) {
+    if (!userData.token) {
       throw new ValidationError('idToken', 'Invalid idToken', 'INVALID_ID_TOKEN');
     }
 
-    // Validate email
-    if (!userData.email || !userData.email.includes('@')) {
-      throw new ValidationError('email', 'Invalid email', 'INVALID_EMAIL');
+    if (!userData.uid) {
+      throw new ValidationError('uid', 'Invalid uid', 'INVALID_UID');
     }
 
-    // Validate name
-    if (!userData.name) {
-      throw new ValidationError('name', 'Invalid name', 'INVALID_NAME');
+    if (!userData.providerId) {
+      throw new ValidationError('providerId', 'Invalid providerId', 'INVALID_PROVIDER_ID');
     }
 
-    // Validate photoURL (optional)
-    if (userData.photoURL && typeof userData.photoURL !== 'string') {
-      throw new ValidationError('photoURL', 'Invalid photoURL', 'INVALID_PHOTO_URL');
-    }
-
-    // Validate username (if provided)
-    if (userData.username && typeof userData.username !== 'string') {
+    if (!userData.username) {
       throw new ValidationError('username', 'Invalid username', 'INVALID_USERNAME');
     }
 
-    // Validate birthdate (if provided)
-    if (userData.birthdate && !(userData.birthdate instanceof Date)) {
+    if (!userData.birthdate) {
       throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
     }
   }
