@@ -10,18 +10,18 @@ exports[`UserRepository create should create a new user: Created user result 1`]
 
 exports[`UserRepository create should create a new user: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123')
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     "
 `;
 
 exports[`UserRepository create should create a new user: SQL query 1`] = `
 [
   "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     ",
   [
     "newuser",
@@ -30,24 +30,27 @@ exports[`UserRepository create should create a new user: SQL query 1`] = `
     "User",
     "2000-01-01T00:00:00.000Z",
     "password123",
+    undefined,
+    undefined,
+    undefined,
   ],
 ]
 `;
 
 exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate email: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ('newuser', 'existing@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123')
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ('newuser', 'existing@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     "
 `;
 
 exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate email: SQL query 1`] = `
 [
   "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     ",
   [
     "newuser",
@@ -56,24 +59,27 @@ exports[`UserRepository create should throw EntityAlreadyExistsError for duplica
     "User",
     "2000-01-01T00:00:00.000Z",
     "password123",
+    undefined,
+    undefined,
+    undefined,
   ],
 ]
 `;
 
 exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate username: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ('existinguser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123')
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ('existinguser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     "
 `;
 
 exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate username: SQL query 1`] = `
 [
   "
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
     ",
   [
     "existinguser",
@@ -82,6 +88,9 @@ exports[`UserRepository create should throw EntityAlreadyExistsError for duplica
     "User",
     "2000-01-01T00:00:00.000Z",
     "password123",
+    undefined,
+    undefined,
+    undefined,
   ],
 ]
 `;
@@ -119,11 +128,11 @@ exports[`UserRepository deleteFollow should delete a follow successfully: Interp
     "
 `;
 
-exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
+exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", password FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
 
 exports[`UserRepository findByEmailOrUsername should find user by email or username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", password FROM users WHERE email = $1 OR username = $1",
   [
     "testuser",
   ],
@@ -138,11 +147,11 @@ exports[`UserRepository findByEmailOrUsername should find user by email or usern
 }
 `;
 
-exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
+exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", password FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", password FROM users WHERE email = $1 OR username = $1",
   [
     "nonexistent",
   ],
@@ -151,11 +160,11 @@ exports[`UserRepository findByEmailOrUsername should return null when user not f
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = 1"`;
+exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE id = 1"`;
 
 exports[`UserRepository get should get user by id: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE id = $1",
   [
     1,
   ],
@@ -170,11 +179,11 @@ exports[`UserRepository get should get user by id: User result 1`] = `
 }
 `;
 
-exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = 999"`;
+exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE id = 999"`;
 
 exports[`UserRepository get should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE id = $1",
   [
     999,
   ],
@@ -183,11 +192,11 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
+exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE username = $1",
   [
     "testuser",
   ],
@@ -201,11 +210,11 @@ exports[`UserRepository getByUsername should get user by username: User result 1
 }
 `;
 
-exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
+exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE username = 'nonexistent'"`;
 
 exports[`UserRepository getByUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users WHERE username = $1",
   [
     "nonexistent",
   ],
@@ -265,11 +274,11 @@ exports[`UserRepository getFollowers should get followers successfully: Interpol
     "
 `;
 
-exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users"`;
+exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users"`;
 
 exports[`UserRepository getList should get list of users: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users",
 ]
 `;
 
@@ -288,11 +297,11 @@ exports[`UserRepository getList should get list of users: Users list result 1`] 
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users"`;
+exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users"`;
 
 exports[`UserRepository getList should return null when no users found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users",
 ]
 `;
 
