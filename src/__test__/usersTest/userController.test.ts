@@ -21,7 +21,8 @@ describe('UserController', () => {
     username: username,
     name: 'user',
     birthdate: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
+    isPrivate: false
   };
 
   beforeEach(() => {

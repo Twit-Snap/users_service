@@ -18,7 +18,8 @@ describe('AdminService', () => {
     name: 'aUser',
     lastname: 'aUserLastName',
     birthdate: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
+    isPrivate: false
   };
 
   const anotherMockUser: User = {
@@ -28,7 +29,8 @@ describe('AdminService', () => {
     name: 'anotherUser',
     lastname: 'anotherUserLastName',
     birthdate: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
+    isPrivate: false
   };
 
   const mockUsers = [aMockUser, anotherMockUser];
