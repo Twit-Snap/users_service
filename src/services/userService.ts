@@ -2,6 +2,7 @@ import { FollowersResponse, FollowReturn } from 'follow';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
 import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
+import { UserRegisterRepository } from '../types/userAuth';
 
 export class UserService {
   private userRepository: IUserRepository;

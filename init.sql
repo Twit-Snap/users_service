@@ -28,8 +28,10 @@ CREATE TABLE IF NOT EXISTS users (
     sso_uid VARCHAR(255) NULL,
     provider_id VARCHAR(50) NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-    CONSTRAINT unique_sso_uid UNIQUE NULLS NOT DISTINCT (sso_uid)
 );
+-- Create a unique partial index on sso_uid
+CREATE UNIQUE INDEX idx_unique_sso_uid ON users (sso_uid) WHERE sso_uid IS NOT NULL;
+
 
 -- Create the admins table if it doesn't exist
 CREATE TABLE IF NOT EXISTS admins (

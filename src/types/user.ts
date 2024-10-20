@@ -9,6 +9,9 @@ export interface User {
   lastname: string;
   birthdate: Date;
   createdAt: Date;
+  profilePicture?: string;
+  ssoUid?: string;
+  providerId?: string;
 }
 
 export type UserWithPassword = User & { password: string };

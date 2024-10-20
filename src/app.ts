@@ -6,6 +6,11 @@ import { jwtMiddleware } from './middleware/jwtMiddleware';
 import { DatabasePool } from './repositories/db';
 import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+var admin = require('firebase-admin');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+var serviceAccount = require('../serviceAccountKey.json');
+
 // Función para inicializar el entorno
 function initializeEnvironment() {
   // Determine environment
@@ -55,12 +60,22 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
   }
 }
 
+function initializeFirebase() {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  console.log('Firebase initialized');
+}
+
 // Start the server and connect to the database
 async function startServer() {
-  // Inicializar el entorno antes de cualquier otra operación
+  // Initialize environment variables
   initializeEnvironment();
 
   await testDatabaseConnection();
+
+  // init firebase project
+  initializeFirebase();
 
   // Middleware
   app.use(cors());

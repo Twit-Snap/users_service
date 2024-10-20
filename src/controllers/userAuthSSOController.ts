@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserAuthSSOService } from '../services/userAuthSSOService';
 import { ValidationError } from '../types/customErrors';
-import { UserSSORegisterDto } from '../types/userAuthSSO';
+import { UserSSOLoginDto, UserSSORegisterDto } from '../types/userAuth';
 
 export class AuthSSOController {
   private userAuthSSOService: UserAuthSSOService;
@@ -12,7 +12,8 @@ export class AuthSSOController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const userSSODto: UserSSORegisterDto = req.body;
+      const userSSODto: UserSSOLoginDto = req.body;
+      this.loginValidations(userSSODto);
       const user = await this.userAuthSSOService.login(userSSODto);
       res.send(user);
     } catch (error) {
@@ -28,6 +29,17 @@ export class AuthSSOController {
       res.send(user);
     } catch (error) {
       next(error);
+    }
+  }
+
+  private loginValidations(userSSODto: UserSSOLoginDto) {
+    // Validate idToken
+    if (!userSSODto.token) {
+      throw new ValidationError('idToken', 'Invalid idToken', 'INVALID_ID_TOKEN');
+    }
+
+    if (!userSSODto.uid) {
+      throw new ValidationError('uid', 'Invalid uid', 'INVALID_UID');
     }
   }
 

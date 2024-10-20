@@ -19,6 +19,11 @@ export interface UserSSORegisterDto {
   birthdate: Date;
 }
 
+export interface UserSSOLoginDto {
+  token: string;
+  uid: string;
+}
+
 export type UserRegisterRepository = Omit<UserRegisterDto, 'password'> & {
   ssoUid?: string | null;
   ssoProviderId?: string | null;
