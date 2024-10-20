@@ -128,30 +128,7 @@ export class UserService {
   }
 
   private preparePublicUser(user: User) {
-    const {
-      id,
-      username,
-      name,
-      birthdate,
-      createdAt,
-      following,
-      followersCount,
-      followingCount,
-      followed
-    } = user;
-    const publicUser: PublicUser = {
-      id,
-      username,
-      name,
-      birthdate,
-      createdAt,
-      following,
-      followersCount,
-      followingCount,
-      followed
-    };
-
-    return publicUser;
+    return { ...user, email: undefined, lastname: undefined };
   }
 
   private async validateMutualFollow(authUser: JwtUserPayload, user: User) {
