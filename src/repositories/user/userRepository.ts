@@ -82,7 +82,7 @@ export class UserRepository implements IUserRepository {
         } else if (errorAux.constraint?.includes('email')) {
           throw new EntityAlreadyExistsError('Email', 'Email is already in use');
         } else if (errorAux.constraint?.includes('sso_uid')) {
-          throw new EntityAlreadyExistsError('SSO UID', 'SSO UID is already in use');
+          throw new EntityAlreadyExistsError('SSOUid', 'SSO UID is already in use');
         }
       }
       // If it's not a unique constraint violation, re-throw the original error

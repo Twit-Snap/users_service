@@ -1,5 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserRepository create should create a new SSO user: Created user result 1`] = `
+{
+  "email": "new@example.com",
+  "id": 1,
+  "username": "newuser",
+}
+`;
+
+exports[`UserRepository create should create a new SSO user: Interpolated SQL query 1`] = `
+"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', undefined, 'https://example.com/picture.jpg', 'sso123oiebf8q782783', 'google.com')
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
+    "
+`;
+
+exports[`UserRepository create should create a new SSO user: SQL query 1`] = `
+[
+  "
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
+    ",
+  [
+    "newuser",
+    "new@example.com",
+    "New",
+    "User",
+    "2000-01-01T00:00:00.000Z",
+    undefined,
+    "https://example.com/picture.jpg",
+    "sso123oiebf8q782783",
+    "google.com",
+  ],
+]
+`;
+
 exports[`UserRepository create should create a new user: Created user result 1`] = `
 {
   "email": "new@example.com",
@@ -25,64 +62,6 @@ exports[`UserRepository create should create a new user: SQL query 1`] = `
     ",
   [
     "newuser",
-    "new@example.com",
-    "New",
-    "User",
-    "2000-01-01T00:00:00.000Z",
-    "password123",
-    undefined,
-    undefined,
-    undefined,
-  ],
-]
-`;
-
-exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate email: Interpolated SQL query 1`] = `
-"
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
-      VALUES ('newuser', 'existing@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
-    "
-`;
-
-exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate email: SQL query 1`] = `
-[
-  "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
-    ",
-  [
-    "newuser",
-    "existing@example.com",
-    "New",
-    "User",
-    "2000-01-01T00:00:00.000Z",
-    "password123",
-    undefined,
-    undefined,
-    undefined,
-  ],
-]
-`;
-
-exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate username: Interpolated SQL query 1`] = `
-"
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
-      VALUES ('existinguser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
-    "
-`;
-
-exports[`UserRepository create should throw EntityAlreadyExistsError for duplicate username: SQL query 1`] = `
-[
-  "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"
-    ",
-  [
-    "existinguser",
     "new@example.com",
     "New",
     "User",

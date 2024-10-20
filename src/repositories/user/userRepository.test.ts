@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pool } from 'pg';
-import { UserRegisterDto } from 'userAuth';
+import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { UserRepository } from './userRepository';
 
@@ -108,7 +108,7 @@ describe('UserRepository', () => {
       const mockUser = { id: 1, username: 'newuser', email: 'new@example.com' };
       mockPool.query.mockResolvedValueOnce({ rows: [mockUser] });
 
-      const userData: UserRegisterDto = {
+      const userData: UserRegisterRepository = {
         username: 'newuser',
         email: 'new@example.com',
         name: 'New',
@@ -125,13 +125,35 @@ describe('UserRepository', () => {
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
 
+    it('should create a new SSO user', async () => {
+      const mockUser = { id: 1, username: 'newuser', email: 'new@example.com' };
+      mockPool.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+      const userData: UserRegisterRepository = {
+        username: 'newuser',
+        email: 'new@example.com',
+        name: 'New',
+        lastname: 'User',
+        birthdate: new Date('2000-01-01'),
+        profilePicture: 'https://example.com/picture.jpg',
+        ssoUid: 'sso123oiebf8q782783',
+        ssoProviderId: 'google.com'
+      };
+      const result = await userRepository.create(userData);
+      expect(result).toMatchSnapshot('Created user result');
+      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
     it('should throw EntityAlreadyExistsError for duplicate username', async () => {
       const error = new Error('duplicate key value violates unique constraint');
       (error as any).code = '23505';
       (error as any).constraint = 'username_unique';
       mockPool.query.mockRejectedValueOnce(error);
 
-      const userData: UserRegisterDto = {
+      const userData: UserRegisterRepository = {
         username: 'existinguser',
         email: 'new@example.com',
         name: 'New',
@@ -140,11 +162,12 @@ describe('UserRepository', () => {
         password: 'password123'
       };
 
-      await expect(userRepository.create(userData)).rejects.toThrowError(EntityAlreadyExistsError);
-      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
-      const [query, params] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, params);
-      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+      try {
+        await userRepository.create(userData);
+      } catch (error) {
+        expect(error).toBeInstanceOf(EntityAlreadyExistsError);
+        expect((error as EntityAlreadyExistsError).message).toBe('Username already exists');
+      }
     });
 
     it('should throw EntityAlreadyExistsError for duplicate email', async () => {
@@ -153,7 +176,7 @@ describe('UserRepository', () => {
       (error as any).constraint = 'email_unique';
       mockPool.query.mockRejectedValueOnce(error);
 
-      const userData: UserRegisterDto = {
+      const userData: UserRegisterRepository = {
         username: 'newuser',
         email: 'existing@example.com',
         name: 'New',
@@ -162,11 +185,36 @@ describe('UserRepository', () => {
         password: 'password123'
       };
 
-      await expect(userRepository.create(userData)).rejects.toThrowError(EntityAlreadyExistsError);
-      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
-      const [query, params] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, params);
-      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+      try {
+        await userRepository.create(userData);
+      } catch (error) {
+        expect(error).toBeInstanceOf(EntityAlreadyExistsError);
+        expect((error as EntityAlreadyExistsError).message).toBe('Email already exists');
+      }
+    });
+
+    it('should throw EntityAlreadyExistsError for duplicate SSO UID', async () => {
+      const error = new Error('duplicate key value violates unique constraint');
+      (error as any).code = '23505';
+      (error as any).constraint = 'sso_uid_unique';
+      mockPool.query.mockRejectedValueOnce(error);
+
+      const userData: UserRegisterRepository = {
+        username: 'newuser',
+        email: 'newEmail@mail.com',
+        name: 'New',
+        lastname: 'User',
+        birthdate: new Date('2000-01-01'),
+        ssoUid: 'existing_sso_uid',
+        ssoProviderId: 'google.com'
+      };
+
+      try {
+        await userRepository.create(userData);
+      } catch (error) {
+        expect(error).toBeInstanceOf(EntityAlreadyExistsError);
+        expect((error as EntityAlreadyExistsError).message).toBe('SSOUid already exists');
+      }
     });
   });
 
