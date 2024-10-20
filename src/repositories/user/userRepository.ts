@@ -23,8 +23,8 @@ export class UserRepository implements IUserRepository {
 
   async getList(has: string): Promise<User[]> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1';
-    const result = await this.pool.query<User>(query, [`${has}%`]);
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username ILIKE $1 OR name ILIKE $1';
+    const result = await this.pool.query<User>(query, [`%${has}%`]);
     return result.rows;
   }
 
