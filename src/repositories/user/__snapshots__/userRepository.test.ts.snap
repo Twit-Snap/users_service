@@ -226,7 +226,7 @@ exports[`UserRepository getFollow should return undefined when follow does not e
     "
 `;
 
-exports[`UserRepository getFollowers should get followers successfully 1`] = `
+exports[`UserRepository getFollows should get followers users successfully 1`] = `
 [
   {
     "followCreatedAt": 2023-01-01T00:00:00.000Z,
@@ -243,7 +243,34 @@ exports[`UserRepository getFollowers should get followers successfully 1`] = `
 ]
 `;
 
-exports[`UserRepository getFollowers should get followers successfully: Interpolated SQL query 1`] = `
+exports[`UserRepository getFollows should get followers users successfully: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS followCreatedAt
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1
+      ORDER BY follows.created_at DESC
+    "
+`;
+
+exports[`UserRepository getFollows should get following users successfully 1`] = `
+[
+  {
+    "followCreatedAt": 2023-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "User One",
+    "username": "user1",
+  },
+  {
+    "followCreatedAt": 2023-01-02T00:00:00.000Z,
+    "id": 3,
+    "name": "User Two",
+    "username": "user2",
+  },
+]
+`;
+
+exports[`UserRepository getFollows should get following users successfully: Interpolated SQL query 1`] = `
 "
       SELECT id, username, name, follows.created_at AS followCreatedAt
       FROM follows
@@ -253,11 +280,61 @@ exports[`UserRepository getFollowers should get followers successfully: Interpol
     "
 `;
 
-exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users"`;
+exports[`UserRepository getList should get list of users that match "has" partially: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user%'"`;
+
+exports[`UserRepository getList should get list of users that match "has" partially: SQL query 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "user%",
+  ],
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" partially: Users list result 1`] = `
+[
+  {
+    "email": "user1@example.com",
+    "id": 1,
+    "username": "user1",
+  },
+  {
+    "email": "user2@example.com",
+    "id": 2,
+    "username": "user2",
+  },
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user1%'"`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: SQL query 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "user1%",
+  ],
+]
+`;
+
+exports[`UserRepository getList should get list of users that match "has" totally: Users list result 1`] = `
+[
+  {
+    "email": "user1@example.com",
+    "id": 1,
+    "username": "user1",
+  },
+]
+`;
+
+exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
 
 exports[`UserRepository getList should get list of users: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "%",
+  ],
 ]
 `;
 
@@ -276,12 +353,15 @@ exports[`UserRepository getList should get list of users: Users list result 1`] 
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users"`;
+exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
 
 exports[`UserRepository getList should return null when no users found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture" FROM users",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  [
+    "%",
+  ],
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Users list result 1`] = `null`;
+exports[`UserRepository getList should return null when no users found: Users list result 1`] = `[]`;

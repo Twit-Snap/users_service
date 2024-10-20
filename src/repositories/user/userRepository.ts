@@ -20,7 +20,6 @@ export class UserRepository implements IUserRepository {
     }
     return result.rows[0];
   }
-
   async findBySSOuid(uid: string): Promise<User | null> {
     const query = `SELECT ${this.selectUserFields} FROM users WHERE sso_uid = $1`;
     const result = await this.pool.query<User>(query, [uid]);
@@ -30,12 +29,10 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
 
-  async getList(): Promise<User[] | null> {
-    const query = `SELECT ${this.selectUserFields} FROM users`;
-    const result = await this.pool.query<User>(query);
-    if (result.rows.length === 0) {
-      return null;
-    }
+  async getList(has: string): Promise<User[]> {
+    const query =
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1';
+    const result = await this.pool.query<User>(query, [`${has}%`]);
     return result.rows;
   }
 
@@ -151,12 +148,15 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async getFollowers(userId: number): Promise<FollowersResponse[]> {
+  async getFollows(userId: number, byFollowers: boolean): Promise<FollowersResponse[]> {
+    const condition = byFollowers ? 'followedId = $1' : 'userId = $1';
+    const join = byFollowers ? 'userId' : 'followedId';
+
     const query = `
       SELECT id, username, name, follows.created_at AS followCreatedAt
       FROM follows
-      INNER JOIN users ON follows.followedId = users.id
-      WHERE userId = $1
+      INNER JOIN users ON follows.${join} = users.id
+      WHERE ${condition}
       ORDER BY follows.created_at DESC
     `;
 

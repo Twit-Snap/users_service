@@ -1,4 +1,5 @@
 import { FollowersResponse, FollowReturn } from 'follow';
+import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
 import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
@@ -15,8 +16,13 @@ export class UserService {
     return this.userRepository.findByEmailOrUsername(emailOrUsername);
   }
 
-  async getList(): Promise<User[] | null> {
-    return this.userRepository.getList();
+  async getList(jwtUser: JwtUserPayload, has: string): Promise<User[]> {
+    const data = await this.userRepository.getList(has);
+    const dataFollows = await Promise.all(
+      data.map(async (item) => await this.addFollowState(jwtUser, item))
+    );
+
+    return dataFollows;
   }
 
   async get(id: number): Promise<User | null> {
@@ -27,10 +33,13 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getPublicUser(username: string): Promise<PublicUser> {
+  async getUser(username: string, authUser: JwtUserPayload): Promise<User | PublicUser> {
     const user = await this.userRepository.getByUsername(username);
-    const validUser = this.validate_username(user, username);
-    return this.preparePublicUser(validUser);
+    let validUser = this.validate_username(user, username);
+
+    validUser = await this.addFollowState(authUser, validUser);
+
+    return authUser.username === username ? validUser : this.preparePublicUser(validUser);
   }
 
   async followUser(username: string, followedUsername: string): Promise<FollowReturn> {
@@ -62,11 +71,17 @@ export class UserService {
     await this.userRepository.deleteFollow(user.id, followedUser.id);
   }
 
-  async getAllFollowers(username: string): Promise<FollowersResponse[]> {
+  async getAllFollows(
+    authUser: JwtUserPayload,
+    username: string,
+    byFollowers: boolean
+  ): Promise<FollowersResponse[]> {
     let user = await this.userRepository.getByUsername(username);
     user = this.validate_username(user, username);
 
-    const followers = await this.userRepository.getFollowers(user.id);
+    await this.validateMutualFollow(authUser, user);
+
+    const followers = await this.userRepository.getFollows(user.id, byFollowers);
     return followers;
   }
 
@@ -84,21 +99,80 @@ export class UserService {
     return follow;
   }
 
+  private async addFollowState(authUser: JwtUserPayload, user: User) {
+    const following: boolean | undefined =
+      authUser.type === 'user'
+        ? (await this.userRepository.getFollow(authUser.userId, user.id))
+          ? true
+          : false
+        : undefined;
+    const followed: boolean | undefined =
+      authUser.type === 'user'
+        ? (await this.userRepository.getFollow(user.id, authUser.userId))
+          ? true
+          : false
+        : undefined;
+
+    return {
+      ...user,
+      following: following,
+      followed: followed,
+      followersCount: (await this.userRepository.getFollows(user.id, true)).length,
+      followingCount: (await this.userRepository.getFollows(user.id, false)).length
+    };
+  }
+
   private validate_username(user: User | null, username: string) {
     if (!user) throw new NotFoundError(username, '');
     else return user;
   }
 
   private preparePublicUser(user: User) {
-    const { username, name, birthdate, createdAt } = user;
-    const publicUser: PublicUser = {
+    const {
+      id,
       username,
       name,
       birthdate,
-      createdAt
+      createdAt,
+      following,
+      followersCount,
+      followingCount,
+      followed
+    } = user;
+    const publicUser: PublicUser = {
+      id,
+      username,
+      name,
+      birthdate,
+      createdAt,
+      following,
+      followersCount,
+      followingCount,
+      followed
     };
 
     return publicUser;
+  }
+
+  private async validateMutualFollow(authUser: JwtUserPayload, user: User) {
+    if (authUser.userId === user.id) {
+      return;
+    }
+
+    const following: boolean = (await this.userRepository.getFollow(authUser.userId, user.id))
+      ? true
+      : false;
+    const followed: boolean = (await this.userRepository.getFollow(user.id, authUser.userId))
+      ? true
+      : false;
+
+    if (!(following && followed)) {
+      throw new ValidationError(
+        'username',
+        `${authUser.username} and ${user.username} do not follow each other`,
+        'NOT MUTUAL FOLLOW'
+      );
+    }
   }
 
   private validateUsersToFollow(userId: number, followId: number) {
