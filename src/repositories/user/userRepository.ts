@@ -7,7 +7,7 @@ import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture"`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"`;
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
@@ -31,8 +31,8 @@ export class UserRepository implements IUserRepository {
 
   async getList(has: string): Promise<User[]> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1';
-    const result = await this.pool.query<User>(query, [`${has}%`]);
+      `SELECT ${this.selectUserFields} FROM users WHERE username ILIKE $1 OR name ILIKE $1`;
+    const result = await this.pool.query<User>(query, [`%${has}%`]);
     return result.rows;
   }
 

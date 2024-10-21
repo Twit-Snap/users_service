@@ -16,6 +16,7 @@ export interface User {
   followersCount?: number;
   followingCount?: number;
   followed?: boolean; // Auth user is followed by the requested user?
+  isPrivate: boolean;
 }
 
 export type UserWithPassword = User & { password: string };

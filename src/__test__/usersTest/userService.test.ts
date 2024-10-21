@@ -27,7 +27,8 @@ describe('UserService', () => {
     email: 'test@email.com',
     lastname: 'test',
     birthdate: new Date(),
-    createdAt: new Date()
+    createdAt: new Date(),
+    isPrivate: false
   };
 
   beforeEach(() => {
