@@ -137,7 +137,8 @@ export class UserService {
       following,
       followersCount,
       followingCount,
-      followed
+      followed,
+      profilePicture
     } = user;
     const publicUser: PublicUser = {
       id,
@@ -148,7 +149,8 @@ export class UserService {
       following,
       followersCount,
       followingCount,
-      followed
+      followed,
+      profilePicture
     };
 
     return publicUser;
