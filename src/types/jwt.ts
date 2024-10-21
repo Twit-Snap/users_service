@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 
 // Interface definition
@@ -21,3 +22,6 @@ export type JwtAdminPayload = {
   username: string;
   email: string;
 };
+
+export type UserRequest = Request & { user: JwtUserPayload };
+export type AdminRequest = Request & { user: JwtAdminPayload };

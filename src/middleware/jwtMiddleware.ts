@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { JWTService } from '../services/jwtService';
 import { AuthenticationError } from '../types/customErrors';
 

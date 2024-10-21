@@ -58,7 +58,7 @@ describe('UserRepository', () => {
       ];
       mockPool.query.mockResolvedValueOnce({ rows: mockUsers });
 
-      const has: string = ''
+      const has: string = '';
       const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
@@ -74,7 +74,7 @@ describe('UserRepository', () => {
       ];
       mockPool.query.mockResolvedValueOnce({ rows: [mockUsers[0]] });
 
-      const has: string = 'user1'
+      const has: string = 'user1';
       const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
@@ -91,7 +91,7 @@ describe('UserRepository', () => {
       ];
       mockPool.query.mockResolvedValueOnce({ rows: [mockUsers[0], mockUsers[1]] });
 
-      const has: string = 'user'
+      const has: string = 'user';
       const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
@@ -103,7 +103,7 @@ describe('UserRepository', () => {
     it('should return null when no users found', async () => {
       mockPool.query.mockResolvedValueOnce({ rows: [] });
 
-      const has: string = ''
+      const has: string = '';
       const result = await userRepository.getList(has);
       expect(result).toMatchSnapshot('Users list result');
       expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');

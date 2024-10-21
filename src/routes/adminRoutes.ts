@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/users', async (req, res, next) => {
   try {
-    const has: string = req.query.has ? req.query.has.toString() : ''
+    const has: string = req.query.has ? req.query.has.toString() : '';
     const user = await new AdminController().getUserList(has);
     res.send(user);
   } catch (error) {
