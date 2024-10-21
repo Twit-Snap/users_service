@@ -1,20 +1,28 @@
 import { FollowersResponse, FollowReturn } from 'follow';
 import { Pool } from 'pg';
 import { IUserRepository, User, UserWithPassword } from 'user';
-import { UserRegisterDto } from 'userAuth';
+import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"`;
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
   }
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
-    const query =
-      'SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = $1 OR username = $1';
+    const query = `SELECT ${this.selectUserFields}, password FROM users WHERE email = $1 OR username = $1`;
     const result = await this.pool.query<UserWithPassword>(query, [emailOrUsername]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return result.rows[0];
+  }
+  async findBySSOuid(uid: string): Promise<User | null> {
+    const query = `SELECT ${this.selectUserFields} FROM users WHERE sso_uid = $1`;
+    const result = await this.pool.query<User>(query, [uid]);
     if (result.rows.length === 0) {
       return null;
     }
@@ -23,14 +31,13 @@ export class UserRepository implements IUserRepository {
 
   async getList(has: string): Promise<User[]> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1';
+      `SELECT ${this.selectUserFields} FROM users WHERE username ILIKE $1 OR name ILIKE $1`;
     const result = await this.pool.query<User>(query, [`%${has}%`]);
     return result.rows;
   }
 
   async get(id: number): Promise<User | null> {
-    const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = $1';
+    const query = `SELECT ${this.selectUserFields} FROM users WHERE id = $1`;
     const result = await this.pool.query<User>(query, [id]);
     if (result.rows.length === 0) {
       return null;
@@ -38,14 +45,15 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
 
-  async create(userData: UserRegisterDto): Promise<User> {
-    const { username, email, name, lastname, password } = userData;
+  async create(userData: UserRegisterRepository): Promise<User> {
+    const { username, email, name, lastname, password, profilePicture, ssoProviderId, ssoUid } =
+      userData;
     const birthdate = new Date(userData.birthdate).toISOString();
 
     const query = `
-      INSERT INTO users (username, email, name, lastname, birthdate, password)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING ${this.selectUserFields}
     `;
 
     try {
@@ -55,7 +63,10 @@ export class UserRepository implements IUserRepository {
         name,
         lastname,
         birthdate,
-        password
+        password,
+        profilePicture,
+        ssoUid,
+        ssoProviderId
       ]);
       return result.rows[0];
     } catch (error) {
@@ -67,6 +78,8 @@ export class UserRepository implements IUserRepository {
           throw new EntityAlreadyExistsError('Username', 'Username is already in use');
         } else if (errorAux.constraint?.includes('email')) {
           throw new EntityAlreadyExistsError('Email', 'Email is already in use');
+        } else if (errorAux.constraint?.includes('sso_uid')) {
+          throw new EntityAlreadyExistsError('SSOUid', 'SSO UID is already in use');
         }
       }
       // If it's not a unique constraint violation, re-throw the original error
@@ -75,8 +88,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async getByUsername(username: string) {
-    const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = $1';
+    const query = `SELECT ${this.selectUserFields} FROM users WHERE username = $1`;
     const result = await this.pool.query<User>(query, [username]);
     if (result.rows.length === 0) {
       return null;

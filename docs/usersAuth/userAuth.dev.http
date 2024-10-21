@@ -13,9 +13,9 @@ curl -X POST {{url}}/auth/login \
 curl -X POST http://localhost:3000/auth/register \
     -H 'Content-Type: application/json' \
     -d '{
-        "email": "luis4@gmail.com",
-        "username": "luis4",
-        "password": "isdabnu783",
+        "email": "luis@gmail.com",
+        "username": "luis",
+        "password": "luis123",
         "name": "name test",
         "lastname": "lastname test",
         "birthdate": "1990-01-01"

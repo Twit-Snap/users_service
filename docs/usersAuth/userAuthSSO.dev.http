@@ -1,0 +1,22 @@
+@url = http://localhost:3000
+@googleToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjcxOGY0ZGY5MmFkMTc1ZjZhMDMwN2FiNjVkOGY2N2YwNTRmYTFlNWYiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiTHVpcyBFc2NhbGFudGUiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jTFFTMDhCZXRRM1dNMW9MY3FTSWhSNUFUd09wdDdGSUVFN3ZaRXN6V3dFQUw1ZFZyOD1zOTYtYyIsImlzcyI6Imh0dHBzOi8vc2VjdXJldG9rZW4uZ29vZ2xlLmNvbS90d2l0LXNuYXAiLCJhdWQiOiJ0d2l0LXNuYXAiLCJhdXRoX3RpbWUiOjE3Mjk0NTE1MDcsInVzZXJfaWQiOiJsV1N2akY1cUdwZUVNSWpxODEwTTIxZ0RWMEgzIiwic3ViIjoibFdTdmpGNXFHcGVFTUlqcTgxME0yMWdEVjBIMyIsImlhdCI6MTcyOTQ1MTUwNywiZXhwIjoxNzI5NDU1MTA3LCJlbWFpbCI6Imxlc2NhbGFudGVAZmkudWJhLmFyIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZ29vZ2xlLmNvbSI6WyIxMDI2MDQyNTkxNjI2ODMwNDcxODUiXSwiZW1haWwiOlsibGVzY2FsYW50ZUBmaS51YmEuYXIiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.9CkjjYA1TMiH_s4LTNcRFFg6WW2FiAPyovnm_MquWYu4ZN5zATpcHBE9VzUPWLrDKtnqy4PBt2Y-1AfcRtlr3887IETCyKLQHfLBBI5gZhweB1lu8Wpteg7IC_-rkF_Q1VE5Hj6rH8WR6bXmBL6Fgz3BBbTJJ9SItKUqeAsf_JdG_c7pl_1jF9UJgNQlxKyxAxMFPIo3WQFGxjnXYj7-E--JZLm4PUlQP1Mm16PYsYF3jHp0BDp7VDIjMwidrV5y0STFnlsp706kB4TZwO85Yoon4JMG9CZOY9cjSa_N7ZOgAaNLtRfmRWRX9vF34ug4f5jy3ICM2C83l169YeyR6Q"
+
+### login
+curl -X POST {{url}}/auth/sso/login \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "token": {{googleToken}},
+        "uid": "lWSvjF5qGpeEMIjq810M21gDV0H3"
+    }'
+
+
+### register
+curl -X POST http://localhost:3000/auth/sso/register \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "token": {{googleToken}},
+        "uid": "lWSvjF5qGpeEMIjq810M21gDV0H3",
+        "providerId": "google.com",
+        "username": "lescalante",
+        "birthdate": "1990-01-01"
+    }'

@@ -1,5 +1,5 @@
 import { FollowersResponse, FollowReturn } from 'follow';
-import { UserRegisterDto } from 'userAuth';
+import { UserRegisterRepository } from 'userAuth';
 
 export interface User {
   id: number;
@@ -9,6 +9,9 @@ export interface User {
   lastname: string;
   birthdate: Date;
   createdAt: Date;
+  profilePicture?: string;
+  ssoUid?: string;
+  providerId?: string;
   following?: boolean; // Auth user is following the requested user?
   followersCount?: number;
   followingCount?: number;
@@ -24,8 +27,9 @@ export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
   getList(has: string): Promise<User[]>;
   get(id: number): Promise<User | null>;
-  create(userData: UserRegisterDto): Promise<User>;
+  create(userData: UserRegisterRepository): Promise<User>;
   getByUsername(username: string): Promise<User | null>;
+  findBySSOuid(uid: string): Promise<User | null>;
   createFollow(userId: number, followId: number): Promise<FollowReturn>;
   deleteFollow(userId: number, followId: number): Promise<void>;
   getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;

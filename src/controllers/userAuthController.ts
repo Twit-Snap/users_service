@@ -13,6 +13,13 @@ export class UserAuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { emailOrUsername, password } = req.body;
+      if (!emailOrUsername || !password) {
+        throw new ValidationError(
+          'emailOrUsername',
+          'Invalid email or username',
+          'INVALID_EMAIL_OR_USERNAME'
+        );
+      }
       const user = await this.userAuthService.login(emailOrUsername, password);
       res.send(user);
     } catch (error) {

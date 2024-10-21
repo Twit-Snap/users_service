@@ -1,9 +1,9 @@
 import { FollowersResponse, FollowReturn } from 'follow';
 import { JwtUserPayload } from 'jwt';
-import { UserRegisterDto } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
 import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
+import { UserRegisterRepository } from '../types/userAuth';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -29,7 +29,7 @@ export class UserService {
     return this.userRepository.get(id);
   }
 
-  async create(userData: UserRegisterDto): Promise<User> {
+  async create(userData: UserRegisterRepository): Promise<User> {
     return this.userRepository.create(userData);
   }
 
