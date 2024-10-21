@@ -19,7 +19,7 @@ export class UserAuthService implements IUserAuthService {
     // Find user by email or username
     const user = await this.userRepository.findByEmailOrUsername(emailOrUsername);
 
-    if (!user) {
+    if (!user || !user.password) {
       throw new AuthenticationError();
     }
 
