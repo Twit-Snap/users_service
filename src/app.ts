@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
@@ -8,8 +9,6 @@ import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 var admin = require('firebase-admin');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-var serviceAccount = require('../serviceAccountKey.json');
 
 // Función para inicializar el entorno
 function initializeEnvironment() {
@@ -61,8 +60,18 @@ async function testDatabaseConnection(retries = 5, delay = 5000) {
 }
 
 function initializeFirebase() {
+  // Decodificar y parsear las credenciales
+  let credentials;
+  if (process.env.NODE_ENV === 'production') {
+    credentials = JSON.parse(
+      Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON!, 'base64').toString()
+    );
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    credentials = require('../serviceAccountKey.json');
+  }
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(credentials)
   });
   console.log('Firebase initialized');
 }
