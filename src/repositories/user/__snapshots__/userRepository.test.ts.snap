@@ -119,11 +119,11 @@ exports[`UserRepository deleteFollow should delete a follow successfully: Interp
     "
 `;
 
-exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
+exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
 
 exports[`UserRepository findByEmailOrUsername should find user by email or username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = $1 OR username = $1",
   [
     "testuser",
   ],
@@ -138,11 +138,11 @@ exports[`UserRepository findByEmailOrUsername should find user by email or usern
 }
 `;
 
-exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
+exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = $1 OR username = $1",
   [
     "nonexistent",
   ],
@@ -151,11 +151,11 @@ exports[`UserRepository findByEmailOrUsername should return null when user not f
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = 1"`;
+exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = 1"`;
 
 exports[`UserRepository get should get user by id: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = $1",
   [
     1,
   ],
@@ -170,11 +170,11 @@ exports[`UserRepository get should get user by id: User result 1`] = `
 }
 `;
 
-exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = 999"`;
+exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = 999"`;
 
 exports[`UserRepository get should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = $1",
   [
     999,
   ],
@@ -183,11 +183,11 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'testuser'"`;
+exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = $1",
   [
     "testuser",
   ],
@@ -201,11 +201,11 @@ exports[`UserRepository getByUsername should get user by username: User result 1
 }
 `;
 
-exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = 'nonexistent'"`;
+exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = 'nonexistent'"`;
 
 exports[`UserRepository getByUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = $1",
   [
     "nonexistent",
   ],
@@ -292,13 +292,13 @@ exports[`UserRepository getFollows should get following users successfully: Inte
     "
 `;
 
-exports[`UserRepository getList should get list of users that match "has" partially: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user%'"`;
+exports[`UserRepository getList should get list of users that match "has" partially: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE '%user%' OR name ILIKE '%user%'"`;
 
 exports[`UserRepository getList should get list of users that match "has" partially: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
   [
-    "user%",
+    "%user%",
   ],
 ]
 `;
@@ -318,13 +318,13 @@ exports[`UserRepository getList should get list of users that match "has" partia
 ]
 `;
 
-exports[`UserRepository getList should get list of users that match "has" totally: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE 'user1%'"`;
+exports[`UserRepository getList should get list of users that match "has" totally: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE '%user1%' OR name ILIKE '%user1%'"`;
 
 exports[`UserRepository getList should get list of users that match "has" totally: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
   [
-    "user1%",
+    "%user1%",
   ],
 ]
 `;
@@ -339,13 +339,13 @@ exports[`UserRepository getList should get list of users that match "has" totall
 ]
 `;
 
-exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
+exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE '%%' OR name ILIKE '%%'"`;
 
 exports[`UserRepository getList should get list of users: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
   [
-    "%",
+    "%%",
   ],
 ]
 `;
@@ -365,13 +365,13 @@ exports[`UserRepository getList should get list of users: Users list result 1`] 
 ]
 `;
 
-exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE '%'"`;
+exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE '%%' OR name ILIKE '%%'"`;
 
 exports[`UserRepository getList should return null when no users found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
   [
-    "%",
+    "%%",
   ],
 ]
 `;

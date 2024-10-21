@@ -13,7 +13,7 @@ export class UserRepository implements IUserRepository {
   }
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt" FROM users WHERE email = $1 OR username = $1';
+      'SELECT id, username, email, name, lastname, birthdate, password, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE email = $1 OR username = $1';
     const result = await this.pool.query<UserWithPassword>(query, [emailOrUsername]);
     if (result.rows.length === 0) {
       return null;
@@ -23,14 +23,14 @@ export class UserRepository implements IUserRepository {
 
   async getList(has: string): Promise<User[]> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username LIKE $1';
-    const result = await this.pool.query<User>(query, [`${has}%`]);
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1';
+    const result = await this.pool.query<User>(query, [`%${has}%`]);
     return result.rows;
   }
 
   async get(id: number): Promise<User | null> {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE id = $1';
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE id = $1';
     const result = await this.pool.query<User>(query, [id]);
     if (result.rows.length === 0) {
       return null;
@@ -76,7 +76,7 @@ export class UserRepository implements IUserRepository {
 
   async getByUsername(username: string) {
     const query =
-      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt" FROM users WHERE username = $1';
+      'SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", is_private AS "isPrivate" FROM users WHERE username = $1';
     const result = await this.pool.query<User>(query, [username]);
     if (result.rows.length === 0) {
       return null;
