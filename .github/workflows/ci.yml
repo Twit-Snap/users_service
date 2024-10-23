@@ -32,7 +32,7 @@ jobs:
       run: npm run lint
 
     - name: Run tests
-      run: npm run test
+      run: npm run test -- --ci
       env:
         JWT_SECRET_KEY: mySup3rStr0ngDevSecretKey
         TWITS_SERVICE_URL: http://localhost:8080
