@@ -62,6 +62,7 @@ export class UserAuthSSOService {
   async register(userSSODto: UserSSORegisterDto): Promise<UserWithToken> {
     const { uid, providerId, username, birthdate } = userSSODto;
     let decodedToken: DecodedIdToken;
+    console.log('userSSODto:', userSSODto);
     try {
       // Verify the Firebase ID token
       decodedToken = await auth().verifyIdToken(userSSODto.token);
