@@ -4,8 +4,10 @@ import express from 'express';
 import path from 'path';
 import { errorHandler } from './middleware/errorHandler';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
+import { AdminRepository } from './repositories/adminRepository';
 import { DatabasePool } from './repositories/db';
 import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
+import { AdminAuthService } from './services/adminAuthService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 var admin = require('firebase-admin');
@@ -85,6 +87,14 @@ async function startServer() {
 
   // init firebase project
   initializeFirebase();
+
+  if (!(await new AdminRepository().findByEmailOrUsername('admin'))) {
+    await new AdminAuthService().createAdmin({
+      username: 'admin',
+      email: 'admin@backoffice.com',
+      password: '123'
+    });
+  }
 
   // Middleware
   app.use(cors());
