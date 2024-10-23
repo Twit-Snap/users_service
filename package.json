@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node dist/app.js",
     "dev": "docker-compose up -d db && NODE_ENV=development nodemon src/app.ts",
     "build": "tsc",
-    "lint": "prettier --write \"src/**/*.ts\" && eslint .",
+    "lint": "prettier --write \"src/**/*.ts\" && eslint src/",
     "test": "jest --maxWorkers=1 --coverage",
     "prepare": "husky"
   },
