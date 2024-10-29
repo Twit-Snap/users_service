@@ -15,7 +15,7 @@ describe('AdminController', () => {
     const users = [{ username: 'admin1', email: 'admin1@example.com' }];
     (AdminService.prototype.getUserList as jest.Mock).mockResolvedValue(users);
     const has: string = '';
-    const response = await controller.getUserList(has);
+    const response = await controller.getUserList({ has: has });
 
     expect(response).toEqual({ data: users });
   });

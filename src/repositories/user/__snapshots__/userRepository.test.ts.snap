@@ -226,142 +226,483 @@ exports[`UserRepository getFollow should return undefined when follow does not e
     "
 `;
 
-exports[`UserRepository getFollows should get followers users successfully 1`] = `
-[
-  {
-    "followCreatedAt": 2023-01-01T00:00:00.000Z,
-    "id": 2,
-    "name": "User One",
-    "username": "user1",
-  },
-  {
-    "followCreatedAt": 2023-01-02T00:00:00.000Z,
-    "id": 3,
-    "name": "User Two",
-    "username": "user2",
-  },
-]
-`;
-
-exports[`UserRepository getFollows should get followers users successfully: Interpolated SQL query 1`] = `
+exports[`UserRepository getFollows gets followers with all params: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS followCreatedAt
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
-      WHERE followedId = 1
+      WHERE followedId = 1 AND follows.created_at < '2024-01-01' AND (username ILIKE '%test%' OR name ILIKE '%test%')
       ORDER BY follows.created_at DESC
+       LIMIT 1
     "
 `;
 
-exports[`UserRepository getFollows should get following users successfully 1`] = `
+exports[`UserRepository getFollows gets followers with all params: query params 1`] = `
+[
+  1,
+  "%test%",
+  "2024-01-01",
+  1,
+]
+`;
+
+exports[`UserRepository getFollows gets followers with all params: result 1`] = `
 [
   {
-    "followCreatedAt": 2023-01-01T00:00:00.000Z,
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
     "id": 2,
-    "name": "User One",
-    "username": "user1",
-  },
-  {
-    "followCreatedAt": 2023-01-02T00:00:00.000Z,
-    "id": 3,
-    "name": "User Two",
-    "username": "user2",
+    "name": "Test User 1",
+    "username": "test_user1",
   },
 ]
 `;
 
-exports[`UserRepository getFollows should get following users successfully: Interpolated SQL query 1`] = `
+exports[`UserRepository getFollows gets followers with all params: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS followCreatedAt
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND follows.created_at < $3 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+       LIMIT $4
+    "
+`;
+
+exports[`UserRepository getFollows gets followers with createdAt param: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1 AND follows.created_at < '2024-01-01' AND (username ILIKE '%test%' OR name ILIKE '%test%')
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows gets followers with createdAt param: query params 1`] = `
+[
+  1,
+  "%test%",
+  "2024-01-01",
+]
+`;
+
+exports[`UserRepository getFollows gets followers with createdAt param: result 1`] = `
+[
+  {
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "Test User 1",
+    "username": "test_user1",
+  },
+]
+`;
+
+exports[`UserRepository getFollows gets followers with createdAt param: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND follows.created_at < $3 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows gets followers with limit param: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
+      ORDER BY follows.created_at DESC
+       LIMIT 1
+    "
+`;
+
+exports[`UserRepository getFollows gets followers with limit param: query params 1`] = `
+[
+  1,
+  "%test%",
+  1,
+]
+`;
+
+exports[`UserRepository getFollows gets followers with limit param: result 1`] = `
+[
+  {
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "Test User 1",
+    "username": "test_user1",
+  },
+]
+`;
+
+exports[`UserRepository getFollows gets followers with limit param: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+       LIMIT $3
+    "
+`;
+
+exports[`UserRepository getFollows gets followers without optional params: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows gets followers without optional params: query params 1`] = `
+[
+  1,
+  "%test%",
+]
+`;
+
+exports[`UserRepository getFollows gets followers without optional params: result 1`] = `
+[
+  {
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 2,
+    "name": "Test User 1",
+    "username": "test_user1",
+  },
+  {
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 3,
+    "name": "Test User 2",
+    "username": "test_user2",
+  },
+]
+`;
+
+exports[`UserRepository getFollows gets followers without optional params: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows gets following without optional params: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
-      WHERE userId = 1
+      WHERE userId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
       ORDER BY follows.created_at DESC
+      
     "
 `;
 
-exports[`UserRepository getList should get list of users that match "has" partially: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE '%user%' OR name ILIKE '%user%'"`;
-
-exports[`UserRepository getList should get list of users that match "has" partially: SQL query 1`] = `
+exports[`UserRepository getFollows gets following without optional params: query params 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
-  [
-    "%user%",
-  ],
+  1,
+  "%test%",
 ]
 `;
 
-exports[`UserRepository getList should get list of users that match "has" partially: Users list result 1`] = `
+exports[`UserRepository getFollows gets following without optional params: result 1`] = `
 [
   {
-    "email": "user1@example.com",
-    "id": 1,
-    "username": "user1",
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 4,
+    "name": "Test User 3",
+    "username": "test_user3",
   },
   {
-    "email": "user2@example.com",
+    "followCreatedAt": 2024-01-01T00:00:00.000Z,
+    "id": 5,
+    "name": "Test User 4",
+    "username": "test_user4",
+  },
+]
+`;
+
+exports[`UserRepository getFollows gets following without optional params: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.followedId = users.id
+      WHERE userId = $1 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows handles database error: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows handles database error: query params 1`] = `
+[
+  1,
+  "%test%",
+]
+`;
+
+exports[`UserRepository getFollows handles database error: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows handles empty result: Interpolated SQL query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = 1 AND (username ILIKE '%nonexistent%' OR name ILIKE '%nonexistent%')
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getFollows handles empty result: query params 1`] = `
+[
+  1,
+  "%nonexistent%",
+]
+`;
+
+exports[`UserRepository getFollows handles empty result: result 1`] = `[]`;
+
+exports[`UserRepository getFollows handles empty result: sql query 1`] = `
+"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      FROM follows
+      INNER JOIN users ON follows.userId = users.id
+      WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      
+    "
+`;
+
+exports[`UserRepository getList gets users with all params: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%test%' OR name ILIKE '%test%') AND created_at < '2024-01-01'
+    ORDER BY created_at DESC
+     LIMIT 1"
+`;
+
+exports[`UserRepository getList gets users with all params: query params 1`] = `
+[
+  "%test%",
+  "2024-01-01",
+  1,
+]
+`;
+
+exports[`UserRepository getList gets users with all params: result 1`] = `
+[
+  {
+    "created_at": 2024-01-01T00:00:00.000Z,
+    "id": 1,
+    "name": "Test User",
+    "updated_at": 2024-01-01T00:00:00.000Z,
+    "username": "test_user",
+  },
+]
+`;
+
+exports[`UserRepository getList gets users with all params: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1) AND created_at < $2
+    ORDER BY created_at DESC
+     LIMIT $3"
+`;
+
+exports[`UserRepository getList gets users with createdAt param: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%test%' OR name ILIKE '%test%') AND created_at < '2024-01-01'
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList gets users with createdAt param: query params 1`] = `
+[
+  "%test%",
+  "2024-01-01",
+]
+`;
+
+exports[`UserRepository getList gets users with createdAt param: result 1`] = `
+[
+  {
+    "created_at": 2024-01-01T00:00:00.000Z,
+    "id": 1,
+    "name": "Test User",
+    "updated_at": 2024-01-01T00:00:00.000Z,
+    "username": "test_user",
+  },
+]
+`;
+
+exports[`UserRepository getList gets users with createdAt param: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1) AND created_at < $2
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList gets users with limit param: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%test%' OR name ILIKE '%test%')
+    ORDER BY created_at DESC
+     LIMIT 1"
+`;
+
+exports[`UserRepository getList gets users with limit param: query params 1`] = `
+[
+  "%test%",
+  1,
+]
+`;
+
+exports[`UserRepository getList gets users with limit param: result 1`] = `
+[
+  {
+    "created_at": 2024-01-01T00:00:00.000Z,
+    "id": 1,
+    "name": "Test User",
+    "updated_at": 2024-01-01T00:00:00.000Z,
+    "username": "test_user",
+  },
+]
+`;
+
+exports[`UserRepository getList gets users with limit param: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1)
+    ORDER BY created_at DESC
+     LIMIT $2"
+`;
+
+exports[`UserRepository getList gets users without optional params: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%test%' OR name ILIKE '%test%')
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList gets users without optional params: query params 1`] = `
+[
+  "%test%",
+]
+`;
+
+exports[`UserRepository getList gets users without optional params: result 1`] = `
+[
+  {
+    "created_at": 2024-01-01T00:00:00.000Z,
+    "id": 1,
+    "name": "Test User",
+    "updated_at": 2024-01-01T00:00:00.000Z,
+    "username": "test_user",
+  },
+  {
+    "created_at": 2024-01-01T00:00:00.000Z,
     "id": 2,
-    "username": "user2",
+    "name": "Test User",
+    "updated_at": 2024-01-01T00:00:00.000Z,
+    "username": "test_user2",
   },
 ]
 `;
 
-exports[`UserRepository getList should get list of users that match "has" totally: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE '%user1%' OR name ILIKE '%user1%'"`;
+exports[`UserRepository getList gets users without optional params: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1)
+    ORDER BY created_at DESC
+    "
+`;
 
-exports[`UserRepository getList should get list of users that match "has" totally: SQL query 1`] = `
+exports[`UserRepository getList handles database error: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%test%' OR name ILIKE '%test%')
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList handles database error: query params 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
-  [
-    "%user1%",
-  ],
+  "%test%",
 ]
 `;
 
-exports[`UserRepository getList should get list of users that match "has" totally: Users list result 1`] = `
+exports[`UserRepository getList handles database error: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1)
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList handles empty result: Interpolated SQL query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE '%nonexistent%' OR name ILIKE '%nonexistent%')
+    ORDER BY created_at DESC
+    "
+`;
+
+exports[`UserRepository getList handles empty result: query params 1`] = `
 [
-  {
-    "email": "user1@example.com",
-    "id": 1,
-    "username": "user1",
-  },
+  "%nonexistent%",
 ]
 `;
 
-exports[`UserRepository getList should get list of users: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE '%%' OR name ILIKE '%%'"`;
+exports[`UserRepository getList handles empty result: result 1`] = `[]`;
 
-exports[`UserRepository getList should get list of users: SQL query 1`] = `
-[
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
-  [
-    "%%",
-  ],
-]
+exports[`UserRepository getList handles empty result: sql query 1`] = `
+"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1)
+    ORDER BY created_at DESC
+    "
 `;
-
-exports[`UserRepository getList should get list of users: Users list result 1`] = `
-[
-  {
-    "email": "user1@example.com",
-    "id": 1,
-    "username": "user1",
-  },
-  {
-    "email": "user2@example.com",
-    "id": 2,
-    "username": "user2",
-  },
-]
-`;
-
-exports[`UserRepository getList should return null when no users found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE '%%' OR name ILIKE '%%'"`;
-
-exports[`UserRepository getList should return null when no users found: SQL query 1`] = `
-[
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate" FROM users WHERE username ILIKE $1 OR name ILIKE $1",
-  [
-    "%%",
-  ],
-]
-`;
-
-exports[`UserRepository getList should return null when no users found: Users list result 1`] = `[]`;

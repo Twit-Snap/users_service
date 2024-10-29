@@ -321,7 +321,10 @@ describe('UserService', () => {
 
       service = new UserService(dbServiceMock);
 
-      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false);
+      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
+        byFollowers: false,
+        has: ''
+      });
 
       expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
@@ -342,7 +345,10 @@ describe('UserService', () => {
 
       service = new UserService(dbServiceMock);
 
-      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', true);
+      const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
+        byFollowers: true,
+        has: ''
+      });
 
       expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
@@ -364,7 +370,10 @@ describe('UserService', () => {
       service = new UserService(dbServiceMock);
 
       await expect(
-        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false)
+        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
+          byFollowers: false,
+          has: ''
+        })
       ).rejects.toThrow(NotFoundError);
     });
 
@@ -382,7 +391,10 @@ describe('UserService', () => {
       service = new UserService(dbServiceMock);
 
       await expect(
-        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false)
+        service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
+          byFollowers: false,
+          has: ''
+        })
       ).rejects.toThrow(ValidationError);
     });
 
@@ -400,7 +412,10 @@ describe('UserService', () => {
       } as unknown as jest.Mocked<UserRepository>;
 
       service = new UserService(dbServiceMock);
-      const response = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', false);
+      const response = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
+        byFollowers: false,
+        has: ''
+      });
 
       expect(response).toEqual([
         { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
