@@ -12,8 +12,17 @@ router.get('/', async (req, res, next) => {
     const params = {
       has: req.query.has ? req.query.has.toString() : '',
       createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined,
-      limit: req.query.limit ? +req.query.limit : undefined
+      limit: req.query.limit ? +req.query.limit : undefined,
+      amount: req.query.amount?.toString() === 'true',
+      offset: req.query.offset ? +req.query.offset : 0,
+      equalDate: req.query.equalDate === 'true'
     };
+
+    if (params.amount) {
+      const amount = await new UserService().getAmount(params);
+      res.send(amount);
+      return;
+    }
 
     const users: User[] = await new UserService().getList(jwtUser, params);
     res.send(users);

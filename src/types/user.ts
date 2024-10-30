@@ -34,10 +34,14 @@ export interface IUserRepository {
   deleteFollow(userId: number, followId: number): Promise<void>;
   getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
   getFollows(userId: number, params: GetAllFollowsParams): Promise<FollowersResponse[]>;
+  getAmount(params: GetUsersListParams): Promise<number>;
 }
 
 export type GetUsersListParams = {
   has: string;
   createdAt?: string;
   limit?: number;
+  amount?: boolean;
+  equalDate?: boolean;
+  offset: number;
 };

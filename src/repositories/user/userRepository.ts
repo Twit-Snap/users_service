@@ -29,6 +29,20 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
 
+  async getAmount(params: GetUsersListParams): Promise<number> {
+    var offset = '';
+    var queryParams: (number | string)[] = [];
+
+    if (params.createdAt) {
+      queryParams.push(params.createdAt);
+      offset = `WHERE created_at ${params.equalDate ? '<=' : '<'} $${queryParams.length}::timestamptz ${params.equalDate ? ` + interval '0.999999 seconds'` : ''}`;
+    }
+
+    const query = `SELECT COUNT(*) FROM users ${offset}`;
+    const result = await this.pool.query(query, queryParams);
+    return result.rows[0];
+  }
+
   async getList(params: GetUsersListParams): Promise<User[]> {
     var queryParams: (string | number)[] = [`%${params.has}%`];
     var offset = '';
@@ -36,12 +50,13 @@ export class UserRepository implements IUserRepository {
 
     if (params.createdAt) {
       queryParams.push(params.createdAt);
-      offset = ` AND created_at < $${queryParams.length}`;
+      offset = ` AND created_at ${params.equalDate ? '<=' : '<'} $${queryParams.length}::timestamptz ${params.equalDate ? ` + interval '0.999999 seconds'` : ''}`;
     }
 
     if (params.limit) {
       queryParams.push(params.limit);
-      limit = ` LIMIT $${queryParams.length}`;
+      queryParams.push(params.offset);
+      limit = ` LIMIT $${queryParams.length - 1} OFFSET $${queryParams.length}`;
     }
 
     const query = `

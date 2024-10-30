@@ -2,7 +2,13 @@ import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import { GetUsersListParams, IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
+import {
+  GetUsersListParams,
+  IUserRepository,
+  PublicUser,
+  User,
+  UserWithPassword
+} from '../types/user';
 import { UserRegisterRepository } from '../types/userAuth';
 
 export class UserService {
@@ -14,6 +20,12 @@ export class UserService {
 
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
     return this.userRepository.findByEmailOrUsername(emailOrUsername);
+  }
+
+  async getAmount(params: GetUsersListParams): Promise<number> {
+    const data = await this.userRepository.getAmount(params);
+
+    return data;
   }
 
   async getList(jwtUser: JwtUserPayload, params: GetUsersListParams): Promise<User[]> {
@@ -117,8 +129,20 @@ export class UserService {
       ...user,
       following: following,
       followed: followed,
-      followersCount: (await this.userRepository.getFollows(user.id, {byFollowers: true, has: '', createdAt: undefined})).length,
-      followingCount: (await this.userRepository.getFollows(user.id, {byFollowers: false, has: '', createdAt: undefined})).length
+      followersCount: (
+        await this.userRepository.getFollows(user.id, {
+          byFollowers: true,
+          has: '',
+          createdAt: undefined
+        })
+      ).length,
+      followingCount: (
+        await this.userRepository.getFollows(user.id, {
+          byFollowers: false,
+          has: '',
+          createdAt: undefined
+        })
+      ).length
     };
   }
 
