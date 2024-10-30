@@ -68,7 +68,8 @@ describe('UserRepository', () => {
       });
 
       const params: GetUsersListParams = {
-        has: 'test'
+        has: 'test',
+        offset: 0
       };
 
       const result = await userRepository.getList(params);
@@ -88,6 +89,7 @@ describe('UserRepository', () => {
 
       const params: GetUsersListParams = {
         has: 'test',
+        offset: 0,
         createdAt: '2024-01-01'
       };
 
@@ -108,6 +110,7 @@ describe('UserRepository', () => {
 
       const params: GetUsersListParams = {
         has: 'test',
+        offset: 0,
         limit: 1
       };
 
@@ -128,6 +131,7 @@ describe('UserRepository', () => {
 
       const params: GetUsersListParams = {
         has: 'test',
+        offset: 0,
         createdAt: '2024-01-01',
         limit: 1
       };
@@ -146,7 +150,8 @@ describe('UserRepository', () => {
       mockPool.query.mockResolvedValueOnce({ rows: [] });
 
       const params: GetUsersListParams = {
-        has: 'nonexistent'
+        has: 'nonexistent',
+        offset: 0
       };
 
       const result = await userRepository.getList(params);
@@ -164,7 +169,8 @@ describe('UserRepository', () => {
       mockPool.query.mockRejectedValueOnce(dbError);
 
       const params: GetUsersListParams = {
-        has: 'test'
+        has: 'test',
+        offset: 0
       };
 
       await expect(userRepository.getList(params)).rejects.toThrow(dbError);

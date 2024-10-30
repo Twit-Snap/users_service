@@ -51,7 +51,7 @@ describe('AdminService', () => {
   describe('getUserList', () => {
     it('should return a list of users', async () => {
       const has: string = '';
-      const result = await service.getUserList({ has: has });
+      const result = await service.getUserList({ has: has, offset: 0 });
       expect(result).toEqual(mockUsers);
     });
   });
