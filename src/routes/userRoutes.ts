@@ -1,5 +1,5 @@
 import express from 'express';
-import { User } from 'user';
+import { ModifiableUser, User } from 'user';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 import { UserRequest } from '../types/jwt';
@@ -112,6 +112,26 @@ router.get('/:username/followers/:followedUsername', async (req, res, next) => {
     controller.validateUsername(followedUsername);
 
     const data = await new UserService().getFollow(username, followedUsername);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:username', async (req, res, next) => {
+  try {
+    const newValues: ModifiableUser = req.body;
+    const username = req.params.username;
+
+    const jwtUser = (req as any).user;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.canUserChangeBlock(jwtUser, newValues);
+    controller.newValuesHasExtraKeys(newValues);
+
+    const data = await new UserService().modifyUser(username, newValues);
     res.status(200).json(data);
   } catch (error) {
     next(error);

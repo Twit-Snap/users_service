@@ -1,6 +1,6 @@
 import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
-import { GetUsersListParams, IUserRepository, User, UserWithPassword } from 'user';
+import { GetUsersListParams, IUserRepository, ModifiableUser, User, UserWithPassword } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { DatabasePool } from '../db';
@@ -214,6 +214,44 @@ export class UserRepository implements IUserRepository {
       return result.rows;
     } catch (error) {
       console.error(error);
+      throw error;
+    }
+  }
+
+  async modifyUser(userId: number, newValues: ModifiableUser): Promise<User> {
+    let queryParams: (string | number | boolean)[] = [userId];
+
+    const setVars: string = Object.entries(newValues)
+      .map(([key, val]) => {
+        queryParams.push(val);
+        return `${key} = $${queryParams.length}`;
+      })
+      .join(', ');
+
+    const query = `
+      UPDATE users
+      SET ${setVars}
+      WHERE id = $1
+      RETURNING ${this.selectUserFields}
+    `;
+
+    try {
+      const result = await this.pool.query<User>(query, queryParams);
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+      const errorAux = error as { code: string; constraint: string };
+      if (errorAux.code === '23505') {
+        // PostgreSQL unique constraint violation error code
+        if (errorAux.constraint?.includes('username')) {
+          throw new EntityAlreadyExistsError('Username', 'Username is already in use');
+        } else if (errorAux.constraint?.includes('email')) {
+          throw new EntityAlreadyExistsError('Email', 'Email is already in use');
+        } else if (errorAux.constraint?.includes('sso_uid')) {
+          throw new EntityAlreadyExistsError('SSOUid', 'SSO UID is already in use');
+        }
+      }
+      // If it's not a unique constraint violation, re-throw the original error
       throw error;
     }
   }
