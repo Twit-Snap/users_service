@@ -1,7 +1,7 @@
-import { JwtUserPayload } from 'jwt';
-import { PublicUser, User } from 'user';
+import { JwtCustomPayload, JwtUserPayload } from 'jwt';
+import { ModifiableUser, PublicUser, User } from 'user';
 import { UserService } from '../services/userService';
-import { ValidationError } from '../types/customErrors';
+import { AuthenticationError, ValidationError } from '../types/customErrors';
 
 export class UserController {
   private userService: UserService;
@@ -29,5 +29,31 @@ export class UserController {
     if (newValues.isBlocked) {
       throw new AuthenticationError('You must be an admin to be able to change the blocked status');
     }
+  }
+
+  newValuesHasExtraKeys(newValues: ModifiableUser) {
+    const modifiableKeys: (keyof ModifiableUser)[] & string[] = [
+      'backgroundPicture',
+      'birthdate',
+      'email',
+      'isBlocked',
+      'isPrivate',
+      'lastname',
+      'name',
+      'profilePicture',
+      'username'
+    ];
+
+    const newKeys = Object.keys(newValues);
+
+    newKeys.forEach((key: string) => {
+      if (!modifiableKeys.includes(key)) {
+        throw new ValidationError(
+          key,
+          'This key is not modifiable or does not exist',
+          'FORBIDDEN KEY'
+        );
+      }
+    });
   }
 }
