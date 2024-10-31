@@ -20,4 +20,14 @@ export class UserController {
     if (username.length === 0 || typeof username === 'undefined' || username.trim() === '')
       throw new ValidationError(username, 'Username is required', 'EMPTY USERNAME');
   }
+
+  canUserChangeBlock(jwtUser: JwtCustomPayload, newValues: ModifiableUser) {
+    if (jwtUser.type === 'admin') {
+      return;
+    }
+
+    if (newValues.isBlocked) {
+      throw new AuthenticationError('You must be an admin to be able to change the blocked status');
+    }
+  }
 }
