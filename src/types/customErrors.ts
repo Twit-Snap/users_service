@@ -37,9 +37,12 @@ export class EntityAlreadyExistsError extends Error {
 }
 
 export class AuthenticationError extends Error {
-  constructor() {
+  detail: string;
+
+  constructor(detail?: string) {
     super('Authentication error');
     this.name = 'AuthenticationError';
+    this.detail = detail ? detail : '';
   }
 }
 

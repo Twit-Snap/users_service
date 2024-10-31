@@ -52,7 +52,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       type: 'about:blank',
       title: 'Unauthorized',
       status: 401,
-      detail: 'Authentication error.',
+      detail: `Authentication error; ${err.detail}`,
       instance: req.originalUrl
     });
   } else {
