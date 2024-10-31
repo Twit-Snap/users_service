@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer';
 import dotenv from 'dotenv';
 import express from 'express';
+import { logMiddleware } from './middleware/logMiddleware';
 import path from 'path';
 import { errorHandler } from './middleware/errorHandler';
 import { jwtMiddleware } from './middleware/jwtMiddleware';
@@ -99,6 +100,8 @@ async function startServer() {
   // Middleware
   app.use(cors());
   app.use(express.json());
+
+  app.use(logMiddleware);
 
   // Apply JWT middleware to all routes except /auth
   app.use((req, res, next) => {
