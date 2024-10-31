@@ -7,13 +7,13 @@ import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate"`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked"`;
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
   }
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
-    const query = `SELECT ${this.selectUserFields}, password, is_blocked AS "isBlocked" FROM users WHERE email = $1 OR username = $1`;
+    const query = `SELECT ${this.selectUserFields}, password FROM users WHERE email = $1 OR username = $1`;
     const result = await this.pool.query<UserWithPassword>(query, [emailOrUsername]);
     if (result.rows.length === 0) {
       return null;
@@ -21,7 +21,7 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
   async findBySSOuid(uid: string): Promise<User | null> {
-    const query = `SELECT ${this.selectUserFields}, is_blocked AS "isBlocked" FROM users WHERE sso_uid = $1`;
+    const query = `SELECT ${this.selectUserFields} FROM users WHERE sso_uid = $1`;
     const result = await this.pool.query<User>(query, [uid]);
     if (result.rows.length === 0) {
       return null;
@@ -60,7 +60,7 @@ export class UserRepository implements IUserRepository {
     }
 
     const query = `
-    SELECT ${this.selectUserFields}, is_blocked AS "isBlocked"
+    SELECT ${this.selectUserFields}
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1)${offset}
     ORDER BY created_at DESC
@@ -122,7 +122,7 @@ export class UserRepository implements IUserRepository {
   }
 
   async getByUsername(username: string) {
-    const query = `SELECT ${this.selectUserFields}, is_blocked AS "isBlocked" FROM users WHERE username = $1`;
+    const query = `SELECT ${this.selectUserFields} FROM users WHERE username = $1`;
     const result = await this.pool.query<User>(query, [username]);
     if (result.rows.length === 0) {
       return null;
