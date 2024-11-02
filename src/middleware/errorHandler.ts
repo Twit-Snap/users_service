@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
   AuthenticationError,
+  BlockedError,
   EntityAlreadyExistsError,
   NotFoundError,
   ValidationError
@@ -55,7 +56,16 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       detail: `Authentication error; ${err.detail}`,
       instance: req.originalUrl
     });
-  } else {
+  } else if (err instanceof BlockedError) {
+    console.warn(`BlockedError: ${err.message}`);
+    res.status(403).json({
+      type: 'about:blank',
+      title: 'User blocked',
+      status: 403,
+      detail: `Blocked error`,
+      instance: req.originalUrl
+    });
+  }  else {
     console.error(`Unexpected error: ${err.message}`, { stack: err.stack });
     res.status(500).json({
       type: 'about:blank',
