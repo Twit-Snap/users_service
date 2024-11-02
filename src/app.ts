@@ -1,10 +1,10 @@
 import { Buffer } from 'buffer';
 import dotenv from 'dotenv';
 import express from 'express';
-import { logMiddleware } from './middleware/logMiddleware';
 import path from 'path';
 import { errorHandler } from './middleware/errorHandler';
-import { jwtMiddleware } from './middleware/jwtMiddleware';
+import { authMiddleware } from './middleware/authMiddleware';
+import { logMiddleware } from './middleware/logMiddleware';
 import { AdminRepository } from './repositories/adminRepository';
 import { DatabasePool } from './repositories/db';
 import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
@@ -108,7 +108,7 @@ async function startServer() {
     if (req.path.startsWith('/auth')) {
       return next();
     }
-    jwtMiddleware(req, res, next);
+    authMiddleware(req, res, next);
   });
 
   // Routes
