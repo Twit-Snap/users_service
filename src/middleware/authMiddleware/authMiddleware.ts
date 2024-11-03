@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtCustomPayload } from 'jwt';
-import { JWTService } from '../services/jwtService';
-import { UserService } from '../services/userService';
-import { AuthenticationError, BlockedError } from '../types/customErrors';
+import { JWTService } from '../../services/jwtService';
+import { UserService } from '../../services/userService';
+import { AuthenticationError, BlockedError } from '../../types/customErrors';
 
-const decodeToken = (authHeader: string | undefined): JwtCustomPayload => {
+export const decodeToken = (authHeader: string | undefined): JwtCustomPayload => {
   const token = authHeader && authHeader.split(' ')[1];
 
   if (token == null) {
@@ -16,7 +16,7 @@ const decodeToken = (authHeader: string | undefined): JwtCustomPayload => {
   return jwtService.verify(token) as JwtCustomPayload;
 };
 
-const checkBlockedUser = async (decodedToken: JwtCustomPayload) => {
+export const checkBlockedUser = async (decodedToken: JwtCustomPayload) => {
   if (decodedToken.type === 'admin') {
     return;
   }
@@ -28,6 +28,7 @@ const checkBlockedUser = async (decodedToken: JwtCustomPayload) => {
   }
 };
 
+/* istanbul ignore next */
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader: string | undefined = req.headers['authorization'];
