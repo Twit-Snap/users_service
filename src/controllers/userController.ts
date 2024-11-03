@@ -26,7 +26,7 @@ export class UserController {
       return;
     }
 
-    if (newValues.isBlocked) {
+    if (newValues.isBlocked != undefined) {
       throw new AuthenticationError('You must be an admin to be able to change the blocked status');
     }
   }
