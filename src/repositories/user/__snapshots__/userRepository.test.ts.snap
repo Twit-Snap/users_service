@@ -1,5 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserRepository create handles database error: Interpolated SQL query 1`] = `
+"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ('testuser', 'test@example.com', 'Test', 'User', '2000-01-01T00:00:00.000Z', undefined, undefined, undefined, undefined)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked"
+    "
+`;
+
+exports[`UserRepository create handles database error: query params 1`] = `
+[
+  "testuser",
+  "test@example.com",
+  "Test",
+  "User",
+  "2000-01-01T00:00:00.000Z",
+  undefined,
+  undefined,
+  undefined,
+  undefined,
+]
+`;
+
+exports[`UserRepository create handles database error: sql query 1`] = `
+"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked"
+    "
+`;
+
 exports[`UserRepository create should create a new SSO user: Created user result 1`] = `
 {
   "email": "new@example.com",
@@ -74,6 +104,29 @@ exports[`UserRepository create should create a new user: SQL query 1`] = `
 ]
 `;
 
+exports[`UserRepository createFollow handles database error: Interpolated SQL query 1`] = `
+"
+      INSERT INTO follows (userId, followedId)
+      VALUES (1, 2)
+      RETURNING userId, followedId, created_at AS "createdAt"
+    "
+`;
+
+exports[`UserRepository createFollow handles database error: query params 1`] = `
+[
+  1,
+  2,
+]
+`;
+
+exports[`UserRepository createFollow handles database error: sql query 1`] = `
+"
+      INSERT INTO follows (userId, followedId)
+      VALUES ($1, $2)
+      RETURNING userId, followedId, created_at AS "createdAt"
+    "
+`;
+
 exports[`UserRepository createFollow should create a follow successfully 1`] = `
 {
   "createdAt": 2023-01-01T00:00:00.000Z,
@@ -97,6 +150,27 @@ exports[`UserRepository createFollow should throw EntityAlreadyExistsError when 
       INSERT INTO follows (userId, followedId)
       VALUES (1, 2)
       RETURNING userId, followedId, created_at AS "createdAt"
+    "
+`;
+
+exports[`UserRepository deleteFollow handles database error: Interpolated SQL query 1`] = `
+"
+      DELETE FROM follows
+      WHERE userId = 1 AND followedId = 2
+    "
+`;
+
+exports[`UserRepository deleteFollow handles database error: query params 1`] = `
+[
+  1,
+  2,
+]
+`;
+
+exports[`UserRepository deleteFollow handles database error: sql query 1`] = `
+"
+      DELETE FROM follows
+      WHERE userId = $1 AND followedId = $2
     "
 `;
 
@@ -139,6 +213,48 @@ exports[`UserRepository findByEmailOrUsername should return null when user not f
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: User result 1`] = `null`;
 
+exports[`UserRepository findBySSOuid should find user by SSO UID: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE sso_uid = 'sso123'"`;
+
+exports[`UserRepository findBySSOuid should find user by SSO UID: query and params 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE sso_uid = $1",
+  [
+    "sso123",
+  ],
+]
+`;
+
+exports[`UserRepository findBySSOuid should find user by SSO UID: result 1`] = `
+{
+  "backgroundPicture": "background.jpg",
+  "birthdate": 2000-01-01T00:00:00.000Z,
+  "createdAt": 2024-01-01T00:00:00.000Z,
+  "email": "test@example.com",
+  "id": 1,
+  "isBlocked": false,
+  "isPrivate": false,
+  "lastname": "User",
+  "name": "Test",
+  "profilePicture": "profile.jpg",
+  "providerId": "provider123",
+  "ssoUid": "sso123",
+  "username": "testuser",
+}
+`;
+
+exports[`UserRepository findBySSOuid should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE sso_uid = 'nonexistent'"`;
+
+exports[`UserRepository findBySSOuid should return null when user not found: query and params 1`] = `
+[
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE sso_uid = $1",
+  [
+    "nonexistent",
+  ],
+]
+`;
+
+exports[`UserRepository findBySSOuid should return null when user not found: result 1`] = `null`;
+
 exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE id = 1"`;
 
 exports[`UserRepository get should get user by id: SQL query 1`] = `
@@ -171,6 +287,81 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
+exports[`UserRepository getAmount should get amount with createdAt and equalDate false: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users WHERE created_at < '2024-01-01'::timestamptz "`;
+
+exports[`UserRepository getAmount should get amount with createdAt and equalDate false: query and params 1`] = `
+[
+  "SELECT COUNT(*) FROM users WHERE created_at < $1::timestamptz ",
+  [
+    "2024-01-01",
+  ],
+]
+`;
+
+exports[`UserRepository getAmount should get amount with createdAt and equalDate false: result 1`] = `
+{
+  "count": "20",
+}
+`;
+
+exports[`UserRepository getAmount should get amount with createdAt and equalDate true: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users WHERE created_at <= '2024-01-01'::timestamptz  + interval '0.999999 seconds'"`;
+
+exports[`UserRepository getAmount should get amount with createdAt and equalDate true: query and params 1`] = `
+[
+  "SELECT COUNT(*) FROM users WHERE created_at <= $1::timestamptz  + interval '0.999999 seconds'",
+  [
+    "2024-01-01",
+  ],
+]
+`;
+
+exports[`UserRepository getAmount should get amount with createdAt and equalDate true: result 1`] = `
+{
+  "count": "10",
+}
+`;
+
+exports[`UserRepository getAmount should get total amount without date filter: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users "`;
+
+exports[`UserRepository getAmount should get total amount without date filter: query and params 1`] = `
+[
+  "SELECT COUNT(*) FROM users ",
+  [],
+]
+`;
+
+exports[`UserRepository getAmount should get total amount without date filter: result 1`] = `
+{
+  "count": "42",
+}
+`;
+
+exports[`UserRepository getAmount should handle database error: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users "`;
+
+exports[`UserRepository getAmount should handle database error: query and params 1`] = `
+[
+  "SELECT COUNT(*) FROM users ",
+  [],
+]
+`;
+
+exports[`UserRepository getAmount should handle zero results: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users WHERE created_at < '2024-01-01'::timestamptz "`;
+
+exports[`UserRepository getAmount should handle zero results: query and params 1`] = `
+[
+  "SELECT COUNT(*) FROM users WHERE created_at < $1::timestamptz ",
+  [
+    "2024-01-01",
+  ],
+]
+`;
+
+exports[`UserRepository getAmount should handle zero results: result 1`] = `
+{
+  "count": "0",
+}
+`;
+
 exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
@@ -201,6 +392,29 @@ exports[`UserRepository getByUsername should return null when user not found: SQ
 `;
 
 exports[`UserRepository getByUsername should return null when user not found: User result 1`] = `null`;
+
+exports[`UserRepository getFollow handles database error: Interpolated SQL query 1`] = `
+"
+      SELECT userId, followedId, created_at AS "createdAt"
+      FROM follows
+      WHERE userId = 1 AND followedId = 2
+    "
+`;
+
+exports[`UserRepository getFollow handles database error: query params 1`] = `
+[
+  1,
+  2,
+]
+`;
+
+exports[`UserRepository getFollow handles database error: sql query 1`] = `
+"
+      SELECT userId, followedId, created_at AS "createdAt"
+      FROM follows
+      WHERE userId = $1 AND followedId = $2
+    "
+`;
 
 exports[`UserRepository getFollow should get a follow successfully 1`] = `
 {
