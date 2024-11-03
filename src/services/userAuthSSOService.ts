@@ -9,7 +9,7 @@ import {
   UserWithToken
 } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
-import { AuthenticationError, ValidationError } from '../types/customErrors';
+import { AuthenticationError, BlockedError, ValidationError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 
 export class UserAuthSSOService {
@@ -41,6 +41,10 @@ export class UserAuthSSOService {
         throw new AuthenticationError();
       }
 
+      if (user.isBlocked) {
+        throw new BlockedError();
+      }
+
       // Generate JWT token
       const token = this.jwtService.sign({
         type: 'user',
@@ -55,7 +59,7 @@ export class UserAuthSSOService {
       return userWithToken;
     } catch (error) {
       console.error('Error in SSO login:', error);
-      throw new AuthenticationError();
+      throw error;
     }
   }
 

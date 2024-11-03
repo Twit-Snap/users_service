@@ -3,7 +3,7 @@ import { IJWTService } from 'jwt';
 import { IUserRepository } from 'user';
 import { IUserAuthService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
-import { AuthenticationError } from '../types/customErrors';
+import { AuthenticationError, BlockedError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 
 export class UserAuthService implements IUserAuthService {
@@ -28,6 +28,10 @@ export class UserAuthService implements IUserAuthService {
 
     if (!isPasswordValid) {
       throw new AuthenticationError();
+    }
+
+    if (user.isBlocked) {
+      throw new BlockedError();
     }
 
     // Generate JWT token

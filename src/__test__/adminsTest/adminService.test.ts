@@ -3,7 +3,7 @@ import { UserRepository } from '../../repositories/user/userRepository';
 import { AdminService } from '../../services/adminService';
 import { NotFoundError } from '../../types/customErrors';
 
-jest.mock('../../repositories/adminRepository');
+jest.mock('../../repositories/admin/adminRepository');
 jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 
@@ -19,7 +19,8 @@ describe('AdminService', () => {
     lastname: 'aUserLastName',
     birthdate: new Date(),
     createdAt: new Date(),
-    isPrivate: false
+    isPrivate: false,
+    isBlocked: false
   };
 
   const anotherMockUser: User = {
@@ -30,7 +31,8 @@ describe('AdminService', () => {
     lastname: 'anotherUserLastName',
     birthdate: new Date(),
     createdAt: new Date(),
-    isPrivate: false
+    isPrivate: false,
+    isBlocked: false
   };
 
   const mockUsers = [aMockUser, anotherMockUser];
@@ -51,7 +53,7 @@ describe('AdminService', () => {
   describe('getUserList', () => {
     it('should return a list of users', async () => {
       const has: string = '';
-      const result = await service.getUserList({ has: has });
+      const result = await service.getUserList({ has: has, offset: 0 });
       expect(result).toEqual(mockUsers);
     });
   });

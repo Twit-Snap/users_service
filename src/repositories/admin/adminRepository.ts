@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from 'pg';
-import { Admin, AdminWithPassword } from '../types/admin';
-import { EntityAlreadyExistsError } from '../types/customErrors';
-import { DatabasePool } from './db';
+import { Admin, AdminWithPassword } from '../../types/admin';
+import { EntityAlreadyExistsError } from '../../types/customErrors';
+import { DatabasePool } from '../db';
 
 class AdminRepository {
   private pool: Pool;

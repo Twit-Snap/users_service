@@ -7,7 +7,8 @@ router.get('/users', async (req, res, next) => {
   try {
     const params = {
       has: req.query.has ? req.query.has.toString() : '',
-      createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined
+      createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined,
+      offset: req.query.offset ? +req.query.offset : 0
     };
 
     const user = await new AdminController().getUserList(params);

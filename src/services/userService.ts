@@ -2,7 +2,14 @@ import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import { GetUsersListParams, IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
+import {
+  GetUsersListParams,
+  IUserRepository,
+  ModifiableUser,
+  PublicUser,
+  User,
+  UserWithPassword
+} from '../types/user';
 import { UserRegisterRepository } from '../types/userAuth';
 
 export class UserService {
@@ -14,6 +21,12 @@ export class UserService {
 
   async findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null> {
     return this.userRepository.findByEmailOrUsername(emailOrUsername);
+  }
+
+  async getAmount(params: GetUsersListParams): Promise<number> {
+    const data = await this.userRepository.getAmount(params);
+
+    return data;
   }
 
   async getList(jwtUser: JwtUserPayload, params: GetUsersListParams): Promise<User[]> {
@@ -99,6 +112,24 @@ export class UserService {
     return follow;
   }
 
+  async modifyUser(username: string, newValues: ModifiableUser): Promise<User> {
+    let user = await this.userRepository.getByUsername(username);
+    user = this.validate_username(user, username);
+
+    newValues = {
+      ...newValues,
+      is_blocked: newValues.isBlocked,
+      is_private: newValues.isPrivate,
+      isBlocked: undefined,
+      isPrivate: undefined
+    };
+
+    newValues = Object.fromEntries(Object.entries(newValues).filter(([, val]) => val != undefined));
+
+    const data = await this.userRepository.modifyUser(user.id, newValues);
+    return data;
+  }
+
   private async addFollowState(authUser: JwtUserPayload, user: User) {
     const following: boolean | undefined =
       authUser.type === 'user'
@@ -117,8 +148,20 @@ export class UserService {
       ...user,
       following: following,
       followed: followed,
-      followersCount: (await this.userRepository.getFollows(user.id, {byFollowers: true, has: '', createdAt: undefined})).length,
-      followingCount: (await this.userRepository.getFollows(user.id, {byFollowers: false, has: '', createdAt: undefined})).length
+      followersCount: (
+        await this.userRepository.getFollows(user.id, {
+          byFollowers: true,
+          has: '',
+          createdAt: undefined
+        })
+      ).length,
+      followingCount: (
+        await this.userRepository.getFollows(user.id, {
+          byFollowers: false,
+          has: '',
+          createdAt: undefined
+        })
+      ).length
     };
   }
 
@@ -128,7 +171,7 @@ export class UserService {
   }
 
   private preparePublicUser(user: User) {
-    return { ...user, email: undefined, lastname: undefined };
+    return { ...user, email: undefined, lastname: undefined, isBlocked: undefined };
   }
 
   private async validateMutualFollow(authUser: JwtUserPayload, user: User) {

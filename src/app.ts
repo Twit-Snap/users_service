@@ -2,9 +2,10 @@ import { Buffer } from 'buffer';
 import dotenv from 'dotenv';
 import express from 'express';
 import path from 'path';
+import { authMiddleware } from './middleware/authMiddleware/authMiddleware';
 import { errorHandler } from './middleware/errorHandler';
-import { jwtMiddleware } from './middleware/jwtMiddleware';
-import { AdminRepository } from './repositories/adminRepository';
+import { logMiddleware } from './middleware/logMiddleware';
+import { AdminRepository } from './repositories/admin/adminRepository';
 import { DatabasePool } from './repositories/db';
 import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
 import { AdminAuthService } from './services/adminAuthService';
@@ -100,12 +101,14 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
+  app.use(logMiddleware);
+
   // Apply JWT middleware to all routes except /auth
   app.use((req, res, next) => {
     if (req.path.startsWith('/auth')) {
       return next();
     }
-    jwtMiddleware(req, res, next);
+    authMiddleware(req, res, next);
   });
 
   // Routes

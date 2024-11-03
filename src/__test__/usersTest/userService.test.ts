@@ -1,4 +1,7 @@
-import { User } from 'user';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { JwtUserPayload } from 'jwt';
+import { GetUsersListParams, ModifiableUser, User, UserWithPassword } from 'user';
+import { UserRegisterRepository } from 'userAuth';
 import { UserRepository } from '../../repositories/user/userRepository';
 import { UserService } from '../../services/userService';
 import { NotFoundError, ValidationError } from '../../types/customErrors';
@@ -28,7 +31,8 @@ describe('UserService', () => {
     lastname: 'test',
     birthdate: new Date(),
     createdAt: new Date(),
-    isPrivate: false
+    isPrivate: false,
+    isBlocked: false
   };
 
   beforeEach(() => {
@@ -73,7 +77,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: false,
         followingCount: undefined,
-        followed: false
+        followed: false,
+        isBlocked: undefined
       });
     });
 
@@ -95,7 +100,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: true,
         followingCount: undefined,
-        followed: true
+        followed: true,
+        isBlocked: undefined
       });
     });
 
@@ -117,7 +123,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: true,
         followingCount: undefined,
-        followed: false
+        followed: false,
+        isBlocked: undefined
       });
     });
 
@@ -139,7 +146,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: false,
         followingCount: undefined,
-        followed: true
+        followed: true,
+        isBlocked: undefined
       });
     });
 
@@ -506,6 +514,234 @@ describe('UserService', () => {
       service = new UserService(dbServiceMock);
       await expect(service.getFollow('pepe', 'juan')).rejects.toThrow(NotFoundError); //.toThrow(NotFoundError);
       expect(dbServiceMock.getFollow).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('modifyUser', () => {
+    const mockUser: User = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      name: 'Test',
+      lastname: 'User',
+      birthdate: new Date('2000-01-01'),
+      createdAt: new Date('2024-01-01'),
+      isPrivate: false,
+      isBlocked: false
+    };
+
+    it('should modify user successfully', async () => {
+      const username = 'testuser';
+      const newValues: ModifiableUser = {
+        name: 'New Name',
+        isPrivate: true,
+        isBlocked: false
+      };
+
+      dbServiceMock = {
+        getByUsername: jest.fn().mockResolvedValue(mockUser),
+        modifyUser: jest.fn().mockResolvedValue({
+          ...mockUser,
+          name: newValues.name,
+          is_private: true,
+          is_blocked: false
+        })
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+
+      const result = await userService.modifyUser(username, newValues);
+
+      expect(dbServiceMock.getByUsername).toHaveBeenCalledWith(username);
+      expect(dbServiceMock.modifyUser).toHaveBeenCalledWith(mockUser.id, {
+        name: 'New Name',
+        is_private: true,
+        is_blocked: false
+      });
+      expect(result.name).toBe(newValues.name);
+    });
+
+    it('should throw error for non-existent user', async () => {
+      dbServiceMock = {
+        getByUsername: jest.fn().mockResolvedValue(null)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+      await expect(userService.modifyUser('nonexistent', { name: 'New Name' })).rejects.toThrow();
+    });
+  });
+
+  describe('findByEmailOrUsername', () => {
+    const mockUser: User = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      name: 'Test',
+      lastname: 'User',
+      birthdate: new Date('2000-01-01'),
+      createdAt: new Date('2024-01-01'),
+      isPrivate: false,
+      isBlocked: false
+    };
+
+    it('should find user by email', async () => {
+      const mockUserWithPassword: UserWithPassword = {
+        ...mockUser,
+        password: 'hashedpassword'
+      };
+
+      dbServiceMock = {
+        findByEmailOrUsername: jest.fn().mockResolvedValue(mockUserWithPassword)
+      } as unknown as jest.Mocked<UserRepository>;
+      const userService = new UserService(dbServiceMock);
+      const result = await userService.findByEmailOrUsername('test@example.com');
+
+      expect(dbServiceMock.findByEmailOrUsername).toHaveBeenCalledWith('test@example.com');
+      expect(result).toEqual(mockUserWithPassword);
+    });
+
+    it('should return null for non-existent user', async () => {
+      dbServiceMock = {
+        findByEmailOrUsername: jest.fn().mockResolvedValue(null)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+      const result = await userService.findByEmailOrUsername('nonexistent');
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getAmount', () => {
+    it('should return correct amount', async () => {
+      const params: GetUsersListParams = {
+        limit: 10,
+        offset: 0,
+        has: ''
+      };
+
+      dbServiceMock = {
+        getAmount: jest.fn().mockResolvedValue(42)
+      } as unknown as jest.Mocked<UserRepository>;
+      const userService = new UserService(dbServiceMock);
+      const result = await userService.getAmount(params);
+
+      expect(dbServiceMock.getAmount).toHaveBeenCalledWith(params);
+      expect(result).toBe(42);
+    });
+  });
+
+  describe('getList', () => {
+    const mockUser: User = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      name: 'Test',
+      lastname: 'User',
+      birthdate: new Date('2000-01-01'),
+      createdAt: new Date('2024-01-01'),
+      isPrivate: false,
+      isBlocked: false
+    };
+
+    it('should return list of users with follow state', async () => {
+      const jwtUser: JwtUserPayload = {
+        userId: 2,
+        username: 'currentuser',
+        type: 'user',
+        email: 'test@gmail.com'
+      };
+
+      const params: GetUsersListParams = {
+        limit: 10,
+        offset: 0,
+        has: ''
+      };
+
+      const mockUsers = [mockUser];
+      dbServiceMock = {
+        getList: jest.fn().mockResolvedValue(mockUsers)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+
+      const addFollowStateSpy = jest
+        .spyOn(userService as any, 'addFollowState')
+        .mockResolvedValue({ ...mockUser, following: false });
+
+      const result = await userService.getList(jwtUser, params);
+
+      expect(dbServiceMock.getList).toHaveBeenCalledWith(params);
+      expect(addFollowStateSpy).toHaveBeenCalledWith(jwtUser, mockUser);
+      expect(result).toHaveLength(1);
+      expect(result[0].following).toBeDefined();
+    });
+  });
+
+  describe('get', () => {
+    const mockUser: User = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      name: 'Test',
+      lastname: 'User',
+      birthdate: new Date('2000-01-01'),
+      createdAt: new Date('2024-01-01'),
+      isPrivate: false,
+      isBlocked: false
+    };
+
+    it('should return user by id', async () => {
+      dbServiceMock = {
+        get: jest.fn().mockResolvedValue(mockUser)
+      } as unknown as jest.Mocked<UserRepository>;
+      const userService = new UserService(dbServiceMock);
+      const result = await userService.get(1);
+
+      expect(dbServiceMock.get).toHaveBeenCalledWith(1);
+      expect(result).toEqual(mockUser);
+    });
+
+    it('should return null for non-existent id', async () => {
+      dbServiceMock = {
+        get: jest.fn().mockResolvedValue(null)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+      const result = await userService.get(999);
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('create', () => {
+    it('should create user successfully', async () => {
+      const userData: UserRegisterRepository = {
+        username: 'newuser',
+        email: 'new@example.com',
+        password: 'hashedpassword',
+        name: 'New',
+        lastname: 'User',
+        birthdate: new Date('2000-01-01')
+      };
+
+      dbServiceMock = {
+        create: jest.fn().mockResolvedValue({
+          ...userData,
+          id: 3,
+          createdAt: new Date(),
+          isPrivate: false,
+          isBlocked: false
+        })
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const userService = new UserService(dbServiceMock);
+
+      const result = await userService.create(userData);
+
+      expect(dbServiceMock.create).toHaveBeenCalledWith(userData);
+      expect(result.username).toBe(userData.username);
+      expect(result.email).toBe(userData.email);
     });
   });
 });

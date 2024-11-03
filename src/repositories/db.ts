@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 // db.ts
 import { Pool } from 'pg';
 

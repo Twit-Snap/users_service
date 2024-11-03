@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
     sso_uid VARCHAR(255) NULL,
     provider_id VARCHAR(50) NULL,
     is_private BOOLEAN NOT NULL DEFAULT false,
+    is_blocked BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 -- Create a unique partial index on sso_uid

@@ -1,5 +1,5 @@
 import express from 'express';
-import { User } from 'user';
+import { ModifiableUser, User } from 'user';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 import { UserRequest } from '../types/jwt';
@@ -12,8 +12,17 @@ router.get('/', async (req, res, next) => {
     const params = {
       has: req.query.has ? req.query.has.toString() : '',
       createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined,
-      limit: req.query.limit ? +req.query.limit : undefined
+      limit: req.query.limit ? +req.query.limit : undefined,
+      amount: req.query.amount?.toString() === 'true',
+      offset: req.query.offset ? +req.query.offset : 0,
+      equalDate: req.query.equalDate === 'true'
     };
+
+    if (params.amount) {
+      const amount = await new UserService().getAmount(params);
+      res.send(amount);
+      return;
+    }
 
     const users: User[] = await new UserService().getList(jwtUser, params);
     res.send(users);
@@ -103,6 +112,27 @@ router.get('/:username/followers/:followedUsername', async (req, res, next) => {
     controller.validateUsername(followedUsername);
 
     const data = await new UserService().getFollow(username, followedUsername);
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:username', async (req, res, next) => {
+  try {
+    const newValues: ModifiableUser = req.body;
+    const username = req.params.username;
+
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    const jwtUser = (req as any).user;
+
+    const controller = new UserController();
+
+    controller.validateUsername(username);
+    controller.canUserChangeBlock(jwtUser, newValues);
+    controller.newValuesHasExtraKeys(newValues);
+
+    const data = await new UserService().modifyUser(username, newValues);
     res.status(200).json(data);
   } catch (error) {
     next(error);

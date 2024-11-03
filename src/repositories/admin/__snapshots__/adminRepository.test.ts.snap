@@ -1,0 +1,162 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AdminRepository create should create an admin successfully: Interpolated SQL query 1`] = `
+"
+      INSERT INTO admins (username, email, password)
+      VALUES ('testadmin', 'admin@test.com', 'hashedpassword123')
+      RETURNING username, email
+    "
+`;
+
+exports[`AdminRepository create should create an admin successfully: create query and params 1`] = `
+[
+  "
+      INSERT INTO admins (username, email, password)
+      VALUES ($1, $2, $3)
+      RETURNING username, email
+    ",
+  [
+    "testadmin",
+    "admin@test.com",
+    "hashedpassword123",
+  ],
+]
+`;
+
+exports[`AdminRepository create should create an admin successfully: created admin result 1`] = `
+{
+  "email": "admin@test.com",
+  "username": "testadmin",
+}
+`;
+
+exports[`AdminRepository create should propagate unknown database errors: Interpolated SQL query 1`] = `
+"
+      INSERT INTO admins (username, email, password)
+      VALUES ('testadmin', 'admin@test.com', 'hashedpassword123')
+      RETURNING username, email
+    "
+`;
+
+exports[`AdminRepository create should propagate unknown database errors: failed query and params 1`] = `
+[
+  "
+      INSERT INTO admins (username, email, password)
+      VALUES ($1, $2, $3)
+      RETURNING username, email
+    ",
+  [
+    "testadmin",
+    "admin@test.com",
+    "hashedpassword123",
+  ],
+]
+`;
+
+exports[`AdminRepository create should throw EntityAlreadyExistsError for duplicate email: Interpolated SQL query 1`] = `
+"
+      INSERT INTO admins (username, email, password)
+      VALUES ('testadmin', 'admin@test.com', 'hashedpassword123')
+      RETURNING username, email
+    "
+`;
+
+exports[`AdminRepository create should throw EntityAlreadyExistsError for duplicate email: duplicate email query and params 1`] = `
+[
+  "
+      INSERT INTO admins (username, email, password)
+      VALUES ($1, $2, $3)
+      RETURNING username, email
+    ",
+  [
+    "testadmin",
+    "admin@test.com",
+    "hashedpassword123",
+  ],
+]
+`;
+
+exports[`AdminRepository create should throw EntityAlreadyExistsError for duplicate username: Interpolated SQL query 1`] = `
+"
+      INSERT INTO admins (username, email, password)
+      VALUES ('testadmin', 'admin@test.com', 'hashedpassword123')
+      RETURNING username, email
+    "
+`;
+
+exports[`AdminRepository create should throw EntityAlreadyExistsError for duplicate username: duplicate username query and params 1`] = `
+[
+  "
+      INSERT INTO admins (username, email, password)
+      VALUES ($1, $2, $3)
+      RETURNING username, email
+    ",
+  [
+    "testadmin",
+    "admin@test.com",
+    "hashedpassword123",
+  ],
+]
+`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by email: Interpolated SQL query 1`] = `"SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = 'admin@test.com' OR username = 'admin@test.com'"`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by email: find by email query and params 1`] = `
+[
+  "SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = $1 OR username = $1",
+  [
+    "admin@test.com",
+  ],
+]
+`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by email: found admin by email result 1`] = `
+{
+  "email": "admin@test.com",
+  "password": "hashedpassword123",
+  "username": "testadmin",
+}
+`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by username: Interpolated SQL query 1`] = `"SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = 'testadmin' OR username = 'testadmin'"`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by username: find by username query and params 1`] = `
+[
+  "SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = $1 OR username = $1",
+  [
+    "testadmin",
+  ],
+]
+`;
+
+exports[`AdminRepository findByEmailOrUsername should find admin by username: found admin by username result 1`] = `
+{
+  "email": "admin@test.com",
+  "password": "hashedpassword123",
+  "username": "testadmin",
+}
+`;
+
+exports[`AdminRepository findByEmailOrUsername should handle database error: Interpolated SQL query 1`] = `"SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = 'testadmin' OR username = 'testadmin'"`;
+
+exports[`AdminRepository findByEmailOrUsername should handle database error: error query and params 1`] = `
+[
+  "SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = $1 OR username = $1",
+  [
+    "testadmin",
+  ],
+]
+`;
+
+exports[`AdminRepository findByEmailOrUsername should return null when admin not found: Interpolated SQL query 1`] = `"SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
+
+exports[`AdminRepository findByEmailOrUsername should return null when admin not found: not found query and params 1`] = `
+[
+  "SELECT username, email, password, created_at AS "createdAt" FROM admins WHERE email = $1 OR username = $1",
+  [
+    "nonexistent",
+  ],
+]
+`;
+
+exports[`AdminRepository findByEmailOrUsername should return null when admin not found: not found result 1`] = `null`;
