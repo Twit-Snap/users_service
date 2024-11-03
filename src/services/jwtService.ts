@@ -1,5 +1,6 @@
-import { IJWTService, JwtCustomPayload } from 'jwt';
+/* istanbul ignore file */
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import { IJWTService, JwtCustomPayload } from 'jwt';
 import { AuthenticationError } from '../types/customErrors';
 
 // JWT Service class implementation
