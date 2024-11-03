@@ -5,7 +5,7 @@ import path from 'path';
 import { authMiddleware } from './middleware/authMiddleware/authMiddleware';
 import { errorHandler } from './middleware/errorHandler';
 import { logMiddleware } from './middleware/logMiddleware';
-import { AdminRepository } from './repositories/adminRepository';
+import { AdminRepository } from './repositories/admin/adminRepository';
 import { DatabasePool } from './repositories/db';
 import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
 import { AdminAuthService } from './services/adminAuthService';

@@ -1,7 +1,7 @@
 import { Admin, AdminWithPassword, AdminWithToken } from 'admin';
 import bcrypt from 'bcrypt';
 import { IJWTService } from 'jwt';
-import { AdminRepository } from '../repositories/adminRepository';
+import { AdminRepository } from '../repositories/admin/adminRepository';
 import { AuthenticationError } from '../types/customErrors';
 import { JWTService } from './jwtService';
 

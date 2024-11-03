@@ -3,7 +3,7 @@ import { UserRepository } from '../../repositories/user/userRepository';
 import { AdminService } from '../../services/adminService';
 import { NotFoundError } from '../../types/customErrors';
 
-jest.mock('../../repositories/adminRepository');
+jest.mock('../../repositories/admin/adminRepository');
 jest.mock('../../services/jwtService');
 jest.mock('bcrypt');
 
