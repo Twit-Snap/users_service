@@ -28,7 +28,8 @@ describe('UserService', () => {
     lastname: 'test',
     birthdate: new Date(),
     createdAt: new Date(),
-    isPrivate: false
+    isPrivate: false,
+    isBlocked: false
   };
 
   beforeEach(() => {
@@ -73,7 +74,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: false,
         followingCount: undefined,
-        followed: false
+        followed: false,
+        isBlocked: undefined
       });
     });
 
@@ -95,7 +97,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: true,
         followingCount: undefined,
-        followed: true
+        followed: true,
+        isBlocked: undefined
       });
     });
 
@@ -117,7 +120,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: true,
         followingCount: undefined,
-        followed: false
+        followed: false,
+        isBlocked: undefined
       });
     });
 
@@ -139,7 +143,8 @@ describe('UserService', () => {
         followersCount: undefined,
         following: false,
         followingCount: undefined,
-        followed: true
+        followed: true,
+        isBlocked: undefined
       });
     });
 

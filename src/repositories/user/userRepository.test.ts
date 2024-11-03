@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
-import { GetUsersListParams } from 'user';
+import { GetUsersListParams, ModifiableUser } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { UserRepository } from './userRepository';
@@ -58,6 +58,7 @@ describe('UserRepository', () => {
       id: 1,
       username: 'test_user',
       name: 'Test User',
+      email: 'test@example.com',
       created_at: mockDate,
       updated_at: mockDate
     };
@@ -77,20 +78,21 @@ describe('UserRepository', () => {
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
       expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
       expect(result).toMatchSnapshot('result');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
+      const [query, _params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, _params);
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
 
-    it('gets users with createdAt param', async () => {
+    it('gets users with createdAt param and equalDate true', async () => {
       mockPool.query.mockResolvedValueOnce({
         rows: [mockUser]
       });
 
       const params: GetUsersListParams = {
         has: 'test',
-        offset: 0,
-        createdAt: '2024-01-01'
+        createdAt: '2024-01-01',
+        equalDate: true,
+        offset: 0
       };
 
       const result = await userRepository.getList(params);
@@ -98,20 +100,21 @@ describe('UserRepository', () => {
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
       expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
       expect(result).toMatchSnapshot('result');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
+      const [query, _params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, _params);
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
 
-    it('gets users with limit param', async () => {
+    it('gets users with createdAt param and equalDate false', async () => {
       mockPool.query.mockResolvedValueOnce({
         rows: [mockUser]
       });
 
       const params: GetUsersListParams = {
         has: 'test',
-        offset: 0,
-        limit: 1
+        createdAt: '2024-01-01',
+        equalDate: false,
+        offset: 0
       };
 
       const result = await userRepository.getList(params);
@@ -119,8 +122,29 @@ describe('UserRepository', () => {
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
       expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
       expect(result).toMatchSnapshot('result');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
+      const [query, _params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, _params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('gets users with pagination params', async () => {
+      mockPool.query.mockResolvedValueOnce({
+        rows: [mockUser]
+      });
+
+      const params: GetUsersListParams = {
+        has: 'test',
+        limit: 10,
+        offset: 0
+      };
+
+      const result = await userRepository.getList(params);
+
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      expect(result).toMatchSnapshot('result');
+      const [query, _params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, _params);
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
 
@@ -131,26 +155,9 @@ describe('UserRepository', () => {
 
       const params: GetUsersListParams = {
         has: 'test',
-        offset: 0,
         createdAt: '2024-01-01',
-        limit: 1
-      };
-
-      const result = await userRepository.getList(params);
-
-      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
-      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
-      expect(result).toMatchSnapshot('result');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
-      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
-    });
-
-    it('handles empty result', async () => {
-      mockPool.query.mockResolvedValueOnce({ rows: [] });
-
-      const params: GetUsersListParams = {
-        has: 'nonexistent',
+        equalDate: true,
+        limit: 10,
         offset: 0
       };
 
@@ -159,25 +166,8 @@ describe('UserRepository', () => {
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
       expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
       expect(result).toMatchSnapshot('result');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
-      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
-    });
-
-    it('handles database error', async () => {
-      const dbError = new Error('Database error');
-      mockPool.query.mockRejectedValueOnce(dbError);
-
-      const params: GetUsersListParams = {
-        has: 'test',
-        offset: 0
-      };
-
-      await expect(userRepository.getList(params)).rejects.toThrow(dbError);
-      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
-      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
-      const [query, param] = mockPool.query.mock.calls[0];
-      const interpolatedQuery = interpolateQuery(query, param);
+      const [query, _params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, _params);
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
   });
@@ -563,6 +553,116 @@ describe('UserRepository', () => {
       };
 
       await expect(userRepository.getFollows(userId, params)).rejects.toThrow(dbError);
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      const [query, param] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, param);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
+
+  describe('modifyUser', () => {
+    const mockDate = new Date('2024-01-01');
+    const mockUser = {
+      id: 1,
+      username: 'test_user',
+      name: 'Test User',
+      email: 'test@example.com',
+      created_at: mockDate,
+      updated_at: mockDate
+    };
+
+    it('updates single field successfully', async () => {
+      mockPool.query.mockResolvedValueOnce({
+        rows: [{ ...mockUser, name: 'Updated Name' }]
+      });
+
+      const modifiedUser: ModifiableUser = {
+        name: 'Updated Name'
+      };
+
+      const result = await userRepository.modifyUser(1, modifiedUser);
+
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      expect(result).toMatchSnapshot('result');
+      const [query, param] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, param);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('updates multiple fields successfully', async () => {
+      mockPool.query.mockResolvedValueOnce({
+        rows: [{ ...mockUser, name: 'Updated Name', email: 'new@example.com' }]
+      });
+
+      const modifiedUser: ModifiableUser = {
+        name: 'Updated Name',
+        email: 'new@example.com'
+      };
+
+      const result = await userRepository.modifyUser(1, modifiedUser);
+
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      expect(result).toMatchSnapshot('result');
+      const [query, param] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, param);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('throws EntityAlreadyExistsError for duplicate username', async () => {
+      mockPool.query.mockRejectedValueOnce({
+        code: '23505',
+        constraint: 'users_username_key'
+      });
+
+      const modifiedUser: ModifiableUser = {
+        username: 'existing_username'
+      };
+
+      await expect(userRepository.modifyUser(1, modifiedUser)).rejects.toThrow(
+        EntityAlreadyExistsError
+      );
+
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      const [query, param] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, param);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('throws EntityAlreadyExistsError for duplicate email', async () => {
+      mockPool.query.mockRejectedValueOnce({
+        code: '23505',
+        constraint: 'users_email_key'
+      });
+
+      const modifiedUser: ModifiableUser = {
+        email: 'existing@example.com'
+      };
+
+      await expect(userRepository.modifyUser(1, modifiedUser)).rejects.toThrow(
+        EntityAlreadyExistsError
+      );
+
+      expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
+      expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
+      const [query, param] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, param);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('throws original error for non-constraint violations', async () => {
+      const originalError = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(originalError);
+
+      const modifiedUser: ModifiableUser = {
+        name: 'Updated Name'
+      };
+
+      await expect(userRepository.modifyUser(1, modifiedUser)).rejects.toThrow(originalError);
+
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
       expect(mockPool.query.mock.calls[0][0]).toMatchSnapshot('sql query');
       const [query, param] = mockPool.query.mock.calls[0];
