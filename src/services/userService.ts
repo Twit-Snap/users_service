@@ -1,8 +1,8 @@
-import { FollowersResponse, FollowReturn } from 'follow';
+import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
-import { IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
+import { GetUsersListParams, IUserRepository, PublicUser, User, UserWithPassword } from '../types/user';
 import { UserRegisterRepository } from '../types/userAuth';
 
 export class UserService {
@@ -16,8 +16,8 @@ export class UserService {
     return this.userRepository.findByEmailOrUsername(emailOrUsername);
   }
 
-  async getList(jwtUser: JwtUserPayload, has: string): Promise<User[]> {
-    const data = await this.userRepository.getList(has);
+  async getList(jwtUser: JwtUserPayload, params: GetUsersListParams): Promise<User[]> {
+    const data = await this.userRepository.getList(params);
     const dataFollows = await Promise.all(
       data.map(async (item) => await this.addFollowState(jwtUser, item))
     );
@@ -74,14 +74,14 @@ export class UserService {
   async getAllFollows(
     authUser: JwtUserPayload,
     username: string,
-    byFollowers: boolean
+    params: GetAllFollowsParams
   ): Promise<FollowersResponse[]> {
     let user = await this.userRepository.getByUsername(username);
     user = this.validate_username(user, username);
 
     await this.validateMutualFollow(authUser, user);
 
-    const followers = await this.userRepository.getFollows(user.id, byFollowers);
+    const followers = await this.userRepository.getFollows(user.id, params);
     return followers;
   }
 
@@ -117,8 +117,8 @@ export class UserService {
       ...user,
       following: following,
       followed: followed,
-      followersCount: (await this.userRepository.getFollows(user.id, true)).length,
-      followingCount: (await this.userRepository.getFollows(user.id, false)).length
+      followersCount: (await this.userRepository.getFollows(user.id, {byFollowers: true, has: '', createdAt: undefined})).length,
+      followingCount: (await this.userRepository.getFollows(user.id, {byFollowers: false, has: '', createdAt: undefined})).length
     };
   }
 

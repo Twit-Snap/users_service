@@ -1,5 +1,5 @@
 import { Admin } from 'admin';
-import { User } from 'user';
+import { GetUsersListParams, User } from 'user';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError } from '../types/customErrors';
 
@@ -10,8 +10,8 @@ export class AdminService {
     this.repository = aUserRepository ?? new UserRepository();
   }
 
-  async getUserList(has: string): Promise<Admin[] | null> {
-    return await this.repository.getList(has);
+  async getUserList(params: GetUsersListParams): Promise<Admin[] | null> {
+    return await this.repository.getList(params);
   }
 
   async getUserByUsername(username: string) {

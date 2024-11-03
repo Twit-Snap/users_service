@@ -1,6 +1,6 @@
-import { FollowersResponse, FollowReturn } from 'follow';
+import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
-import { IUserRepository, User, UserWithPassword } from 'user';
+import { GetUsersListParams, IUserRepository, User, UserWithPassword } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { DatabasePool } from '../db';
@@ -29,9 +29,29 @@ export class UserRepository implements IUserRepository {
     return result.rows[0];
   }
 
-  async getList(has: string): Promise<User[]> {
-    const query = `SELECT ${this.selectUserFields} FROM users WHERE username ILIKE $1 OR name ILIKE $1`;
-    const result = await this.pool.query<User>(query, [`%${has}%`]);
+  async getList(params: GetUsersListParams): Promise<User[]> {
+    var queryParams: (string | number)[] = [`%${params.has}%`];
+    var offset = '';
+    var limit = '';
+
+    if (params.createdAt) {
+      queryParams.push(params.createdAt);
+      offset = ` AND created_at < $${queryParams.length}`;
+    }
+
+    if (params.limit) {
+      queryParams.push(params.limit);
+      limit = ` LIMIT $${queryParams.length}`;
+    }
+
+    const query = `
+    SELECT ${this.selectUserFields}
+    FROM users
+    WHERE (username ILIKE $1 OR name ILIKE $1)${offset}
+    ORDER BY created_at DESC
+    ${limit}`;
+
+    const result = await this.pool.query<User>(query, queryParams);
     return result.rows;
   }
 
@@ -147,20 +167,35 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async getFollows(userId: number, byFollowers: boolean): Promise<FollowersResponse[]> {
-    const condition = byFollowers ? 'followedId = $1' : 'userId = $1';
-    const join = byFollowers ? 'userId' : 'followedId';
+  async getFollows(userId: number, params: GetAllFollowsParams): Promise<FollowersResponse[]> {
+    var queryParams: (number | string)[] = [userId, `%${params.has}%`];
+
+    const condition = params.byFollowers ? 'followedId = $1' : 'userId = $1';
+    const join = params.byFollowers ? 'userId' : 'followedId';
+    var offset = '';
+    var limit = '';
+
+    if (params.createdAt) {
+      queryParams.push(params.createdAt);
+      offset = ` AND follows.created_at < $${queryParams.length}`;
+    }
+
+    if (params.limit) {
+      queryParams.push(Number(params.limit));
+      limit = ` LIMIT $${queryParams.length}`;
+    }
 
     const query = `
-      SELECT id, username, name, follows.created_at AS followCreatedAt
+      SELECT id, username, name, follows.created_at AS "followCreatedAt"
       FROM follows
       INNER JOIN users ON follows.${join} = users.id
-      WHERE ${condition}
+      WHERE ${condition}${offset} AND (username ILIKE $2 OR name ILIKE $2)
       ORDER BY follows.created_at DESC
+      ${limit}
     `;
 
     try {
-      const result = await this.pool.query<FollowersResponse>(query, [userId]);
+      const result = await this.pool.query<FollowersResponse>(query, queryParams);
       return result.rows;
     } catch (error) {
       console.error(error);

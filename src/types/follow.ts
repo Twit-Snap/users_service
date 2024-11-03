@@ -10,3 +10,10 @@ export type FollowersResponse = {
   username: string;
   followCreatedAt: string;
 };
+
+export type GetAllFollowsParams = {
+  byFollowers: boolean;
+  has: string;
+  createdAt?: string;
+  limit?: number;
+};

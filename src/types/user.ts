@@ -1,4 +1,4 @@
-import { FollowersResponse, FollowReturn } from 'follow';
+import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { UserRegisterRepository } from 'userAuth';
 
 export interface User {
@@ -25,7 +25,7 @@ export type PublicUser = Omit<User, 'email' | 'lastname'>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;
-  getList(has: string): Promise<User[]>;
+  getList(params: GetUsersListParams): Promise<User[]>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterRepository): Promise<User>;
   getByUsername(username: string): Promise<User | null>;
@@ -33,5 +33,11 @@ export interface IUserRepository {
   createFollow(userId: number, followId: number): Promise<FollowReturn>;
   deleteFollow(userId: number, followId: number): Promise<void>;
   getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
-  getFollows(userId: number, byFollowers: boolean): Promise<FollowersResponse[]>;
+  getFollows(userId: number, params: GetAllFollowsParams): Promise<FollowersResponse[]>;
 }
+
+export type GetUsersListParams = {
+  has: string;
+  createdAt?: string;
+  limit?: number;
+};

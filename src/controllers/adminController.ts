@@ -1,3 +1,4 @@
+import { GetUsersListParams } from 'user';
 import { AdminService } from '../services/adminService';
 import { ValidationError } from '../types/customErrors';
 
@@ -8,8 +9,8 @@ export class AdminController {
     this.adminService = new AdminService();
   }
 
-  async getUserList(has: string) {
-    const admin = await this.adminService.getUserList(has);
+  async getUserList(params: GetUsersListParams) {
+    const admin = await this.adminService.getUserList(params);
     return { data: admin };
   }
 

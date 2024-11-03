@@ -9,9 +9,13 @@ router.get('/', async (req, res, next) => {
   try {
     const jwtUser = (req as UserRequest).user;
 
-    const has: string = req.query.has ? req.query.has.toString() : '';
+    const params = {
+      has: req.query.has ? req.query.has.toString() : '',
+      createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined,
+      limit: req.query.limit ? +req.query.limit : undefined
+    };
 
-    const users: User[] = await new UserService().getList(jwtUser, has);
+    const users: User[] = await new UserService().getList(jwtUser, params);
     res.send(users);
   } catch (error) {
     next(error);
@@ -70,12 +74,19 @@ router.delete('/:username/followers', async (req, res, next) => {
 router.get('/:username/followers/', async (req, res, next) => {
   try {
     const { username } = req.params;
-    const byFollowers: boolean = req.query.byFollowers === 'true' ? true : false;
+
+    const params = {
+      byFollowers: req.query.byFollowers === 'true' ? true : false,
+      has: req.query.has ? req.query.has.toString() : '',
+      createdAt: req.query.createdAt ? req.query.createdAt.toString() : undefined,
+      limit: req.query.limit ? +req.query.limit : undefined
+    };
+
     new UserController().validateUsername(username);
 
     const authUser = (req as unknown as UserRequest).user;
 
-    const data = await new UserService().getAllFollows(authUser, username, byFollowers);
+    const data = await new UserService().getAllFollows(authUser, username, params);
     res.status(200).json(data);
   } catch (error) {
     next(error);
