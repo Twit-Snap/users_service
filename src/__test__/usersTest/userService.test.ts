@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtUserPayload } from 'jwt';
 import { GetUsersListParams, ModifiableUser, User, UserWithPassword } from 'user';
 import { UserRegisterRepository } from 'userAuth';

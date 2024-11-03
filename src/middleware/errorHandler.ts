@@ -65,7 +65,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       detail: `Blocked error`,
       instance: req.originalUrl
     });
-  }  else {
+  } else {
     console.error(`Unexpected error: ${err.message}`, { stack: err.stack });
     res.status(500).json({
       type: 'about:blank',

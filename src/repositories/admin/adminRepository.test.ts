@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Pool } from 'pg';
 import { AdminWithPassword } from '../../types/admin';
 import { EntityAlreadyExistsError } from '../../types/customErrors';

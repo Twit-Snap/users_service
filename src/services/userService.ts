@@ -124,9 +124,7 @@ export class UserService {
       isPrivate: undefined
     };
 
-    newValues = Object.fromEntries(
-      Object.entries(newValues).filter(([_, val]) => val != undefined)
-    );
+    newValues = Object.fromEntries(Object.entries(newValues).filter(([, val]) => val != undefined));
 
     const data = await this.userRepository.modifyUser(user.id, newValues);
     return data;

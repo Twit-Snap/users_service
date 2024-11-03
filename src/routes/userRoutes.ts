@@ -123,6 +123,7 @@ router.patch('/:username', async (req, res, next) => {
     const newValues: ModifiableUser = req.body;
     const username = req.params.username;
 
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const jwtUser = (req as any).user;
 
     const controller = new UserController();
