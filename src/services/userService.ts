@@ -3,6 +3,7 @@ import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
 import {
+  GetUserParams,
   GetUsersListParams,
   IUserRepository,
   ModifiableUser,
@@ -46,11 +47,25 @@ export class UserService {
     return this.userRepository.create(userData);
   }
 
-  async getUser(username: string, authUser: JwtUserPayload): Promise<User | PublicUser> {
-    const user = await this.userRepository.getByUsername(username);
+  async getUser(
+    username: string,
+    authUser: JwtUserPayload,
+    params?: GetUserParams
+  ): Promise<User | PublicUser> {
+    const user = await this.userRepository.getByUsername(username, params);
     let validUser = this.validate_username(user, username);
 
     validUser = await this.addFollowState(authUser, validUser);
+
+    if (params?.reduce) {
+      validUser = {
+        ...validUser,
+        userId: validUser.id,
+        id: NaN,
+        followersCount: undefined,
+        followingCount: undefined
+      };
+    }
 
     return authUser.username === username ? validUser : this.preparePublicUser(validUser);
   }

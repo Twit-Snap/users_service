@@ -1,6 +1,13 @@
 import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
-import { GetUsersListParams, IUserRepository, ModifiableUser, User, UserWithPassword } from 'user';
+import {
+  GetUserParams,
+  GetUsersListParams,
+  IUserRepository,
+  ModifiableUser,
+  User,
+  UserWithPassword
+} from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
 import { DatabasePool } from '../db';
@@ -8,6 +15,8 @@ import { DatabasePool } from '../db';
 export class UserRepository implements IUserRepository {
   private pool: Pool;
   private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked"`;
+  private readonly reducedUserFields =
+    'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate"';
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
@@ -121,8 +130,8 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async getByUsername(username: string) {
-    const query = `SELECT ${this.selectUserFields} FROM users WHERE username = $1`;
+  async getByUsername(username: string, params?: GetUserParams) {
+    const query = `SELECT ${params?.reduce ? this.reducedUserFields : this.selectUserFields} FROM users WHERE username = $1`;
     const result = await this.pool.query<User>(query, [username]);
     if (result.rows.length === 0) {
       return null;
