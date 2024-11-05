@@ -35,8 +35,10 @@ router.get('/:username', async (req, res, next) => {
   try {
     const authUser = (req as unknown as UserRequest).user;
     const username = req.params.username;
-
-    const user = await new UserController().getUserByUsername(username, authUser);
+    const params = {
+      reduce: req.query.reduce?.toString() === 'true'
+    };
+    const user = await new UserController().getUserByUsername(username, authUser, params);
     res.send(user);
   } catch (error) {
     next(error);

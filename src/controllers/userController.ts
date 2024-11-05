@@ -1,5 +1,5 @@
 import { JwtCustomPayload, JwtUserPayload } from 'jwt';
-import { ModifiableUser, PublicUser, User } from 'user';
+import { GetUserParams, ModifiableUser, PublicUser, User } from 'user';
 import { UserService } from '../services/userService';
 import { AuthenticationError, ValidationError } from '../types/customErrors';
 
@@ -10,9 +10,9 @@ export class UserController {
     this.userService = aUserService ?? new UserService();
   }
 
-  async getUserByUsername(username: string, authUser: JwtUserPayload) {
+  async getUserByUsername(username: string, authUser: JwtUserPayload, params?: GetUserParams) {
     this.validateUsername(username);
-    const user: User | PublicUser = await this.userService.getUser(username, authUser);
+    const user: User | PublicUser = await this.userService.getUser(username, authUser, params);
     return { data: user };
   }
 

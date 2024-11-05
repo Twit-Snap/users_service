@@ -3,6 +3,7 @@ import { UserRegisterRepository } from 'userAuth';
 
 export interface User {
   id: number;
+  userId?: number;
   username: string;
   email: string;
   name: string;
@@ -46,7 +47,7 @@ export interface IUserRepository {
   getList(params: GetUsersListParams): Promise<User[]>;
   get(id: number): Promise<User | null>;
   create(userData: UserRegisterRepository): Promise<User>;
-  getByUsername(username: string): Promise<User | null>;
+  getByUsername(username: string, params?: GetUserParams): Promise<User | null>;
   findBySSOuid(uid: string): Promise<User | null>;
   createFollow(userId: number, followId: number): Promise<FollowReturn>;
   deleteFollow(userId: number, followId: number): Promise<void>;
@@ -63,4 +64,8 @@ export type GetUsersListParams = {
   amount?: boolean;
   equalDate?: boolean;
   offset: number;
+};
+
+export type GetUserParams = {
+  reduce?: boolean;
 };

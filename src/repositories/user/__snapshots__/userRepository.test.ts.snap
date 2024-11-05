@@ -362,6 +362,24 @@ exports[`UserRepository getAmount should handle zero results: result 1`] = `
 }
 `;
 
+exports[`UserRepository getByUsername should get reduced user by username: Interpolated SQL query 1`] = `"SELECT id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate" FROM users WHERE username = 'testuser'"`;
+
+exports[`UserRepository getByUsername should get reduced user by username: SQL query 1`] = `
+[
+  "SELECT id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate" FROM users WHERE username = $1",
+  [
+    "testuser",
+  ],
+]
+`;
+
+exports[`UserRepository getByUsername should get reduced user by username: User result 1`] = `
+{
+  "userId": 1,
+  "username": "testuser",
+}
+`;
+
 exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked" FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `

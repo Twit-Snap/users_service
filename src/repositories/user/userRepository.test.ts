@@ -345,6 +345,18 @@ describe('UserRepository', () => {
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
 
+    it('should get reduced user by username', async () => {
+      const mockUser = { userId: 1, username: 'testuser' };
+      mockPool.query.mockResolvedValueOnce({ rows: [mockUser] });
+
+      const result = await userRepository.getByUsername('testuser', { reduce: true });
+      expect(result).toMatchSnapshot('User result');
+      expect(mockPool.query.mock.calls[0]).toMatchSnapshot('SQL query');
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
     it('should return null when user not found', async () => {
       mockPool.query.mockResolvedValueOnce({ rows: [] });
 
