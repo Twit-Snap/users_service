@@ -82,6 +82,43 @@ describe('UserService', () => {
       });
     });
 
+    it('should return a user with reduced attributes if params.reduce is true', async () => {
+      const result = await service.getUser(
+        authUser.username,
+        { ...authUser, type: 'user' },
+        { reduce: true }
+      );
+      expect(result).toEqual({
+        ...aMockUser,
+        id: NaN,
+        userId: aMockUser.id,
+        followersCount: undefined,
+        following: false,
+        followingCount: undefined,
+        followed: false
+      });
+    });
+
+    it('should not return following & followed state if authUser is an admin', async () => {
+      const dbServiceMockAux = {
+        getByUsername: jest.fn().mockResolvedValue(aMockUser),
+        getFollow: jest.fn().mockResolvedValue(true),
+        getFollows: jest.fn().mockResolvedValue(0)
+      } as unknown as jest.Mocked<UserRepository>;
+
+      const result = await new UserService(dbServiceMockAux).getUser('notEqualUsername', {
+        ...authUser,
+        type: 'admin'
+      } as unknown as JwtUserPayload);
+
+      expect(result).toEqual({
+        ...aMockUser,
+        email: undefined,
+        lastname: undefined,
+        isBlocked: undefined
+      });
+    });
+
     it('should return following & followed equal to true if both users follows', async () => {
       const dbServiceMockAux = {
         getByUsername: jest.fn().mockResolvedValue(aMockUser),
