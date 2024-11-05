@@ -1,6 +1,7 @@
 import * as httpMocks from 'node-mocks-http';
 import { AdminController } from '../../controllers/adminController';
 import { AdminService } from '../../services/adminService';
+import { ValidationError } from '../../types/customErrors';
 
 jest.mock('../../services/adminService');
 
@@ -32,5 +33,20 @@ describe('AdminController', () => {
 
     const response = await controller.getUserByUsername(req.params.username);
     expect(response).toEqual({ data: aUser });
+  });
+
+  it('should raise a ValidationError if username is null', async () => {
+    const aUser = { username: undefined, email: 'admin1@example.com' };
+    (AdminService.prototype.getUserByUsername as jest.Mock).mockResolvedValue(aUser);
+
+    const req = httpMocks.createRequest({
+      method: 'GET',
+      url: '/admins/users/ ',
+      params: { username: undefined }
+    });
+
+    await expect(controller.getUserByUsername(req.params.username)).rejects.toThrow(
+      ValidationError
+    );
   });
 });
