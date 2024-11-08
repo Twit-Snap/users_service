@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserAuthService } from '../services/userAuthService';
 import { ValidationError } from '../types/customErrors';
-import { UserRegisterDto } from '../types/userAuth';
-import axios from 'axios';
+import { UserLoginDto, UserRegisterDto } from '../types/userAuth';
+import { MetricController } from './metricController';
+
 
 export class UserAuthController {
   private userAuthService: UserAuthService;
@@ -12,18 +13,15 @@ export class UserAuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
+    const userLoginDto:UserLoginDto = req.body;
+
     try {
-      const { emailOrUsername, password } = req.body;
-      if (!emailOrUsername || !password) {
-        throw new ValidationError(
-          'emailOrUsername',
-          'Invalid email or username',
-          'INVALID_EMAIL_OR_USERNAME'
-        );
-      }
-      const user = await this.userAuthService.login(emailOrUsername, password);
+      this.validateLogin(userLoginDto);
+      const user = await this.userAuthService.login(userLoginDto.emailOrUsername, userLoginDto.password);
+      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, true, "login");
       res.send(user);
     } catch (error) {
+      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, false, "login");
       next(error);
     }
   }
@@ -34,12 +32,12 @@ export class UserAuthController {
     try {
       this.registerValidations(userRegisterDTO);
       const user = await this.userAuthService.register(userRegisterDTO);
-      this.calculateRegistrationTime(userRegisterDTO);
-      await this.postRegisterMetrics(userRegisterDTO, true, "register");
+      await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, true, "register");
       res.send(user);
     } catch (error) {
+
       if(userRegisterDTO){
-        await this.postRegisterMetrics(userRegisterDTO, false, "register");
+        await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, false, "register");
       }
       next(error);
     }
@@ -82,33 +80,20 @@ export class UserAuthController {
     }
   }
 
-  private async postRegisterMetrics(userData: UserRegisterDto, success: boolean, type: string) {
-    await axios.post(`http://metrics_app:4000/metrics/register`, {
-      createdAt: new Date(),
-      type: type,
-      username: userData.username? userData.username: "",
-      metrics: {
-        registration_time: userData.registrationTime? userData.registrationTime: 0,
-        success: success
-      }
-    })
-  }
-
-  private async postLoginMetrics(userData: UserRegisterDto, success: boolean, type: string) {
-    await axios.post(`${process.env.PUBLIC_METRIC_SERVER_URL}/metrics/login`, {
-      createdAt: new Date(),
-      type: type,
-      username: userData.username? userData.username: "",
-      metrics: {
-        registration_time: userData.registrationTime,
-        success: success
-      }
-    })
-  }
-
-  private calculateRegistrationTime(userData: UserRegisterDto): number {
-    const now = new Date();
-    const registrationTime = new Date(userData.registrationTime);
-    return now.getTime() - registrationTime.getTime();
+  private validateLogin(userLoginDto: UserLoginDto) {
+    if (!userLoginDto.emailOrUsername || !userLoginDto.password) {
+      throw new ValidationError(
+        'emailOrUsername',
+        'Invalid email or username',
+        'INVALID_EMAIL_OR_USERNAME'
+      );
+    }
+    if(!userLoginDto.loginTime){
+      throw new ValidationError(
+        'loginTime',
+        'Invalid login time',
+        'INVALID_LOGIN_TIME'
+      );
+    }
   }
 }
