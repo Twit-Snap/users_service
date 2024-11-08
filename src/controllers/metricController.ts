@@ -42,6 +42,17 @@ export class MetricController{
     })
   }
 
+  async postBlockMetric(username: string | undefined) {
+    await axios.post(`http://localhost:4000/metrics`, {
+      createdAt: new Date(),
+      type: "blocked",
+      username: username? username: "",
+      metrics: {
+        blocked: true
+      }
+    })
+  }
+
   private calculateRegistrationTime(eventTime: Date): number {
     const now = new Date();
     const registrationTime = new Date(eventTime);
