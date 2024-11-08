@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { UserAuthSSOService } from '../services/userAuthSSOService';
 import { ValidationError } from '../types/customErrors';
 import { UserSSOLoginDto, UserSSORegisterDto } from '../types/userAuth';
+import { MetricController } from './metricController';
 
 export class AuthSSOController {
   private userAuthSSOService: UserAuthSSOService;
@@ -11,12 +12,14 @@ export class AuthSSOController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
+    const userSSODto: UserSSOLoginDto = req.body;
     try {
-      const userSSODto: UserSSOLoginDto = req.body;
       this.loginValidations(userSSODto);
       const user = await this.userAuthSSOService.login(userSSODto);
+      await new MetricController().postLoginProviderMetrics(userSSODto.uid, true);
       res.send(user);
     } catch (error) {
+      await new MetricController().postLoginProviderMetrics(userSSODto.uid, true);
       next(error);
     }
   }
@@ -26,6 +29,7 @@ export class AuthSSOController {
       const userSSORegisterDto: UserSSORegisterDto = req.body;
       this.registerValidations(userSSORegisterDto);
       const user = await this.userAuthSSOService.register(userSSORegisterDto);
+      await new MetricController().postRegisterProviderMetrics(userSSORegisterDto.username, userSSORegisterDto.providerId);
       res.send(user);
     } catch (error) {
       next(error);
