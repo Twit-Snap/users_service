@@ -20,3 +20,19 @@ curl -X POST http://localhost:3000/auth/register \
         "lastname": "lastname test",
         "birthdate": "1990-01-01"
     }'
+
+### valid register
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "tincho@gmail.com",
+  "username": "tincho",
+  "password": "123",
+  "name": "martin",
+  "lastname": "cwikla",
+  "birthdate": "1990-01-01",
+  "registrationTime": "8-11-2024"
+
+}
+
