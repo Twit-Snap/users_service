@@ -136,9 +136,8 @@ router.patch('/:username', async (req, res, next) => {
     controller.newValuesHasExtraKeys(newValues);
 
     const data = await new UserService().modifyUser(username, newValues);
-
     if(newValues.isBlocked){
-      await new MetricController().postBlockMetric(newValues.username);
+      await new MetricController().postBlockMetric(data.username);
     }
 
     res.status(200).json(data);
