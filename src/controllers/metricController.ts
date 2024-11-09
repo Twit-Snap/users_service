@@ -4,15 +4,15 @@ export class MetricController{
 
   constructor() {}
 
-  async postUserMetrics(username: string, initialTime: Date , success: boolean, type: string) {
-    const eventTime = this.calculateRegistrationTime(initialTime);
+  async postUserMetrics(username: string, eventTime: number, processInitialTime: Date, success: boolean, type: string) {
+    const finalTime = this.calculateRegistrationTime(eventTime, processInitialTime);
 
     await axios.post(`http://localhost:4000/metrics`, {
       createdAt: new Date(),
       type: type,
       username: username? username: "",
       metrics: {
-        event_time: eventTime? eventTime: 0,
+        event_time: finalTime? finalTime: 0,
         success: success
       }
     })
@@ -53,10 +53,10 @@ export class MetricController{
     })
   }
 
-  private calculateRegistrationTime(eventTime: Date): number {
+  private calculateRegistrationTime(eventTime: number, processTime: Date): number {
     const now = new Date();
-    const registrationTime = new Date(eventTime);
-    return now.getTime() - registrationTime.getTime();
+    const spentTime = now.getTime() - processTime.getTime();
+    return eventTime + spentTime;
   }
 
 }

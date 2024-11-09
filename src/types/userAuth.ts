@@ -9,7 +9,7 @@ export interface UserRegisterDto {
   lastname: string;
   birthdate: Date;
   password: string;
-  registrationTime: Date;
+  registrationTime: number;
 }
 
 export interface UserSSORegisterDto {
@@ -28,7 +28,7 @@ export interface UserSSOLoginDto {
 export interface UserLoginDto {
   emailOrUsername: string;
   password: string;
-  loginTime: Date;
+  loginTime: number;
 }
 
 export type UserRegisterRepository = Omit<UserRegisterDto, 'password'|'registrationTime' > & {

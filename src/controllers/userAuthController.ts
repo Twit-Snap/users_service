@@ -14,30 +14,30 @@ export class UserAuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     const userLoginDto:UserLoginDto = req.body;
-
+    const now = new Date();
     try {
       this.validateLogin(userLoginDto);
       const user = await this.userAuthService.login(userLoginDto.emailOrUsername, userLoginDto.password);
-      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, true, "login");
+      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, now, true, "login");
       res.send(user);
     } catch (error) {
-      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, false, "login");
+      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, now, false, "login");
       next(error);
     }
   }
 
   async register(req: Request, res: Response, next: NextFunction) {
     const userRegisterDTO: UserRegisterDto = req.body;
-
+    const initialProcessTime = new Date();
     try {
       this.registerValidations(userRegisterDTO);
       const user = await this.userAuthService.register(userRegisterDTO);
-      await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, true, "register");
+      await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime, true, "register");
       res.send(user);
     } catch (error) {
 
       if(userRegisterDTO){
-        await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, false, "register");
+        await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime,  false, "register");
       }
       next(error);
     }
