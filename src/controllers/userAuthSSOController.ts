@@ -16,10 +16,9 @@ export class AuthSSOController {
     try {
       this.loginValidations(userSSODto);
       const user = await this.userAuthSSOService.login(userSSODto);
-      await new MetricController().postLoginProviderMetrics(userSSODto.uid, true);
+      await new MetricController().postLoginProviderMetrics(user.username, true);
       res.send(user);
     } catch (error) {
-      await new MetricController().postLoginProviderMetrics(userSSODto.uid, true);
       next(error);
     }
   }
@@ -29,7 +28,7 @@ export class AuthSSOController {
       const userSSORegisterDto: UserSSORegisterDto = req.body;
       this.registerValidations(userSSORegisterDto);
       const user = await this.userAuthSSOService.register(userSSORegisterDto);
-      await new MetricController().postRegisterProviderMetrics(userSSORegisterDto.username, userSSORegisterDto.providerId);
+      await new MetricController().postRegisterProviderMetrics(user.username, userSSORegisterDto.providerId);
       res.send(user);
     } catch (error) {
       next(error);
