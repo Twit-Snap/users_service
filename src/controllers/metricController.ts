@@ -18,7 +18,7 @@ export class MetricController{
       }
     })
     .catch((error) => {
-      console.error('Error posting metrics', error);
+      console.error('Error posting metrics');
     });
   }
 
@@ -33,7 +33,7 @@ export class MetricController{
       }
     })
     .catch((error) => {
-      console.error('Error posting metrics', error);
+      console.error('Error posting metrics');
     });
   }
 
@@ -48,7 +48,7 @@ export class MetricController{
       }
     })
     .catch((error) => {
-      console.error('Error posting metrics', error);
+      console.error('Error posting metrics');
     });
 
   }
@@ -63,7 +63,7 @@ export class MetricController{
       }
     })
     .catch((error) => {
-      console.error('Error posting metrics', error);
+      console.error('Error posting metrics');
     });
   }
 
