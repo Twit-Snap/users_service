@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 export class MetricController{
 
   constructor() {}
@@ -16,6 +17,9 @@ export class MetricController{
         success: success
       }
     })
+    .catch((error) => {
+      console.error('Error posting metrics', error);
+    });
   }
 
   async postRegisterProviderMetrics(username: string, provider: string) {
@@ -28,6 +32,9 @@ export class MetricController{
         provider: provider
       }
     })
+    .catch((error) => {
+      console.error('Error posting metrics', error);
+    });
   }
 
   async postLoginProviderMetrics(username: string, success: boolean) {
@@ -40,6 +47,10 @@ export class MetricController{
         success: success
       }
     })
+    .catch((error) => {
+      console.error('Error posting metrics', error);
+    });
+
   }
 
   async postBlockMetric(username: string | undefined) {
@@ -51,11 +62,15 @@ export class MetricController{
         blocked: true
       }
     })
+    .catch((error) => {
+      console.error('Error posting metrics', error);
+    });
   }
 
   private calculateRegistrationTime(eventTime: number, processTime: Date): number {
     const now = new Date();
     const spentTime = now.getTime() - processTime.getTime();
+    //agregar  error en el caso de que sea negativo
     return eventTime + spentTime;
   }
 

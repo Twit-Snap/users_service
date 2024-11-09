@@ -35,10 +35,7 @@ export class UserAuthController {
       await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime, true, "register");
       res.send(user);
     } catch (error) {
-
-      if(userRegisterDTO){
         await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime,  false, "register");
-      }
       next(error);
     }
   }
