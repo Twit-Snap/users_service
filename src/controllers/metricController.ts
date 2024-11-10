@@ -22,15 +22,13 @@ export class MetricController{
     });
   }
 
-  async postRegisterProviderMetrics(username: string, provider: string) {
+  async postRegisterProviderMetrics(username: string) {
 
     await axios.post(`http://localhost:4000/metrics`, {
       createdAt: new Date(),
       type: 'register_with_provider',
       username: username? username: "",
-      metrics: {
-        provider: provider
-      }
+      metrics: {}
     })
     .catch((error) => {
       console.error('Error posting metrics');

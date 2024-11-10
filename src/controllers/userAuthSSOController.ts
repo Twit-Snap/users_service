@@ -28,7 +28,7 @@ export class AuthSSOController {
       const userSSORegisterDto: UserSSORegisterDto = req.body;
       this.registerValidations(userSSORegisterDto);
       const user = await this.userAuthSSOService.register(userSSORegisterDto);
-      await new MetricController().postRegisterProviderMetrics(user.username, userSSORegisterDto.providerId);
+      await new MetricController().postRegisterProviderMetrics(user.username);
       res.send(user);
     } catch (error) {
       next(error);
