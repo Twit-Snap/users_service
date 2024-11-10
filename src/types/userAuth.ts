@@ -9,6 +9,7 @@ export interface UserRegisterDto {
   lastname: string;
   birthdate: Date;
   password: string;
+  profilePicture?: string;
 }
 
 export interface UserSSORegisterDto {

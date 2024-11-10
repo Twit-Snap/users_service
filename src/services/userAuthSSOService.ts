@@ -96,7 +96,7 @@ export class UserAuthSSOService {
       ssoUid: uid, // Use the UID from the decoded token
       ssoProviderId: providerId,
       password: null,
-      profilePicture: picture || null
+      profilePicture: picture || undefined
     };
 
     // Create new user
