@@ -14,9 +14,9 @@ import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked"`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"`;
   private readonly reducedUserFields =
-    'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate"';
+    'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate", expo_token AS "expoToken"';
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
@@ -89,13 +89,22 @@ export class UserRepository implements IUserRepository {
   }
 
   async create(userData: UserRegisterRepository): Promise<User> {
-    const { username, email, name, lastname, password, profilePicture, ssoProviderId, ssoUid } =
-      userData;
+    const {
+      username,
+      email,
+      name,
+      lastname,
+      password,
+      profilePicture,
+      ssoProviderId,
+      ssoUid,
+      expoToken
+    } = userData;
     const birthdate = new Date(userData.birthdate).toISOString();
 
     const query = `
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING ${this.selectUserFields}
     `;
 
@@ -109,7 +118,8 @@ export class UserRepository implements IUserRepository {
         password,
         profilePicture,
         ssoUid,
-        ssoProviderId
+        ssoProviderId,
+        expoToken
       ]);
       return result.rows[0];
     } catch (error) {
@@ -258,6 +268,22 @@ export class UserRepository implements IUserRepository {
           throw new EntityAlreadyExistsError('Email', 'Email is already in use');
         }
       }
+      // If it's not a unique constraint violation, re-throw the original error
+      throw error;
+    }
+  }
+
+  async putExpoToken(userId: number, expoToken: string): Promise<void> {
+    const query = `
+      UPDATE users
+      SET expo_token = $2
+      WHERE id = $1
+    `;
+
+    try {
+      await this.pool.query(query, [userId, expoToken]);
+    } catch (error) {
+      console.error(error);
       // If it's not a unique constraint violation, re-throw the original error
       throw error;
     }

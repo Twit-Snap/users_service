@@ -41,6 +41,8 @@ export class AuthSSOController {
     if (!userSSODto.uid) {
       throw new ValidationError('uid', 'Invalid uid', 'INVALID_UID');
     }
+
+    this.validateExpoToken(userSSODto.expoToken);
   }
 
   private registerValidations(userData: UserSSORegisterDto) {
@@ -63,6 +65,22 @@ export class AuthSSOController {
 
     if (!userData.birthdate) {
       throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
+    }
+
+    this.validateExpoToken(userData.expoToken);
+  }
+
+  private validateExpoToken(expoToken: string | undefined) {
+    if (!expoToken) {
+      return
+    }
+
+    if (!expoToken.startsWith('ExponentPushToken[') || !expoToken.endsWith(']')) {
+      throw new ValidationError(
+        expoToken,
+        'This token is invalid or does not exist',
+        'INVALID EXPO TOKEN'
+      );
     }
   }
 }

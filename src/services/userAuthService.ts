@@ -15,7 +15,11 @@ export class UserAuthService implements IUserAuthService {
     this.jwtService = jwtService ?? new JWTService();
   }
 
-  async login(emailOrUsername: string, password: string): Promise<UserWithToken> {
+  async login(
+    emailOrUsername: string,
+    password: string,
+    expoToken?: string
+  ): Promise<UserWithToken> {
     // Find user by email or username
     const user = await this.userRepository.findByEmailOrUsername(emailOrUsername);
 
@@ -34,6 +38,8 @@ export class UserAuthService implements IUserAuthService {
       throw new BlockedError();
     }
 
+    expoToken && this.userRepository.putExpoToken(user.id, expoToken);
+
     // Generate JWT token
     const token = this.jwtService.sign({
       type: 'user',
@@ -43,7 +49,7 @@ export class UserAuthService implements IUserAuthService {
     });
 
     // Attach token to user object (assuming we want to return it)
-    const userWithToken = { ...user, token, password: undefined };
+    const userWithToken = { ...user, expoToken, token, password: undefined };
 
     return userWithToken;
   }

@@ -12,7 +12,7 @@ export class UserAuthController {
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
-      const { emailOrUsername, password } = req.body;
+      const { emailOrUsername, password, expoToken } = req.body;
       if (!emailOrUsername || !password) {
         throw new ValidationError(
           'emailOrUsername',
@@ -20,7 +20,10 @@ export class UserAuthController {
           'INVALID_EMAIL_OR_USERNAME'
         );
       }
-      const user = await this.userAuthService.login(emailOrUsername, password);
+
+      this.validateExpoToken(expoToken);
+
+      const user = await this.userAuthService.login(emailOrUsername, password, expoToken);
       res.send(user);
     } catch (error) {
       next(error);
@@ -67,6 +70,22 @@ export class UserAuthController {
     // Validate birthdate (TODO: Add more validations)
     if (!userData.birthdate) {
       throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
+    }
+
+    this.validateExpoToken(userData.expoToken);
+  }
+
+  private validateExpoToken(expoToken: string | undefined) {
+    if (!expoToken) {
+      return;
+    }
+
+    if (!expoToken.startsWith('ExponentPushToken[') || !expoToken.endsWith(']')) {
+      throw new ValidationError(
+        expoToken,
+        'This token is invalid or does not exist',
+        'INVALID EXPO TOKEN'
+      );
     }
   }
 }
