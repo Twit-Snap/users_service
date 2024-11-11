@@ -13,7 +13,7 @@ export class MetricController {
     const finalTime = this.calculateRegistrationTime(eventTime, processInitialTime);
 
     await axios
-      .post(`http://localhost:4000/metrics`, {
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
         createdAt: new Date(),
         type: type,
         username: username ? username : '',
@@ -29,7 +29,7 @@ export class MetricController {
 
   async postRegisterProviderMetrics(username: string) {
     await axios
-      .post(`http://localhost:4000/metrics`, {
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
         createdAt: new Date(),
         type: 'register_with_provider',
         username: username ? username : '',
@@ -42,7 +42,7 @@ export class MetricController {
 
   async postLoginProviderMetrics(username: string, success: boolean) {
     await axios
-      .post(`http://localhost:4000/metrics`, {
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
         createdAt: new Date(),
         type: 'login_with_provider',
         username: username ? username : '',
@@ -57,7 +57,7 @@ export class MetricController {
 
   async postBlockMetric(username: string | undefined) {
     await axios
-      .post(`http://localhost:4000/metrics`, {
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
         createdAt: new Date(),
         type: 'blocked',
         username: username ? username : '',
