@@ -10,6 +10,7 @@ export interface UserRegisterDto {
   birthdate: Date;
   password: string;
   profilePicture?: string;
+  registrationTime: number;
 }
 
 export interface UserSSORegisterDto {
@@ -26,7 +27,13 @@ export interface UserSSOLoginDto {
   uid: string;
 }
 
-export type UserRegisterRepository = Omit<UserRegisterDto, 'password'> & {
+export interface UserLoginDto {
+  emailOrUsername: string;
+  password: string;
+  loginTime: number;
+}
+
+export type UserRegisterRepository = Omit<UserRegisterDto, 'password' | 'registrationTime'> & {
   ssoUid?: string | null;
   ssoProviderId?: string | null;
   password?: string | null;
