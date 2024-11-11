@@ -9,6 +9,7 @@ export interface UserRegisterDto {
   lastname: string;
   birthdate: Date;
   password: string;
+  profilePicture?: string;
   registrationTime: number;
 }
 
@@ -18,6 +19,7 @@ export interface UserSSORegisterDto {
   providerId: string;
   username: string;
   birthdate: Date;
+  profilePicture?: string;
 }
 
 export interface UserSSOLoginDto {
