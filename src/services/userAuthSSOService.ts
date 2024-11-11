@@ -64,7 +64,7 @@ export class UserAuthSSOService {
   }
 
   async register(userSSODto: UserSSORegisterDto): Promise<UserWithToken> {
-    const { uid, providerId, username, birthdate } = userSSODto;
+    const { uid, providerId, username, birthdate, profilePicture } = userSSODto;
     let decodedToken: DecodedIdToken;
     console.log('userSSODto:', userSSODto);
     try {
@@ -96,7 +96,7 @@ export class UserAuthSSOService {
       ssoUid: uid, // Use the UID from the decoded token
       ssoProviderId: providerId,
       password: null,
-      profilePicture: picture || undefined
+      profilePicture: profilePicture ?? picture
     };
 
     // Create new user

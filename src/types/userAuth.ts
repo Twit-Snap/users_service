@@ -18,6 +18,7 @@ export interface UserSSORegisterDto {
   providerId: string;
   username: string;
   birthdate: Date;
+  profilePicture?: string;
 }
 
 export interface UserSSOLoginDto {
