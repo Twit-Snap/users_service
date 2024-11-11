@@ -53,10 +53,8 @@ export class UserAuthService implements IUserAuthService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
 
-    const { registrationTime, ...userDataWithoutRegistrationTime } = userData;
-
     const newUser = await this.userRepository.create({
-      ...userDataWithoutRegistrationTime,
+      ...userData,
       password: hashedPassword
     });
 

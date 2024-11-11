@@ -4,7 +4,6 @@ import { ValidationError } from '../types/customErrors';
 import { UserLoginDto, UserRegisterDto } from '../types/userAuth';
 import { MetricController } from './metricController';
 
-
 export class UserAuthController {
   private userAuthService: UserAuthService;
 
@@ -13,15 +12,30 @@ export class UserAuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
-    const userLoginDto:UserLoginDto = req.body;
+    const userLoginDto: UserLoginDto = req.body;
     const now = new Date();
     try {
       this.validateLogin(userLoginDto);
-      const user = await this.userAuthService.login(userLoginDto.emailOrUsername, userLoginDto.password);
-      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, now, true, "login");
+      const user = await this.userAuthService.login(
+        userLoginDto.emailOrUsername,
+        userLoginDto.password
+      );
+      await new MetricController().postUserMetrics(
+        userLoginDto.emailOrUsername,
+        userLoginDto.loginTime,
+        now,
+        true,
+        'login'
+      );
       res.send(user);
     } catch (error) {
-      await new MetricController().postUserMetrics(userLoginDto.emailOrUsername, userLoginDto.loginTime, now, false, "login");
+      await new MetricController().postUserMetrics(
+        userLoginDto.emailOrUsername,
+        userLoginDto.loginTime,
+        now,
+        false,
+        'login'
+      );
       next(error);
     }
   }
@@ -31,11 +45,24 @@ export class UserAuthController {
     const initialProcessTime = new Date();
     try {
       this.registerValidations(userRegisterDTO);
+
       const user = await this.userAuthService.register(userRegisterDTO);
-      await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime, true, "register");
+      await new MetricController().postUserMetrics(
+        userRegisterDTO.username,
+        userRegisterDTO.registrationTime,
+        initialProcessTime,
+        true,
+        'register'
+      );
       res.send(user);
     } catch (error) {
-        await new MetricController().postUserMetrics(userRegisterDTO.username, userRegisterDTO.registrationTime, initialProcessTime,  false, "register");
+      await new MetricController().postUserMetrics(
+        userRegisterDTO.username,
+        userRegisterDTO.registrationTime,
+        initialProcessTime,
+        false,
+        'register'
+      );
       next(error);
     }
   }
@@ -73,7 +100,11 @@ export class UserAuthController {
 
     // Validate registration time
     if (!userData.registrationTime) {
-      throw new ValidationError('registrationTime', 'Invalid registration time', 'INVALID_REGISTRATION_TIME');
+      throw new ValidationError(
+        'registrationTime',
+        'Invalid registration time',
+        'INVALID_REGISTRATION_TIME'
+      );
     }
   }
 
@@ -85,12 +116,8 @@ export class UserAuthController {
         'INVALID_EMAIL_OR_USERNAME'
       );
     }
-    if(!userLoginDto.loginTime){
-      throw new ValidationError(
-        'loginTime',
-        'Invalid login time',
-        'INVALID_LOGIN_TIME'
-      );
+    if (!userLoginDto.loginTime) {
+      throw new ValidationError('loginTime', 'Invalid login time', 'INVALID_LOGIN_TIME');
     }
   }
 }

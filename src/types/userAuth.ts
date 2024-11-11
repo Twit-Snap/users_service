@@ -33,7 +33,7 @@ export interface UserLoginDto {
   loginTime: number;
 }
 
-export type UserRegisterRepository = Omit<UserRegisterDto, 'password'|'registrationTime' > & {
+export type UserRegisterRepository = Omit<UserRegisterDto, 'password' | 'registrationTime'> & {
   ssoUid?: string | null;
   ssoProviderId?: string | null;
   password?: string | null;
