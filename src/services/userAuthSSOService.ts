@@ -45,6 +45,8 @@ export class UserAuthSSOService {
         throw new BlockedError();
       }
 
+      userSSODto.expoToken && this.userRepository.putExpoToken(user.id, userSSODto.expoToken);
+
       // Generate JWT token
       const token = this.jwtService.sign({
         type: 'user',
@@ -54,7 +56,7 @@ export class UserAuthSSOService {
       });
 
       // Attach token to user object
-      const userWithToken = { ...user, token };
+      const userWithToken = { ...user, expoToken: userSSODto.expoToken, token };
 
       return userWithToken;
     } catch (error) {
@@ -64,7 +66,7 @@ export class UserAuthSSOService {
   }
 
   async register(userSSODto: UserSSORegisterDto): Promise<UserWithToken> {
-    const { uid, providerId, username, birthdate, profilePicture } = userSSODto;
+    const { uid, providerId, username, birthdate, profilePicture, expoToken } = userSSODto;
     let decodedToken: DecodedIdToken;
     console.log('userSSODto:', userSSODto);
     try {
@@ -96,7 +98,8 @@ export class UserAuthSSOService {
       ssoUid: uid, // Use the UID from the decoded token
       ssoProviderId: providerId,
       password: null,
-      profilePicture: profilePicture ?? picture
+      profilePicture: profilePicture ?? picture,
+      expoToken
     };
 
     // Create new user

@@ -16,10 +16,12 @@ export class UserAuthController {
     const now = new Date();
     try {
       this.validateLogin(userLoginDto);
+
       const user = await this.userAuthService.login(
         userLoginDto.emailOrUsername,
         userLoginDto.password
       );
+
       await new MetricController().postUserMetrics(
         userLoginDto.emailOrUsername,
         userLoginDto.loginTime,
@@ -27,6 +29,7 @@ export class UserAuthController {
         true,
         'login'
       );
+
       res.send(user);
     } catch (error) {
       await new MetricController().postUserMetrics(
@@ -47,6 +50,7 @@ export class UserAuthController {
       this.registerValidations(userRegisterDTO);
 
       const user = await this.userAuthService.register(userRegisterDTO);
+
       await new MetricController().postUserMetrics(
         userRegisterDTO.username,
         userRegisterDTO.registrationTime,
@@ -54,6 +58,7 @@ export class UserAuthController {
         true,
         'register'
       );
+
       res.send(user);
     } catch (error) {
       await new MetricController().postUserMetrics(
@@ -106,6 +111,22 @@ export class UserAuthController {
         'INVALID_REGISTRATION_TIME'
       );
     }
+
+    this.validateExpoToken(userData.expoToken);
+  }
+
+  private validateExpoToken(expoToken: string | undefined) {
+    if (!expoToken) {
+      return;
+    }
+
+    if (!expoToken.startsWith('ExponentPushToken[') || !expoToken.endsWith(']')) {
+      throw new ValidationError(
+        expoToken,
+        'This token is invalid or does not exist',
+        'INVALID EXPO TOKEN'
+      );
+    }
   }
 
   private validateLogin(userLoginDto: UserLoginDto) {
@@ -116,8 +137,11 @@ export class UserAuthController {
         'INVALID_EMAIL_OR_USERNAME'
       );
     }
+
     if (!userLoginDto.loginTime) {
       throw new ValidationError('loginTime', 'Invalid login time', 'INVALID_LOGIN_TIME');
     }
+
+    this.validateExpoToken(userLoginDto.expoToken);
   }
 }
