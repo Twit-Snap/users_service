@@ -75,7 +75,7 @@ export class AuthSSOController {
 
   private validateExpoToken(expoToken: string | undefined) {
     if (!expoToken) {
-      return
+      return;
     }
 
     if (!expoToken.startsWith('ExponentPushToken[') || !expoToken.endsWith(']')) {

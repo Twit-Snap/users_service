@@ -38,7 +38,9 @@ export class UserAuthService implements IUserAuthService {
       throw new BlockedError();
     }
 
-    expoToken && this.userRepository.putExpoToken(user.id, expoToken);
+    if (expoToken) {
+      this.userRepository.putExpoToken(user.id, expoToken);
+    }
 
     // Generate JWT token
     const token = this.jwtService.sign({
