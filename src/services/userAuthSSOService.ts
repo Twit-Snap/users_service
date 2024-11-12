@@ -45,7 +45,9 @@ export class UserAuthSSOService {
         throw new BlockedError();
       }
 
-      userSSODto.expoToken && this.userRepository.putExpoToken(user.id, userSSODto.expoToken);
+      if (userSSODto.expoToken) {
+        this.userRepository.putExpoToken(user.id, userSSODto.expoToken);
+      }
 
       // Generate JWT token
       const token = this.jwtService.sign({

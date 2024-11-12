@@ -883,4 +883,67 @@ describe('UserRepository', () => {
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
     });
   });
+
+  describe('putExpoToken', () => {
+    it('should update user expo token successfully', async () => {
+      // Arrange
+      const userId = 1;
+      const expoToken = 'test-expo-token';
+      mockPool.query.mockResolvedValueOnce({ rowCount: 1 });
+
+      // Act
+      await userRepository.putExpoToken(userId, expoToken);
+
+      // Assert
+      expect(mockPool.query).toMatchSnapshot();
+      expect(mockPool.query).toHaveBeenCalledTimes(1);
+      expect(mockPool.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE users'), [
+        userId,
+        expoToken
+      ]);
+    });
+
+    it('should throw error when database query fails', async () => {
+      // Arrange
+      const userId = 1;
+      const expoToken = 'test-expo-token';
+      const testError = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(testError);
+
+      // Act & Assert
+      await expect(userRepository.putExpoToken(userId, expoToken)).rejects.toThrow(testError);
+
+      expect(mockPool.query).toMatchSnapshot();
+    });
+
+    it('should handle empty expo token', async () => {
+      // Arrange
+      const userId = 1;
+      const expoToken = '';
+      mockPool.query.mockResolvedValueOnce({ rowCount: 1 });
+
+      // Act
+      await userRepository.putExpoToken(userId, expoToken);
+
+      // Assert
+      expect(mockPool.query).toMatchSnapshot();
+      expect(mockPool.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE users'), [
+        userId,
+        expoToken
+      ]);
+    });
+
+    it('should handle null user ID', async () => {
+      // Arrange
+      const userId = null;
+      const expoToken = 'test-expo-token';
+      const mockError = new Error('User id must be in the database');
+      mockPool.query.mockRejectedValueOnce(mockError);
+
+      // Act & Assert
+      await expect(userRepository.putExpoToken(userId as any, expoToken)).rejects.toThrow();
+
+      expect(mockPool.query).toMatchSnapshot();
+    });
+  });
 });
