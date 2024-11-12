@@ -1084,3 +1084,99 @@ exports[`UserRepository modifyUser updates single field successfully: sql query 
       RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
     "
 `;
+
+exports[`UserRepository putExpoToken should handle empty expo token 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET expo_token = $2
+      WHERE id = $1
+    ",
+      [
+        1,
+        "",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository putExpoToken should handle null user ID 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET expo_token = $2
+      WHERE id = $1
+    ",
+      [
+        null,
+        "test-expo-token",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository putExpoToken should throw error when database query fails 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET expo_token = $2
+      WHERE id = $1
+    ",
+      [
+        1,
+        "test-expo-token",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository putExpoToken should update user expo token successfully 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET expo_token = $2
+      WHERE id = $1
+    ",
+      [
+        1,
+        "test-expo-token",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
