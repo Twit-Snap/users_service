@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserAuthService } from '../services/userAuthService';
 import { ValidationError } from '../types/customErrors';
-import { UserRegisterDto } from '../types/userAuth';
+import { UserLoginDto, UserRegisterDto } from '../types/userAuth';
+import { MetricController } from './metricController';
 
 export class UserAuthController {
   private userAuthService: UserAuthService;
@@ -11,32 +12,62 @@ export class UserAuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
+    const userLoginDto: UserLoginDto = req.body;
+    const now = new Date();
     try {
-      const { emailOrUsername, password, expoToken } = req.body;
-      if (!emailOrUsername || !password) {
-        throw new ValidationError(
-          'emailOrUsername',
-          'Invalid email or username',
-          'INVALID_EMAIL_OR_USERNAME'
-        );
-      }
+      this.validateLogin(userLoginDto);
 
-      this.validateExpoToken(expoToken);
+      const user = await this.userAuthService.login(
+        userLoginDto.emailOrUsername,
+        userLoginDto.password
+      );
 
-      const user = await this.userAuthService.login(emailOrUsername, password, expoToken);
+      await new MetricController().postUserMetrics(
+        userLoginDto.emailOrUsername,
+        userLoginDto.loginTime,
+        now,
+        true,
+        'login'
+      );
+
       res.send(user);
     } catch (error) {
+      await new MetricController().postUserMetrics(
+        userLoginDto.emailOrUsername,
+        userLoginDto.loginTime,
+        now,
+        false,
+        'login'
+      );
       next(error);
     }
   }
 
   async register(req: Request, res: Response, next: NextFunction) {
+    const userRegisterDTO: UserRegisterDto = req.body;
+    const initialProcessTime = new Date();
     try {
-      const userRegisterDTO: UserRegisterDto = req.body;
       this.registerValidations(userRegisterDTO);
+
       const user = await this.userAuthService.register(userRegisterDTO);
+
+      await new MetricController().postUserMetrics(
+        userRegisterDTO.username,
+        userRegisterDTO.registrationTime,
+        initialProcessTime,
+        true,
+        'register'
+      );
+
       res.send(user);
     } catch (error) {
+      await new MetricController().postUserMetrics(
+        userRegisterDTO.username,
+        userRegisterDTO.registrationTime,
+        initialProcessTime,
+        false,
+        'register'
+      );
       next(error);
     }
   }
@@ -72,6 +103,15 @@ export class UserAuthController {
       throw new ValidationError('birthdate', 'Invalid birthdate', 'INVALID_BIRTHDATE');
     }
 
+    // Validate registration time
+    if (!userData.registrationTime) {
+      throw new ValidationError(
+        'registrationTime',
+        'Invalid registration time',
+        'INVALID_REGISTRATION_TIME'
+      );
+    }
+
     this.validateExpoToken(userData.expoToken);
   }
 
@@ -87,5 +127,21 @@ export class UserAuthController {
         'INVALID EXPO TOKEN'
       );
     }
+  }
+
+  private validateLogin(userLoginDto: UserLoginDto) {
+    if (!userLoginDto.emailOrUsername || !userLoginDto.password) {
+      throw new ValidationError(
+        'emailOrUsername',
+        'Invalid email or username',
+        'INVALID_EMAIL_OR_USERNAME'
+      );
+    }
+
+    if (!userLoginDto.loginTime) {
+      throw new ValidationError('loginTime', 'Invalid login time', 'INVALID_LOGIN_TIME');
+    }
+
+    this.validateExpoToken(userLoginDto.expoToken);
   }
 }

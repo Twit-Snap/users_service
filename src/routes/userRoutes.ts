@@ -3,6 +3,7 @@ import { ModifiableUser, User } from 'user';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 import { UserRequest } from '../types/jwt';
+import { MetricController } from '../controllers/metricController';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
@@ -135,6 +136,10 @@ router.patch('/:username', async (req, res, next) => {
     controller.newValuesHasExtraKeys(newValues);
 
     const data = await new UserService().modifyUser(username, newValues);
+    if (newValues.isBlocked) {
+      await new MetricController().postBlockMetric(data.username);
+    }
+
     res.status(200).json(data);
   } catch (error) {
     next(error);
