@@ -1,12 +1,12 @@
 import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
 import {
-  GetUserParams,
-  GetUsersListParams,
-  IUserRepository,
-  ModifiableUser,
-  User,
-  UserWithPassword
+    GetUserParams,
+    GetUsersListParams,
+    IUserRepository,
+    ModifiableUser,
+    User,
+    UserWithPassword
 } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
@@ -287,5 +287,14 @@ export class UserRepository implements IUserRepository {
       // If it's not a unique constraint violation, re-throw the original error
       throw error;
     }
+  }
+
+  async updateLocation(username: string, location: { latitude: number; longitude: number }): Promise<void> {
+    const query = `
+      UPDATE users
+      SET latitude = $1, longitude = $2
+      WHERE username = $3
+    `;
+    await this.pool.query(query, [location.latitude, location.longitude, username]);
   }
 }

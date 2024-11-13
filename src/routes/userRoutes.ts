@@ -1,9 +1,9 @@
 import express from 'express';
 import { ModifiableUser, User } from 'user';
+import { MetricController } from '../controllers/metricController';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 import { UserRequest } from '../types/jwt';
-import { MetricController } from '../controllers/metricController';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
@@ -141,6 +141,17 @@ router.patch('/:username', async (req, res, next) => {
     }
 
     res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/location', async (req, res, next) => {
+  try {
+    const jwtUser = (req as UserRequest).user;
+    const { latitude, longitude } = req.body;
+
+    await new UserService().updateUserLocation(jwtUser.username, {latitude, longitude});
   } catch (error) {
     next(error);
   }

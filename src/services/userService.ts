@@ -145,6 +145,10 @@ export class UserService {
     return data;
   }
 
+  async updateUserLocation(username: string, location: { latitude: number; longitude: number }): Promise<void> {
+    await this.userRepository.updateLocation(username, location);
+  }
+
   private async addFollowState(authUser: JwtUserPayload, user: User) {
     const following: boolean | undefined =
       authUser.type === 'user'
