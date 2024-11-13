@@ -12,7 +12,8 @@ export class UserAuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
-    const userLoginDto: UserLoginDto = req.body;
+    const userLoginDto: UserLoginDto = req.body
+    userLoginDto.loginTime = Number(userLoginDto.loginTime);
     const now = new Date();
     try {
       this.validateLogin(userLoginDto);
@@ -45,6 +46,8 @@ export class UserAuthController {
 
   async register(req: Request, res: Response, next: NextFunction) {
     const userRegisterDTO: UserRegisterDto = req.body;
+    userRegisterDTO.registrationTime = Number(userRegisterDTO.registrationTime);
+
     const initialProcessTime = new Date();
     try {
       this.registerValidations(userRegisterDTO);
