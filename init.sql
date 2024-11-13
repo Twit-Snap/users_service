@@ -30,7 +30,9 @@ CREATE TABLE IF NOT EXISTS users (
     is_private BOOLEAN NOT NULL DEFAULT false,
     is_blocked BOOLEAN NOT NULL DEFAULT false,
     expo_token VARCHAR(100) NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    latitude FLOAT,
+    longitude FLOAT
 );
 -- Create a unique partial index on sso_uid
 CREATE UNIQUE INDEX idx_unique_sso_uid ON users (sso_uid) WHERE sso_uid IS NOT NULL;

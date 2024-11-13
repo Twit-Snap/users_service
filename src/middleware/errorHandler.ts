@@ -48,7 +48,9 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
       'custom-field': err.entityName
     });
   } else if (err instanceof AuthenticationError) {
-    console.warn(`AuthenticationError: ${err.message}`);
+    console.warn(`AuthenticationError: ${err.message}`, {
+      err
+    });
     res.status(401).json({
       type: 'about:blank',
       title: 'Unauthorized',
