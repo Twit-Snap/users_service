@@ -946,4 +946,66 @@ describe('UserRepository', () => {
       expect(mockPool.query).toMatchSnapshot();
     });
   });
+
+  describe('getAllExpoTokens', () => {
+    it('should fetch all expo tokens except sender', async () => {
+      // Mock data
+      const mockRows = [
+        { expoToken: 'ExponentPushToken[xxx1]' },
+        { expoToken: 'ExponentPushToken[xxx2]' },
+        { expoToken: 'ExponentPushToken[xxx3]' }
+      ];
+
+      // Mock the query response
+      mockPool.query.mockResolvedValueOnce({ rows: mockRows });
+
+      // Execute the function
+      const result = await userRepository.getAllExpoTokens(1);
+
+      // Verify the query was called with correct parameters
+      expect(mockPool.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT expo_token AS "expoToken"'),
+        [1]
+      );
+
+      // Verify the result matches the snapshot
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should return empty array when no tokens found', async () => {
+      // Mock empty response
+      mockPool.query.mockResolvedValueOnce({ rows: [] });
+
+      // Execute the function
+      const result = await userRepository.getAllExpoTokens(1);
+
+      // Verify the query was called with correct parameters
+      expect(mockPool.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT expo_token AS "expoToken"'),
+        [1]
+      );
+
+      // Verify the result matches the snapshot
+      expect(result).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should handle database error', async () => {
+      // Mock database error
+      const error = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(error);
+
+      // Execute and verify error is thrown
+      await expect(userRepository.getAllExpoTokens(1)).rejects.toThrow('Database error');
+      expect(mockPool.query).toHaveBeenCalledTimes(1);
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
 });
