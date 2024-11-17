@@ -56,7 +56,11 @@ export interface IUserRepository {
   getAmount(params: GetUsersListParams): Promise<number>;
   modifyUser(userId: number, newValues: ModifiableUser): Promise<User>;
   putExpoToken(userId: number, expoToken: string): Promise<void>;
-  updateLocation(username: string, location: { latitude: number; longitude: number }): Promise<void>;
+  updateLocation(
+    username: string,
+    location: { latitude: number; longitude: number }
+  ): Promise<void>;
+  getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]>;
 }
 
 export type GetUsersListParams = {
@@ -70,4 +74,8 @@ export type GetUsersListParams = {
 
 export type GetUserParams = {
   reduce?: boolean;
+};
+
+export type OnlyExpoToken = {
+  expoToken: string;
 };

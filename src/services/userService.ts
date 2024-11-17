@@ -7,6 +7,7 @@ import {
   GetUsersListParams,
   IUserRepository,
   ModifiableUser,
+  OnlyExpoToken,
   PublicUser,
   User,
   UserWithPassword
@@ -145,7 +146,10 @@ export class UserService {
     return data;
   }
 
-  async updateUserLocation(username: string, location: { latitude: number; longitude: number }): Promise<void> {
+  async updateUserLocation(
+    username: string,
+    location: { latitude: number; longitude: number }
+  ): Promise<void> {
     await this.userRepository.updateLocation(username, location);
   }
 
@@ -230,5 +234,9 @@ export class UserService {
     }
 
     return follow;
+  }
+
+  async getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]> {
+    return await new UserRepository().getAllExpoTokens(senderId);
   }
 }
