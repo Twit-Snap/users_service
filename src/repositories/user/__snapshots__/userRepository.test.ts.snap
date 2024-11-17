@@ -290,6 +290,46 @@ exports[`UserRepository get should return null when user not found: SQL query 1`
 
 exports[`UserRepository get should return null when user not found: User result 1`] = `null`;
 
+exports[`UserRepository getAllExpoTokens should fetch all expo tokens except sender 1`] = `
+[
+  {
+    "expoToken": "ExponentPushToken[xxx1]",
+  },
+  {
+    "expoToken": "ExponentPushToken[xxx2]",
+  },
+  {
+    "expoToken": "ExponentPushToken[xxx3]",
+  },
+]
+`;
+
+exports[`UserRepository getAllExpoTokens should fetch all expo tokens except sender: Interpolated SQL query 1`] = `
+"
+      SELECT expo_token AS "expoToken"
+      FROM users
+      WHERE id <> 1 and expo_token IS NOT NULL
+      "
+`;
+
+exports[`UserRepository getAllExpoTokens should handle database error: Interpolated SQL query 1`] = `
+"
+      SELECT expo_token AS "expoToken"
+      FROM users
+      WHERE id <> 1 and expo_token IS NOT NULL
+      "
+`;
+
+exports[`UserRepository getAllExpoTokens should return empty array when no tokens found 1`] = `[]`;
+
+exports[`UserRepository getAllExpoTokens should return empty array when no tokens found: Interpolated SQL query 1`] = `
+"
+      SELECT expo_token AS "expoToken"
+      FROM users
+      WHERE id <> 1 and expo_token IS NOT NULL
+      "
+`;
+
 exports[`UserRepository getAmount should get amount with createdAt and equalDate false: Interpolated SQL query 1`] = `"SELECT COUNT(*) FROM users WHERE created_at < '2024-01-01'::timestamptz "`;
 
 exports[`UserRepository getAmount should get amount with createdAt and equalDate false: query and params 1`] = `

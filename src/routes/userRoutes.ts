@@ -4,6 +4,7 @@ import { MetricController } from '../controllers/metricController';
 import { UserController } from '../controllers/userController';
 import { UserService } from '../services/userService';
 import { UserRequest } from '../types/jwt';
+import { sendPushNotification } from '../utils/sendNotification';
 const router = express.Router();
 
 router.get('/', async (req, res, next) => {
@@ -151,7 +152,28 @@ router.post('/location', async (req, res, next) => {
     const jwtUser = (req as UserRequest).user;
     const { latitude, longitude } = req.body;
 
-    await new UserService().updateUserLocation(jwtUser.username, {latitude, longitude});
+    await new UserService().updateUserLocation(jwtUser.username, { latitude, longitude });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/notifications', async (req, res, next) => {
+  try {
+    const title = req.body.title || 'Title';
+    const body = req.body.body || 'Body';
+
+    var data = (req.body.data as { senderId: number }) || {
+      senderId: 0
+    };
+
+    const tokens = await new UserService().getAllExpoTokens(data.senderId);
+
+    console.log(tokens);
+
+    tokens.forEach(({ expoToken }) => {
+      sendPushNotification(expoToken, title, body, data);
+    });
   } catch (error) {
     next(error);
   }

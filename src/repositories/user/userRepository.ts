@@ -1,12 +1,13 @@
 import { FollowersResponse, FollowReturn, GetAllFollowsParams } from 'follow';
 import { Pool } from 'pg';
 import {
-    GetUserParams,
-    GetUsersListParams,
-    IUserRepository,
-    ModifiableUser,
-    User,
-    UserWithPassword
+  GetUserParams,
+  GetUsersListParams,
+  IUserRepository,
+  ModifiableUser,
+  OnlyExpoToken,
+  User,
+  UserWithPassword
 } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
@@ -289,12 +290,26 @@ export class UserRepository implements IUserRepository {
     }
   }
 
-  async updateLocation(username: string, location: { latitude: number; longitude: number }): Promise<void> {
+  async updateLocation(
+    username: string,
+    location: { latitude: number; longitude: number }
+  ): Promise<void> {
     const query = `
       UPDATE users
       SET latitude = $1, longitude = $2
       WHERE username = $3
     `;
     await this.pool.query(query, [location.latitude, location.longitude, username]);
+  }
+
+  async getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]> {
+    const query = `
+      SELECT expo_token AS "expoToken"
+      FROM users
+      WHERE id <> $1 and expo_token IS NOT NULL
+      `;
+
+    const result = await this.pool.query(query, [senderId]);
+    return result.rows;
   }
 }
