@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     latitude FLOAT,
     longitude FLOAT,
-    phone_number VARCHAR(20) UNIQUE NOT NULL
+    phone_number VARCHAR(20) UNIQUE NOT NULL,
+    verified BOOLEAN NOT NULL DEFAULT false
 );
 -- Create a unique partial index on sso_uid
 CREATE UNIQUE INDEX idx_unique_sso_uid ON users (sso_uid) WHERE sso_uid IS NOT NULL;
