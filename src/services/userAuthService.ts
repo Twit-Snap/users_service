@@ -47,7 +47,8 @@ export class UserAuthService implements IUserAuthService {
       type: 'user',
       userId: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
+      phoneNumber: user.phoneNumber
     });
 
     // Attach token to user object (assuming we want to return it)
@@ -71,7 +72,8 @@ export class UserAuthService implements IUserAuthService {
       type: 'user',
       userId: newUser.id,
       email: newUser.email,
-      username: newUser.username
+      username: newUser.username,
+      phoneNumber: newUser.phoneNumber
     });
 
     // Attach token to user object (assuming we want to return it)

@@ -15,6 +15,7 @@ export type JwtUserPayload = {
   userId: number;
   email: string;
   username: string;
+  phoneNumber: string;
 };
 
 export type JwtAdminPayload = {
