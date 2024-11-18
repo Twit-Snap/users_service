@@ -23,7 +23,7 @@ export const sendPushNotification = async (
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(message)
-  }).then(response => {
+  }).then((response) => {
     if (response.ok) {
       console.log('notification sent!');
     }

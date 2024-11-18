@@ -16,7 +16,7 @@ export type JwtUserPayload = {
   email: string;
   username: string;
   phoneNumber: string;
-  verified: boolean
+  verified: boolean;
 };
 
 export type JwtAdminPayload = {

@@ -11,6 +11,9 @@ import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes
 import { AdminAuthService } from './services/adminAuthService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+const twilio = require('twilio');
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 var admin = require('firebase-admin');
 
 // Función para inicializar el entorno
@@ -80,7 +83,6 @@ function initializeFirebase() {
 }
 
 export function getTwilio() {
-  const twilio = require('twilio');
   const accountSid = 'ACdb08bf2d7afe3dcfac19b03da23bc01d';
   const authToken = process.env.TWILIO_AUTH_TOKEN || 'randomPassword';
 
