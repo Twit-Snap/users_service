@@ -12,6 +12,7 @@ export interface UserRegisterDto {
   profilePicture?: string;
   expoToken?: string;
   registrationTime: number;
+  phoneNumber: string;
 }
 
 export interface UserSSORegisterDto {
@@ -20,6 +21,7 @@ export interface UserSSORegisterDto {
   providerId: string;
   username: string;
   birthdate: Date;
+  phoneNumber: string;
   profilePicture?: string;
   expoToken?: string;
 }

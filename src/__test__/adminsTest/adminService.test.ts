@@ -20,7 +20,9 @@ describe('AdminService', () => {
     birthdate: new Date(),
     createdAt: new Date(),
     isPrivate: false,
-    isBlocked: false
+    isBlocked: false,
+    phoneNumber: '+541112341234',
+    verified: false
   };
 
   const anotherMockUser: User = {
@@ -32,7 +34,9 @@ describe('AdminService', () => {
     birthdate: new Date(),
     createdAt: new Date(),
     isPrivate: false,
-    isBlocked: false
+    isBlocked: false,
+    phoneNumber: '+541112341234',
+    verified: false
   };
 
   const mockUsers = [aMockUser, anotherMockUser];

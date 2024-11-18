@@ -79,6 +79,14 @@ function initializeFirebase() {
   console.log('Firebase initialized');
 }
 
+export function getTwilio() {
+  const twilio = require('twilio');
+  const accountSid = 'ACdb08bf2d7afe3dcfac19b03da23bc01d';
+  const authToken = process.env.TWILIO_AUTH_TOKEN || 'randomPassword';
+
+  return twilio(accountSid, authToken);
+}
+
 // Start the server and connect to the database
 async function startServer() {
   // Initialize environment variables
@@ -105,7 +113,7 @@ async function startServer() {
 
   // Apply JWT middleware to all routes except /auth
   app.use((req, res, next) => {
-    if (req.path.startsWith('/auth')) {
+    if (req.path !== '/auth/verify' && req.path.startsWith('/auth')) {
       return next();
     }
     authMiddleware(req, res, next);

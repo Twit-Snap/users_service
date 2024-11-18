@@ -6,6 +6,7 @@ export interface User {
   userId?: number;
   username: string;
   email: string;
+  phoneNumber: string;
   name: string;
   lastname: string;
   birthdate: Date;
@@ -20,6 +21,7 @@ export interface User {
   followed?: boolean; // Auth user is followed by the requested user?
   isPrivate: boolean;
   isBlocked: boolean;
+  verified: boolean;
 }
 
 export interface ModifiableUser {
@@ -40,7 +42,10 @@ export type UserWithPassword = User & { password: string };
 
 export type NotModifiableUser = Omit<User, keyof ModifiableUser>;
 
-export type PublicUser = Omit<User, 'email' | 'lastname' | 'isBlocked'>;
+export type PublicUser = Omit<
+  User,
+  'email' | 'lastname' | 'isBlocked' | 'phoneNumber' | 'verified'
+>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;

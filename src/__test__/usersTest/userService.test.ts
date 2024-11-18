@@ -14,7 +14,9 @@ jest.mock('axios'); // Mock axios for external HTTP calls
 const authUser = {
   email: 'test@test.com',
   userId: 1,
-  username: 'test'
+  username: 'test',
+  phoneNumber: '+541112341234',
+  verified: false
 };
 
 describe('UserService', () => {
@@ -32,7 +34,9 @@ describe('UserService', () => {
     birthdate: new Date(),
     createdAt: new Date(),
     isPrivate: false,
-    isBlocked: false
+    isBlocked: false,
+    phoneNumber: '+541112341234',
+    verified: false
   };
 
   beforeEach(() => {
@@ -564,7 +568,9 @@ describe('UserService', () => {
       birthdate: new Date('2000-01-01'),
       createdAt: new Date('2024-01-01'),
       isPrivate: false,
-      isBlocked: false
+      isBlocked: false,
+      phoneNumber: '+541112341234',
+      verified: false
     };
 
     it('should modify user successfully', async () => {
@@ -618,7 +624,9 @@ describe('UserService', () => {
       birthdate: new Date('2000-01-01'),
       createdAt: new Date('2024-01-01'),
       isPrivate: false,
-      isBlocked: false
+      isBlocked: false,
+      phoneNumber: '+541112341234',
+      verified: false
     };
 
     it('should find user by email', async () => {
@@ -678,7 +686,9 @@ describe('UserService', () => {
       birthdate: new Date('2000-01-01'),
       createdAt: new Date('2024-01-01'),
       isPrivate: false,
-      isBlocked: false
+      isBlocked: false,
+      phoneNumber: '+541112341234',
+      verified: false
     };
 
     it('should return list of users with follow state', async () => {
@@ -686,7 +696,9 @@ describe('UserService', () => {
         userId: 2,
         username: 'currentuser',
         type: 'user',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       const params: GetUsersListParams = {
@@ -725,7 +737,9 @@ describe('UserService', () => {
       birthdate: new Date('2000-01-01'),
       createdAt: new Date('2024-01-01'),
       isPrivate: false,
-      isBlocked: false
+      isBlocked: false,
+      phoneNumber: '+541112341234',
+      verified: false
     };
 
     it('should return user by id', async () => {
@@ -759,7 +773,8 @@ describe('UserService', () => {
         password: 'hashedpassword',
         name: 'New',
         lastname: 'User',
-        birthdate: new Date('2000-01-01')
+        birthdate: new Date('2000-01-01'),
+        phoneNumber: '+541112341234'
       };
 
       dbServiceMock = {

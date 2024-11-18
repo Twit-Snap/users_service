@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { IJWTService } from 'jwt';
-import { IUserRepository } from 'user';
+import { IUserRepository, ModifiableUser } from 'user';
 import { IUserAuthService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { AuthenticationError, BlockedError } from '../types/customErrors';
@@ -47,7 +47,9 @@ export class UserAuthService implements IUserAuthService {
       type: 'user',
       userId: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
+      phoneNumber: user.phoneNumber,
+      verified: user.verified
     });
 
     // Attach token to user object (assuming we want to return it)
@@ -71,11 +73,32 @@ export class UserAuthService implements IUserAuthService {
       type: 'user',
       userId: newUser.id,
       email: newUser.email,
-      username: newUser.username
+      username: newUser.username,
+      phoneNumber: newUser.phoneNumber,
+      verified: newUser.verified
     });
 
     // Attach token to user object (assuming we want to return it)
     const userWithToken = { ...newUser, token };
+
+    return userWithToken;
+  }
+
+  async setVerified(userId: number) {
+    const user = await this.userRepository.modifyUser(userId, {
+      verified: true
+    } as unknown as ModifiableUser);
+
+    const token = this.jwtService.sign({
+      type: 'user',
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      phoneNumber: user.phoneNumber,
+      verified: user.verified
+    });
+
+    const userWithToken = { ...user, token, password: undefined };
 
     return userWithToken;
   }

@@ -54,7 +54,9 @@ export class UserAuthSSOService {
         type: 'user',
         userId: user.id,
         email: user.email,
-        username: user.username
+        username: user.username,
+        phoneNumber: user.phoneNumber,
+        verified: user.verified
       });
 
       // Attach token to user object
@@ -68,7 +70,8 @@ export class UserAuthSSOService {
   }
 
   async register(userSSODto: UserSSORegisterDto): Promise<UserWithToken> {
-    const { uid, providerId, username, birthdate, profilePicture, expoToken } = userSSODto;
+    const { uid, providerId, username, birthdate, profilePicture, expoToken, phoneNumber } =
+      userSSODto;
     let decodedToken: DecodedIdToken;
     console.log('userSSODto:', userSSODto);
     try {
@@ -101,7 +104,8 @@ export class UserAuthSSOService {
       ssoProviderId: providerId,
       password: null,
       profilePicture: profilePicture ?? picture,
-      expoToken
+      expoToken,
+      phoneNumber
     };
 
     // Create new user
@@ -112,7 +116,9 @@ export class UserAuthSSOService {
       type: 'user',
       userId: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
+      phoneNumber: user.phoneNumber,
+      verified: user.verified
     });
 
     // Attach token to user object

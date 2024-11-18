@@ -15,7 +15,7 @@ import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified`;
   private readonly reducedUserFields =
     'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate", expo_token AS "expoToken"';
 
@@ -99,13 +99,14 @@ export class UserRepository implements IUserRepository {
       profilePicture,
       ssoProviderId,
       ssoUid,
-      expoToken
+      expoToken,
+      phoneNumber
     } = userData;
     const birthdate = new Date(userData.birthdate).toISOString();
 
     const query = `
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING ${this.selectUserFields}
     `;
 
@@ -120,7 +121,8 @@ export class UserRepository implements IUserRepository {
         profilePicture,
         ssoUid,
         ssoProviderId,
-        expoToken
+        expoToken,
+        phoneNumber
       ]);
       return result.rows[0];
     } catch (error) {
@@ -134,6 +136,8 @@ export class UserRepository implements IUserRepository {
           throw new EntityAlreadyExistsError('Email', 'Email is already in use');
         } else if (errorAux.constraint?.includes('sso_uid')) {
           throw new EntityAlreadyExistsError('SSOUid', 'SSO UID is already in use');
+        } else if (errorAux.constraint?.includes('phone_number')) {
+          throw new EntityAlreadyExistsError('phoneNumber', 'Phone number is already in use');
         }
       }
       // If it's not a unique constraint violation, re-throw the original error

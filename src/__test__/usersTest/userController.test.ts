@@ -8,7 +8,9 @@ jest.mock('../../services/userService');
 const authUser = {
   email: 'test@test.com',
   userId: 1,
-  username: 'test'
+  username: 'test',
+  phoneNumber: '+541112341234',
+  verified: false
 };
 
 describe('UserController', () => {
