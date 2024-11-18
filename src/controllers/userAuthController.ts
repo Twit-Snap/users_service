@@ -12,7 +12,7 @@ export class UserAuthController {
   }
 
   async login(req: Request, res: Response, next: NextFunction) {
-    const userLoginDto: UserLoginDto = req.body
+    const userLoginDto: UserLoginDto = req.body;
     userLoginDto.loginTime = Number(userLoginDto.loginTime);
     const now = new Date();
     try {
@@ -79,6 +79,10 @@ export class UserAuthController {
     // Validate email
     if (!userData.email || !userData.email.includes('@')) {
       throw new ValidationError('email', 'Invalid email', 'INVALID_EMAIL');
+    }
+
+    if (!userData.phoneNumber || !/^\+\d{10,12}$/.test(userData.phoneNumber)) {
+      throw new ValidationError('phoneNumber', 'Invalid phone number', 'INVALID_PHONE_NUMBER');
     }
 
     // Validate password (TODO: Add more validations)

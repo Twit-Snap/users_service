@@ -54,6 +54,10 @@ export class AuthSSOController {
       throw new ValidationError('idToken', 'Invalid idToken', 'INVALID_ID_TOKEN');
     }
 
+    if (!userData.phoneNumber || !/^\+\d{10,12}$/.test(userData.phoneNumber)) {
+      throw new ValidationError('phoneNumber', 'Invalid phone number', 'INVALID_PHONE_NUMBER');
+    }
+
     if (!userData.uid) {
       throw new ValidationError('uid', 'Invalid uid', 'INVALID_UID');
     }
