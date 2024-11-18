@@ -22,6 +22,7 @@ export interface User {
   isPrivate: boolean;
   isBlocked: boolean;
   verified: boolean;
+  expoToken?: string;
 }
 
 export interface ModifiableUser {

@@ -58,8 +58,21 @@ router.post('/:username/followers', async (req, res, next) => {
     controller.validateUsername(username);
     controller.validateUsername(followedUsername);
 
-    const follow = await new UserService().followUser(username, followedUsername);
-    res.status(201).json(follow);
+    const ret = await new UserService().followUser(username, followedUsername);
+
+    if (ret.followedUser.expoToken) {
+      sendPushNotification(
+        ret.followedUser.expoToken,
+        'New Follower!',
+        `${ret.user.username} just started following you`,
+        {
+          params: { username: ret.user.username },
+          type: 'user'
+        }
+      );
+    }
+
+    res.status(201).json(ret.follow);
   } catch (error) {
     next(error);
   }

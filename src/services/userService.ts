@@ -71,7 +71,10 @@ export class UserService {
     return authUser.username === username ? validUser : this.preparePublicUser(validUser);
   }
 
-  async followUser(username: string, followedUsername: string): Promise<FollowReturn> {
+  async followUser(
+    username: string,
+    followedUsername: string
+  ): Promise<{ follow: FollowReturn; user: User; followedUser: User }> {
     let user = await this.userRepository.getByUsername(username);
     let followedUser = await this.userRepository.getByUsername(followedUsername);
 
@@ -82,7 +85,7 @@ export class UserService {
 
     const ret = await this.userRepository.createFollow(user.id, followedUser.id);
 
-    return ret;
+    return { follow: ret, user, followedUser };
   }
 
   async unfollowUser(username: string, followedUsername: string): Promise<void> {
