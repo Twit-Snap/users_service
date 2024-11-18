@@ -22,7 +22,9 @@ describe('Auth Functions', () => {
         userId: 1,
         type: 'user',
         username: 'test',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       // Setup the mock implementation
@@ -66,7 +68,9 @@ describe('Auth Functions', () => {
         userId: 1,
         type: 'user',
         username: 'test',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       MockedUserService.prototype.get.mockResolvedValue({
@@ -78,7 +82,9 @@ describe('Auth Functions', () => {
         lastname: 'test',
         birthdate: new Date('2000-02-02'),
         createdAt: new Date('2000-02-02'),
-        isPrivate: false
+        isPrivate: false,
+        verified: false,
+        phoneNumber: '541112341234'
         // ... other user properties
       });
 
@@ -91,7 +97,9 @@ describe('Auth Functions', () => {
         userId: 1,
         type: 'user',
         username: 'test',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       MockedUserService.prototype.get.mockResolvedValue({
@@ -103,7 +111,9 @@ describe('Auth Functions', () => {
         lastname: 'test',
         birthdate: new Date('2000-02-02'),
         createdAt: new Date('2000-02-02'),
-        isPrivate: false
+        isPrivate: false,
+        phoneNumber: '+541112341234',
+        verified: false
         // ... other user properties
       });
 
@@ -116,7 +126,9 @@ describe('Auth Functions', () => {
         userId: 1,
         type: 'user',
         username: 'test',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       MockedUserService.prototype.get.mockResolvedValue(null);
@@ -130,7 +142,9 @@ describe('Auth Functions', () => {
         userId: 1,
         type: 'user',
         username: 'test',
-        email: 'test@gmail.com'
+        email: 'test@gmail.com',
+        phoneNumber: '+541112341234',
+        verified: false
       };
 
       const error = new Error('Service unavailable');

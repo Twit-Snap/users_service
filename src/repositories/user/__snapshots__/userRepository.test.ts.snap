@@ -2,9 +2,9 @@
 
 exports[`UserRepository create handles database error: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ('testuser', 'test@example.com', 'Test', 'User', '2000-01-01T00:00:00.000Z', undefined, undefined, undefined, undefined, undefined)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ('testuser', 'test@example.com', 'Test', 'User', '2000-01-01T00:00:00.000Z', undefined, undefined, undefined, undefined, undefined, '+541112341234')
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -20,14 +20,15 @@ exports[`UserRepository create handles database error: query params 1`] = `
   undefined,
   undefined,
   undefined,
+  "+541112341234",
 ]
 `;
 
 exports[`UserRepository create handles database error: sql query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -41,18 +42,18 @@ exports[`UserRepository create should create a new SSO user: Created user result
 
 exports[`UserRepository create should create a new SSO user: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', undefined, 'https://example.com/picture.jpg', 'sso123oiebf8q782783', 'google.com', undefined)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', undefined, 'https://example.com/picture.jpg', 'sso123oiebf8q782783', 'google.com', undefined, '+541112341234')
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
 exports[`UserRepository create should create a new SSO user: SQL query 1`] = `
 [
   "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     ",
   [
     "newuser",
@@ -65,6 +66,7 @@ exports[`UserRepository create should create a new SSO user: SQL query 1`] = `
     "sso123oiebf8q782783",
     "google.com",
     undefined,
+    "+541112341234",
   ],
 ]
 `;
@@ -79,18 +81,18 @@ exports[`UserRepository create should create a new user: Created user result 1`]
 
 exports[`UserRepository create should create a new user: Interpolated SQL query 1`] = `
 "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined, undefined)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ('newuser', 'new@example.com', 'New', 'User', '2000-01-01T00:00:00.000Z', 'password123', undefined, undefined, undefined, undefined, '+541112341234')
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
 exports[`UserRepository create should create a new user: SQL query 1`] = `
 [
   "
-      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     ",
   [
     "newuser",
@@ -103,6 +105,7 @@ exports[`UserRepository create should create a new user: SQL query 1`] = `
     undefined,
     undefined,
     undefined,
+    "+541112341234",
   ],
 ]
 `;
@@ -184,11 +187,11 @@ exports[`UserRepository deleteFollow should delete a follow successfully: Interp
     "
 `;
 
-exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", password FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
+exports[`UserRepository findByEmailOrUsername should find user by email or username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified, password FROM users WHERE email = 'testuser' OR username = 'testuser'"`;
 
 exports[`UserRepository findByEmailOrUsername should find user by email or username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", password FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified, password FROM users WHERE email = $1 OR username = $1",
   [
     "testuser",
   ],
@@ -203,11 +206,11 @@ exports[`UserRepository findByEmailOrUsername should find user by email or usern
 }
 `;
 
-exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", password FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
+exports[`UserRepository findByEmailOrUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified, password FROM users WHERE email = 'nonexistent' OR username = 'nonexistent'"`;
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", password FROM users WHERE email = $1 OR username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified, password FROM users WHERE email = $1 OR username = $1",
   [
     "nonexistent",
   ],
@@ -216,11 +219,11 @@ exports[`UserRepository findByEmailOrUsername should return null when user not f
 
 exports[`UserRepository findByEmailOrUsername should return null when user not found: User result 1`] = `null`;
 
-exports[`UserRepository findBySSOuid should find user by SSO UID: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE sso_uid = 'sso123'"`;
+exports[`UserRepository findBySSOuid should find user by SSO UID: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE sso_uid = 'sso123'"`;
 
 exports[`UserRepository findBySSOuid should find user by SSO UID: query and params 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE sso_uid = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE sso_uid = $1",
   [
     "sso123",
   ],
@@ -245,11 +248,11 @@ exports[`UserRepository findBySSOuid should find user by SSO UID: result 1`] = `
 }
 `;
 
-exports[`UserRepository findBySSOuid should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE sso_uid = 'nonexistent'"`;
+exports[`UserRepository findBySSOuid should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE sso_uid = 'nonexistent'"`;
 
 exports[`UserRepository findBySSOuid should return null when user not found: query and params 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE sso_uid = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE sso_uid = $1",
   [
     "nonexistent",
   ],
@@ -258,11 +261,11 @@ exports[`UserRepository findBySSOuid should return null when user not found: que
 
 exports[`UserRepository findBySSOuid should return null when user not found: result 1`] = `null`;
 
-exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE id = 1"`;
+exports[`UserRepository get should get user by id: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE id = 1"`;
 
 exports[`UserRepository get should get user by id: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE id = $1",
   [
     1,
   ],
@@ -277,11 +280,11 @@ exports[`UserRepository get should get user by id: User result 1`] = `
 }
 `;
 
-exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE id = 999"`;
+exports[`UserRepository get should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE id = 999"`;
 
 exports[`UserRepository get should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE id = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE id = $1",
   [
     999,
   ],
@@ -423,11 +426,11 @@ exports[`UserRepository getByUsername should get reduced user by username: User 
 }
 `;
 
-exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE username = 'testuser'"`;
+exports[`UserRepository getByUsername should get user by username: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE username = 'testuser'"`;
 
 exports[`UserRepository getByUsername should get user by username: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE username = $1",
   [
     "testuser",
   ],
@@ -441,11 +444,11 @@ exports[`UserRepository getByUsername should get user by username: User result 1
 }
 `;
 
-exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE username = 'nonexistent'"`;
+exports[`UserRepository getByUsername should return null when user not found: Interpolated SQL query 1`] = `"SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE username = 'nonexistent'"`;
 
 exports[`UserRepository getByUsername should return null when user not found: SQL query 1`] = `
 [
-  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken" FROM users WHERE username = $1",
+  "SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified FROM users WHERE username = $1",
   [
     "nonexistent",
   ],
@@ -779,7 +782,7 @@ exports[`UserRepository getFollows handles empty result: sql query 1`] = `
 
 exports[`UserRepository getList gets users with all params: Interpolated SQL query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE '%test%' OR name ILIKE '%test%') AND created_at <= '2024-01-01'::timestamptz  + interval '0.999999 seconds'
     ORDER BY created_at DESC
@@ -810,7 +813,7 @@ exports[`UserRepository getList gets users with all params: result 1`] = `
 
 exports[`UserRepository getList gets users with all params: sql query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1) AND created_at <= $2::timestamptz  + interval '0.999999 seconds'
     ORDER BY created_at DESC
@@ -819,7 +822,7 @@ exports[`UserRepository getList gets users with all params: sql query 1`] = `
 
 exports[`UserRepository getList gets users with createdAt param and equalDate false: Interpolated SQL query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE '%test%' OR name ILIKE '%test%') AND created_at < '2024-01-01'::timestamptz 
     ORDER BY created_at DESC
@@ -848,7 +851,7 @@ exports[`UserRepository getList gets users with createdAt param and equalDate fa
 
 exports[`UserRepository getList gets users with createdAt param and equalDate false: sql query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1) AND created_at < $2::timestamptz 
     ORDER BY created_at DESC
@@ -857,7 +860,7 @@ exports[`UserRepository getList gets users with createdAt param and equalDate fa
 
 exports[`UserRepository getList gets users with createdAt param and equalDate true: Interpolated SQL query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE '%test%' OR name ILIKE '%test%') AND created_at <= '2024-01-01'::timestamptz  + interval '0.999999 seconds'
     ORDER BY created_at DESC
@@ -886,7 +889,7 @@ exports[`UserRepository getList gets users with createdAt param and equalDate tr
 
 exports[`UserRepository getList gets users with createdAt param and equalDate true: sql query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1) AND created_at <= $2::timestamptz  + interval '0.999999 seconds'
     ORDER BY created_at DESC
@@ -895,7 +898,7 @@ exports[`UserRepository getList gets users with createdAt param and equalDate tr
 
 exports[`UserRepository getList gets users with pagination params: Interpolated SQL query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE '%test%' OR name ILIKE '%test%')
     ORDER BY created_at DESC
@@ -925,7 +928,7 @@ exports[`UserRepository getList gets users with pagination params: result 1`] = 
 
 exports[`UserRepository getList gets users with pagination params: sql query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1)
     ORDER BY created_at DESC
@@ -934,7 +937,7 @@ exports[`UserRepository getList gets users with pagination params: sql query 1`]
 
 exports[`UserRepository getList gets users without optional params: Interpolated SQL query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE '%test%' OR name ILIKE '%test%')
     ORDER BY created_at DESC
@@ -970,7 +973,7 @@ exports[`UserRepository getList gets users without optional params: result 1`] =
 
 exports[`UserRepository getList gets users without optional params: sql query 1`] = `
 "
-    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+    SELECT id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     FROM users
     WHERE (username ILIKE $1 OR name ILIKE $1)
     ORDER BY created_at DESC
@@ -982,7 +985,7 @@ exports[`UserRepository modifyUser throws EntityAlreadyExistsError for duplicate
       UPDATE users
       SET email = 'existing@example.com'
       WHERE id = 1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -998,7 +1001,7 @@ exports[`UserRepository modifyUser throws EntityAlreadyExistsError for duplicate
       UPDATE users
       SET email = $2
       WHERE id = $1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1007,7 +1010,7 @@ exports[`UserRepository modifyUser throws EntityAlreadyExistsError for duplicate
       UPDATE users
       SET username = 'existing_username'
       WHERE id = 1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1023,7 +1026,7 @@ exports[`UserRepository modifyUser throws EntityAlreadyExistsError for duplicate
       UPDATE users
       SET username = $2
       WHERE id = $1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1032,7 +1035,7 @@ exports[`UserRepository modifyUser throws original error for non-constraint viol
       UPDATE users
       SET name = 'Updated Name'
       WHERE id = 1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1048,7 +1051,7 @@ exports[`UserRepository modifyUser throws original error for non-constraint viol
       UPDATE users
       SET name = $2
       WHERE id = $1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1057,7 +1060,7 @@ exports[`UserRepository modifyUser updates multiple fields successfully: Interpo
       UPDATE users
       SET name = 'Updated Name', email = 'new@example.com'
       WHERE id = 1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1085,7 +1088,7 @@ exports[`UserRepository modifyUser updates multiple fields successfully: sql que
       UPDATE users
       SET name = $2, email = $3
       WHERE id = $1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1094,7 +1097,7 @@ exports[`UserRepository modifyUser updates single field successfully: Interpolat
       UPDATE users
       SET name = 'Updated Name'
       WHERE id = 1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1121,7 +1124,7 @@ exports[`UserRepository modifyUser updates single field successfully: sql query 
       UPDATE users
       SET name = $2
       WHERE id = $1
-      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken"
+      RETURNING id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified
     "
 `;
 
@@ -1219,4 +1222,136 @@ exports[`UserRepository putExpoToken should update user expo token successfully 
     },
   ],
 }
+`;
+
+exports[`UserRepository updateLocation should handle database errors 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET latitude = $1, longitude = $2
+      WHERE username = $3
+    ",
+      [
+        40.7128,
+        -74.006,
+        "testuser",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository updateLocation should handle database errors: Interpolated SQL query 1`] = `
+"
+      UPDATE users
+      SET latitude = 40.7128, longitude = -74.006
+      WHERE username = 'testuser'
+    "
+`;
+
+exports[`UserRepository updateLocation should handle empty username 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET latitude = $1, longitude = $2
+      WHERE username = $3
+    ",
+      [
+        40.7128,
+        -74.006,
+        "",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository updateLocation should handle empty username: Interpolated SQL query 1`] = `
+"
+      UPDATE users
+      SET latitude = 40.7128, longitude = -74.006
+      WHERE username = ''
+    "
+`;
+
+exports[`UserRepository updateLocation should handle invalid coordinates 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET latitude = $1, longitude = $2
+      WHERE username = $3
+    ",
+      [
+        91,
+        -74.006,
+        "testuser",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository updateLocation should handle invalid coordinates: Interpolated SQL query 1`] = `
+"
+      UPDATE users
+      SET latitude = 91, longitude = -74.006
+      WHERE username = 'testuser'
+    "
+`;
+
+exports[`UserRepository updateLocation should update user location successfully 1`] = `
+[MockFunction] {
+  "calls": [
+    [
+      "
+      UPDATE users
+      SET latitude = $1, longitude = $2
+      WHERE username = $3
+    ",
+      [
+        40.7128,
+        -74.006,
+        "testuser",
+      ],
+    ],
+  ],
+  "results": [
+    {
+      "type": "return",
+      "value": Promise {},
+    },
+  ],
+}
+`;
+
+exports[`UserRepository updateLocation should update user location successfully: Interpolated SQL query 1`] = `
+"
+      UPDATE users
+      SET latitude = 40.7128, longitude = -74.006
+      WHERE username = 'testuser'
+    "
 `;

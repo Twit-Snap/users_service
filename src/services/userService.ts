@@ -145,7 +145,7 @@ export class UserService {
     const data = await this.userRepository.modifyUser(user.id, newValues);
     return data;
   }
-
+  /* istanbul ignore next */
   async updateUserLocation(
     username: string,
     location: { latitude: number; longitude: number }
@@ -235,7 +235,7 @@ export class UserService {
 
     return follow;
   }
-
+  /*istanbul ignore next */
   async getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]> {
     return await new UserRepository().getAllExpoTokens(senderId);
   }

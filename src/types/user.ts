@@ -42,7 +42,10 @@ export type UserWithPassword = User & { password: string };
 
 export type NotModifiableUser = Omit<User, keyof ModifiableUser>;
 
-export type PublicUser = Omit<User, 'email' | 'lastname' | 'isBlocked'>;
+export type PublicUser = Omit<
+  User,
+  'email' | 'lastname' | 'isBlocked' | 'phoneNumber' | 'verified'
+>;
 
 export interface IUserRepository {
   findByEmailOrUsername(emailOrUsername: string): Promise<UserWithPassword | null>;

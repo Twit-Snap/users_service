@@ -208,7 +208,8 @@ describe('UserRepository', () => {
         name: 'New',
         lastname: 'User',
         birthdate: new Date('2000-01-01'),
-        password: 'password123'
+        password: 'password123',
+        phoneNumber: '+541112341234'
       };
 
       const result = await userRepository.create(userData);
@@ -231,7 +232,8 @@ describe('UserRepository', () => {
         birthdate: new Date('2000-01-01'),
         profilePicture: 'https://example.com/picture.jpg',
         ssoUid: 'sso123oiebf8q782783',
-        ssoProviderId: 'google.com'
+        ssoProviderId: 'google.com',
+        phoneNumber: '+541112341234'
       };
       const result = await userRepository.create(userData);
       expect(result).toMatchSnapshot('Created user result');
@@ -253,7 +255,8 @@ describe('UserRepository', () => {
         name: 'New',
         lastname: 'User',
         birthdate: new Date('2000-01-01'),
-        password: 'password123'
+        password: 'password123',
+        phoneNumber: '+541112341234'
       };
 
       try {
@@ -276,7 +279,8 @@ describe('UserRepository', () => {
         name: 'New',
         lastname: 'User',
         birthdate: new Date('2000-01-01'),
-        password: 'password123'
+        password: 'password123',
+        phoneNumber: '+541112341234'
       };
 
       try {
@@ -284,6 +288,30 @@ describe('UserRepository', () => {
       } catch (error) {
         expect(error).toBeInstanceOf(EntityAlreadyExistsError);
         expect((error as EntityAlreadyExistsError).message).toBe('Email already exists');
+      }
+    });
+
+    it('should throw EntityAlreadyExistsError for duplicate phone number', async () => {
+      const error = new Error('duplicate key value violates unique constraint');
+      (error as any).code = '23505';
+      (error as any).constraint = 'phone_number_unique';
+      mockPool.query.mockRejectedValueOnce(error);
+
+      const userData: UserRegisterRepository = {
+        username: 'newuser',
+        email: 'existing@example.com',
+        name: 'New',
+        lastname: 'User',
+        birthdate: new Date('2000-01-01'),
+        password: 'password123',
+        phoneNumber: '+541112341234'
+      };
+
+      try {
+        await userRepository.create(userData);
+      } catch (error) {
+        expect(error).toBeInstanceOf(EntityAlreadyExistsError);
+        expect((error as EntityAlreadyExistsError).message).toBe('phoneNumber already exists');
       }
     });
 
@@ -300,7 +328,8 @@ describe('UserRepository', () => {
         lastname: 'User',
         birthdate: new Date('2000-01-01'),
         ssoUid: 'existing_sso_uid',
-        ssoProviderId: 'google.com'
+        ssoProviderId: 'google.com',
+        phoneNumber: '+541112341234'
       };
 
       try {
@@ -321,7 +350,8 @@ describe('UserRepository', () => {
           email: 'test@example.com',
           name: 'Test',
           lastname: 'User',
-          birthdate: new Date('2000-01-01')
+          birthdate: new Date('2000-01-01'),
+          phoneNumber: '+541112341234'
         })
       ).rejects.toThrow(dbError);
       expect(mockPool.query.mock.calls[0][1]).toMatchSnapshot('query params');
@@ -1003,6 +1033,83 @@ describe('UserRepository', () => {
       // Execute and verify error is thrown
       await expect(userRepository.getAllExpoTokens(1)).rejects.toThrow('Database error');
       expect(mockPool.query).toHaveBeenCalledTimes(1);
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
+
+  describe('updateLocation', () => {
+    const testUsername = 'testuser';
+    const testLocation = {
+      latitude: 40.7128,
+      longitude: -74.006
+    };
+
+    it('should update user location successfully', async () => {
+      // Mock successful query execution
+      (mockPool.query as jest.Mock).mockResolvedValueOnce({
+        rowCount: 1
+      });
+
+      await userRepository.updateLocation(testUsername, testLocation);
+
+      // Verify query was called with correct parameters
+      expect(mockPool.query).toHaveBeenCalledWith(expect.any(String), [
+        testLocation.latitude,
+        testLocation.longitude,
+        testUsername
+      ]);
+
+      // Snapshot of the query call
+      expect(mockPool.query).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should handle database errors', async () => {
+      // Mock database error
+      const dbError = new Error('Database connection failed');
+      (mockPool.query as jest.Mock).mockRejectedValueOnce(dbError);
+
+      await expect(userRepository.updateLocation(testUsername, testLocation)).rejects.toThrow(
+        'Database connection failed'
+      );
+
+      // Snapshot of the error case
+      expect(mockPool.query).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should handle invalid coordinates', async () => {
+      const error = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(error);
+
+      const invalidLocation = {
+        latitude: 91, // Invalid latitude (> 90)
+        longitude: -74.006
+      };
+
+      await expect(userRepository.updateLocation(testUsername, invalidLocation)).rejects.toThrow();
+
+      // Snapshot of validation error
+      expect(mockPool.query).toMatchSnapshot();
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+
+    it('should handle empty username', async () => {
+      const error = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(error);
+
+      await expect(userRepository.updateLocation('', testLocation)).rejects.toThrow();
+
+      // Snapshot of validation error
+      expect(mockPool.query).toMatchSnapshot();
       const [query, params] = mockPool.query.mock.calls[0];
       const interpolatedQuery = interpolateQuery(query, params);
       expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
