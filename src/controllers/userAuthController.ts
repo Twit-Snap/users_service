@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
+import { JwtUserPayload, UserRequest } from 'jwt';
 import { UserAuthService } from '../services/userAuthService';
 import { ValidationError } from '../types/customErrors';
 import { UserLoginDto, UserRegisterDto } from '../types/userAuth';
+import { checkVerification, sendVerification } from '../utils/verification';
 import { MetricController } from './metricController';
 
 export class UserAuthController {
@@ -150,5 +152,42 @@ export class UserAuthController {
     }
 
     this.validateExpoToken(userLoginDto.expoToken);
+  }
+
+  async verify(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { code, channel } = req.body;
+      const jwtUser = (req as UserRequest).user;
+
+      console.log(channel);
+      const to: string = this.getDestinationByChannel(channel, jwtUser);
+      console.log(to);
+
+      if (code == undefined) {
+        await sendVerification(to, channel);
+
+        res.status(201);
+      } else {
+        await checkVerification(to, code);
+
+        const user = await new UserAuthService().setVerified(jwtUser.userId);
+        res.status(200).send(user);
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  private getDestinationByChannel(channel: string | undefined, jwtUser: JwtUserPayload) {
+    switch (channel) {
+      case 'sms':
+        return jwtUser.phoneNumber;
+
+      case 'email':
+        return jwtUser.email;
+
+      default:
+        throw new ValidationError('channel', `Invalid channel ${channel}`, 'INVALID_CHANNEL');
+    }
   }
 }
