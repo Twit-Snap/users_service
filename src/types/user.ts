@@ -21,6 +21,7 @@ export interface User {
   followed?: boolean; // Auth user is followed by the requested user?
   isPrivate: boolean;
   isBlocked: boolean;
+  verified: boolean;
 }
 
 export interface ModifiableUser {

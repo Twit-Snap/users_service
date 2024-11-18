@@ -55,7 +55,8 @@ export class UserAuthSSOService {
         userId: user.id,
         email: user.email,
         username: user.username,
-        phoneNumber: user.phoneNumber
+        phoneNumber: user.phoneNumber,
+        verified: user.verified
       });
 
       // Attach token to user object
@@ -116,7 +117,8 @@ export class UserAuthSSOService {
       userId: user.id,
       email: user.email,
       username: user.username,
-      phoneNumber: user.phoneNumber
+      phoneNumber: user.phoneNumber,
+      verified: user.verified
     });
 
     // Attach token to user object
