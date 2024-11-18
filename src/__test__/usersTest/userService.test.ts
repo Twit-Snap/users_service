@@ -217,7 +217,7 @@ describe('UserService', () => {
 
       const ret = await service.followUser('pepe', 'juan');
 
-      expect(ret).toEqual({
+      expect(ret.follow).toEqual({
         createdAt: '2024-09-21T23:29:16.260Z',
         userId: 1,
         followedId: 2
