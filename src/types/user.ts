@@ -92,5 +92,5 @@ export type OnlyExpoToken = {
 export type Interest = {
   id: number;
   name: string;
-  parentId?: number;
+  parentId: number | null;
 }
