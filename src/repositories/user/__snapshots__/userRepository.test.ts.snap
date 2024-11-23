@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`UserRepository associateInterestsToUser should associate interests to a user: Interpolated SQL query 1`] = `
+"
+      INSERT INTO user_interests (user_id, interest_id)
+      VALUES (1, 1), (1, 2), (1, 3)
+      ON CONFLICT (user_id, interest_id) DO NOTHING
+    "
+`;
+
 exports[`UserRepository create handles database error: Interpolated SQL query 1`] = `
 "
       INSERT INTO users (username, email, name, lastname, birthdate, password, profile_picture, sso_uid, provider_id, expo_token, phone_number)

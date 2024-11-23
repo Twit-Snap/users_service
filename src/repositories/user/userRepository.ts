@@ -343,7 +343,7 @@ export class UserRepository implements IUserRepository {
       VALUES ${valuesQuery}
       ON CONFLICT (user_id, interest_id) DO NOTHING
     `;
-    await this.pool.query(query);
-    return true;
+    const result = await this.pool.query(query);
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }

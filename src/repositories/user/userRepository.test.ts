@@ -1130,82 +1130,56 @@ describe('UserRepository', () => {
     });
   });
 
-  // describe('getUserInterests', () => {
-  //   it('should return interests for a user', async () => {
-  //     const mockInterests = [
-  //       { id: 1, name: 'Sports', parentId: null },
-  //       { id: 2, name: 'Soccer', parentId: 1 }
-  //     ];
-  //     mockPool.query.mockResolvedValueOnce({ rows: mockInterests });
+  describe('getUserInterests', () => {
+    it('should return interests for a user', async () => {
+      const mockInterests = [
+        { id: 1, name: 'Sports', parentId: null },
+        { id: 2, name: 'Soccer', parentId: 1 }
+      ];
+      mockPool.query.mockResolvedValueOnce({ rows: mockInterests });
 
-  //     const result = await userRepository.getUserInterests(1);
-  //     expect(result).toEqual(mockInterests);
-  //     expect(mockPool.query).toHaveBeenCalledWith(
-  //       expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
-  //       [1]
-  //     );
-  //   });
+      const result = await userRepository.getUserInterests(1);
+      expect(result).toEqual(mockInterests);
+      expect(mockPool.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        [1]
+      );
+    });
 
-  //   it('should return an empty array when user has no interests', async () => {
-  //     mockPool.query.mockResolvedValueOnce({ rows: [] });
+    it('should return an empty array when user has no interests', async () => {
+      mockPool.query.mockResolvedValueOnce({ rows: [] });
 
-  //     const result = await userRepository.getUserInterests(1);
-  //     expect(result).toEqual([]);
-  //     expect(mockPool.query).toHaveBeenCalledWith(
-  //       expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
-  //       [1]
-  //     );
-  //   });
+      const result = await userRepository.getUserInterests(1);
+      expect(result).toEqual([]);
+      expect(mockPool.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        [1]
+      );
+    });
 
-  //   it('should handle database error', async () => {
-  //     const dbError = new Error('Database error');
-  //     mockPool.query.mockRejectedValueOnce(dbError);
+    it('should handle database error', async () => {
+      const dbError = new Error('Database error');
+      mockPool.query.mockRejectedValueOnce(dbError);
 
-  //     await expect(userRepository.getUserInterests(1)).rejects.toThrow(dbError);
-  //     expect(mockPool.query).toHaveBeenCalledWith(
-  //       expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
-  //       [1]
-  //     );
-  //   });
-  // });
+      await expect(userRepository.getUserInterests(1)).rejects.toThrow(dbError);
+      expect(mockPool.query).toHaveBeenCalledWith(
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        [1]
+      );
+    });
+  });
 
-  // describe('associateInterestsToUser', () => {
-  //   it('should associate interests to a user', async () => {
-  //     const userId = 1;
-  //     const interests = [1, 2, 3];
-  //     mockPool.query.mockResolvedValueOnce({ rowCount: interests.length });
+  describe('associateInterestsToUser', () => {
+    it('should associate interests to a user', async () => {
+      const userId = 1;
+      const interests = [1, 2, 3];
+      mockPool.query.mockResolvedValueOnce({ rowCount: interests.length });
 
-  //     const result = await userRepository.associateInterestsToUser(userId, interests);
-  //     expect(result).toBe(true);
-  //     expect(mockPool.query).toHaveBeenCalledTimes(interests.length);
-  //     interests.forEach((interestId, index) => {
-  //       expect(mockPool.query).toHaveBeenCalledWith(
-  //         expect.stringContaining('INSERT INTO user_interests (user_id, interest_id)'),
-  //         [userId, interestId]
-  //       );
-  //     });
-  //   });
-
-  //   it('should handle conflicts and not throw an error', async () => {
-  //     const userId = 1;
-  //     const interests = [1, 2, 3];
-  //     mockPool.query.mockResolvedValueOnce({ rowCount: interests.length });
-
-  //     await expect(userRepository.associateInterestsToUser(userId, interests)).resolves.toBe(true);
-  //     expect(mockPool.query).toHaveBeenCalledTimes(interests.length);
-  //   });
-
-  //   it('should handle database error', async () => {
-  //     const userId = 1;
-  //     const interests = [1, 2, 3];
-  //     const dbError = new Error('Database error');
-  //     mockPool.query.mockRejectedValueOnce(dbError);
-
-  //     await expect(userRepository.associateInterestsToUser(userId, interests)).rejects.toThrow(dbError);
-  //     expect(mockPool.query).toHaveBeenCalledWith(
-  //       expect.stringContaining('INSERT INTO user_interests (user_id, interest_id)'),
-  //       [userId, interests[0]]
-  //     );
-  //   });
-  // });
+      const result = await userRepository.associateInterestsToUser(userId, interests);
+      expect(result).toBe(true);
+      const [query, params] = mockPool.query.mock.calls[0];
+      const interpolatedQuery = interpolateQuery(query, params);
+      expect(interpolatedQuery).toMatchSnapshot('Interpolated SQL query');
+    });
+  });
 });
