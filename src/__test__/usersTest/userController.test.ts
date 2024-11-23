@@ -103,6 +103,10 @@ describe('UserController', () => {
       await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(ValidationError);
     });
 
+    it('should throw ValidationError if interests is undefined', async () => {
+      await expect(controller.associateInterestsToUser(authUser.userId, undefined)).rejects.toThrow(ValidationError);
+    });
+
     it('should throw ValidationError if interests contain non-numeric values', async () => {
       const interests = [1, 'invalid', 3] as unknown as number[]; // 'invalid' is not a number
       await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(ValidationError);

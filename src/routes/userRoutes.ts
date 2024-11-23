@@ -48,8 +48,8 @@ router.post('/interests', async (req, res, next) => {
   try {
     const authUser = (req as unknown as UserRequest).user;
     const interests = req.body.interests as number[];
-    const user = await new UserController().associateInterestsToUser(authUser.userId, interests);
-    res.send(user);
+    const success = await new UserController().associateInterestsToUser(authUser.userId, interests);
+    res.send({success});
   } catch (error) {
     next(error);
   }

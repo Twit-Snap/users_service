@@ -1,0 +1,17 @@
+@url = http://localhost:3000
+@token = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6NCwiZW1haWwiOiJsdWlzMUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Imx1aXMxIiwicGhvbmVOdW1iZXIiOiIrNTQxMTI3NzYyNjkxIiwidmVyaWZpZWQiOmZhbHNlLCJpYXQiOjE3MzIzOTU3MjUsImV4cCI6MTc2MzkzMTcyNX0.XOP0fvQkeEhfXN-_aYvahLSJeaVioD0LK0kFYT0sOng
+
+### get all interests
+curl -X GET {{url}}/public/interests
+
+### get user interests
+curl -X GET {{url}}/users/interests \
+    -H 'Authorization: {{token}}'
+
+### associate interests to user
+curl -X POST http://localhost:3000/users/interests \
+    -H 'Content-Type: application/json' \
+    -H 'Authorization: {{token}}' \
+    -d '{
+        "interests": [10, 12, 13,10]
+    }'

@@ -48,7 +48,9 @@ export class UserAuthController {
 
   async register(req: Request, res: Response, next: NextFunction) {
     const userRegisterDTO: UserRegisterDto = req.body;
-    userRegisterDTO.registrationTime = Number(userRegisterDTO.registrationTime);
+    userRegisterDTO.registrationTime = Number(
+      userRegisterDTO.registrationTime || new Date().getTime()
+    );
 
     const initialProcessTime = new Date();
     try {
