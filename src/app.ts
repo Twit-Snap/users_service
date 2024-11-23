@@ -7,7 +7,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { logMiddleware } from './middleware/logMiddleware';
 import { AdminRepository } from './repositories/admin/adminRepository';
 import { DatabasePool } from './repositories/db';
-import { adminRoutes, authAdminRoutes, authSSORoutes, userAuthRoutes, userRoutes } from './routes';
+import { adminRoutes, authAdminRoutes, authSSORoutes, publicRoutes, userAuthRoutes, userRoutes } from './routes';
 import { AdminAuthService } from './services/adminAuthService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -115,7 +115,9 @@ async function startServer() {
 
   // Apply JWT middleware to all routes except /auth
   app.use((req, res, next) => {
-    if (req.path !== '/auth/verify' && req.path.startsWith('/auth')) {
+    const isPublicRoute = req.path.startsWith('/public');
+    const isAuthPublicRoute = req.path.startsWith('/auth') && req.path !== '/auth/verify';
+    if (isPublicRoute || isAuthPublicRoute) {
       return next();
     }
     authMiddleware(req, res, next);
@@ -127,6 +129,7 @@ async function startServer() {
   app.use('/admins', adminRoutes);
   app.use('/auth/admins', authAdminRoutes);
   app.use('/auth/sso', authSSORoutes);
+  app.use('/public', publicRoutes);
 
   // Error handling middleware
   app.use(errorHandler);

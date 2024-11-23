@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import {
   GetUserParams,
   GetUsersListParams,
+  Interest,
   IUserRepository,
   ModifiableUser,
   OnlyExpoToken,
@@ -315,5 +316,34 @@ export class UserRepository implements IUserRepository {
 
     const result = await this.pool.query(query, [senderId]);
     return result.rows;
+  }
+
+  async getAllInterests(): Promise<Interest[]> {
+    const query = 'SELECT id, name, parent_id AS "parentId" FROM interests';
+    const result = await this.pool.query(query);
+    return result.rows;
+  }
+
+  async getUserInterests(userId: number): Promise<Interest[]> {
+    const query = `
+      SELECT i.id, i.name, i.parent_id AS "parentId"
+      FROM user_interests ui
+      JOIN interests i ON ui.interest_id = i.id
+      WHERE ui.user_id = $1
+    `;
+    const result = await this.pool.query<Interest>(query, [userId]);
+    return result.rows;
+  }
+
+  async associateInterestsToUser(userId: number, interests: number[]): Promise<boolean> {
+    // in the service we check that interests is not empty and are numbers, so this is safe
+    const valuesQuery = interests.map((interestId) => `(${userId}, ${interestId})`).join(', ');
+    const query = `
+      INSERT INTO user_interests (user_id, interest_id)
+      VALUES ${valuesQuery}
+      ON CONFLICT (user_id, interest_id) DO NOTHING
+    `;
+    const result = await this.pool.query(query);
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }

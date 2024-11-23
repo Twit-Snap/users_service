@@ -18,7 +18,8 @@ curl -X POST http://localhost:3000/auth/register \
         "password": "luis123",
         "name": "name test",
         "lastname": "lastname test",
-        "birthdate": "1990-01-01"
+        "birthdate": "1990-01-01",
+        "phoneNumber": "+541127762693"
     }'
 
 ### valid register

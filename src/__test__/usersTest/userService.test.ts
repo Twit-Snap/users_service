@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { JwtUserPayload } from 'jwt';
-import { GetUsersListParams, ModifiableUser, User, UserWithPassword } from 'user';
+import { GetUsersListParams, Interest, ModifiableUser, User, UserWithPassword } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { UserRepository } from '../../repositories/user/userRepository';
 import { UserService } from '../../services/userService';
@@ -21,7 +21,7 @@ const authUser = {
 
 describe('UserService', () => {
   let service: UserService;
-  let dbServiceMock: jest.Mocked<UserRepository>;
+  let mockRepository: jest.Mocked<UserRepository>;
 
   const username = 'usernameTest';
 
@@ -40,13 +40,16 @@ describe('UserService', () => {
   };
 
   beforeEach(() => {
-    dbServiceMock = {
+    mockRepository = {
       getByUsername: jest.fn().mockResolvedValue(aMockUser),
       getFollow: jest.fn().mockResolvedValue(false),
-      getFollows: jest.fn().mockResolvedValue(0)
+      getFollows: jest.fn().mockResolvedValue(0),
+      getAllInterests: jest.fn(),
+      getUserInterests: jest.fn(),
+      associateInterestsToUser: jest.fn()
     } as unknown as jest.Mocked<UserRepository>;
 
-    service = new UserService(dbServiceMock);
+    service = new UserService(mockRepository);
   });
 
   afterEach(() => {
@@ -193,7 +196,7 @@ describe('UserService', () => {
     });
 
     it('should throw an error if user is not found', async () => {
-      dbServiceMock.getByUsername.mockResolvedValue(null);
+      mockRepository.getByUsername.mockResolvedValue(null);
       await expect(
         service.getUser('nonExistentUser', { ...authUser, type: 'user' })
       ).rejects.toThrow(NotFoundError);
@@ -202,7 +205,7 @@ describe('UserService', () => {
 
   describe('followUser', () => {
     it('should create a new follow "pepe" -> "juan"', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -213,7 +216,7 @@ describe('UserService', () => {
           .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       const ret = await service.followUser('pepe', 'juan');
 
@@ -225,7 +228,7 @@ describe('UserService', () => {
     });
 
     it('should raise a NotFoundError if a user with the username "pepe" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
         createFollow: jest
@@ -233,13 +236,13 @@ describe('UserService', () => {
           .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.followUser('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a NotFoundError if a user wants to follow someone with the username "juan" who does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -250,13 +253,13 @@ describe('UserService', () => {
           .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.followUser('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a ValidationError if a user wants to follow himself', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
         createFollow: jest
@@ -264,7 +267,7 @@ describe('UserService', () => {
           .mockResolvedValue({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' })
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.followUser('pepe', 'pepe')).rejects.toThrow(ValidationError);
     });
@@ -272,7 +275,7 @@ describe('UserService', () => {
 
   describe('unfollowUser', () => {
     it('should unfollow the user "juan", "pepe" -> "juan"', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -284,15 +287,15 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await service.unfollowUser('pepe', 'juan');
 
-      expect(dbServiceMock.deleteFollow).toHaveBeenCalledTimes(1);
+      expect(mockRepository.deleteFollow).toHaveBeenCalledTimes(1);
     });
 
     it('should raise a NotFoundError if a user with the username "pepe" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
         getFollow: jest
@@ -301,13 +304,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.unfollowUser('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a NotFoundError if a user wants to unfollow someone with the username "juan" who does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -319,13 +322,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.unfollowUser('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a ValidationError if a user wants to unfollow himself', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
         getFollow: jest
@@ -334,13 +337,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.unfollowUser('pepe', 'pepe')).rejects.toThrow(ValidationError);
     });
 
     it('should raise a NotFoundError if the follow "pepe" -> "juan" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -350,15 +353,15 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
       await expect(service.unfollowUser('pepe', 'juan')).rejects.toThrow(NotFoundError); //.toThrow(NotFoundError);
-      expect(dbServiceMock.getFollow).toHaveBeenCalledTimes(1);
+      expect(mockRepository.getFollow).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('getAllFollows', () => {
     it('should return all the users that an user with username "pepe" is following', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce({ id: 1, username: 'pepe' }),
 
         getFollows: jest
@@ -368,21 +371,21 @@ describe('UserService', () => {
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
         byFollowers: false,
         has: ''
       });
 
-      expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
+      expect(mockRepository.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
         { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
       ]);
     });
 
     it('should return all the users that follows an user with username "pepe"', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce({ id: 1, username: 'pepe' }),
 
         getFollows: jest
@@ -392,21 +395,21 @@ describe('UserService', () => {
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       const ret = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
         byFollowers: true,
         has: ''
       });
 
-      expect(dbServiceMock.getFollows).toHaveBeenCalledTimes(1);
+      expect(mockRepository.getFollows).toHaveBeenCalledTimes(1);
       expect(ret).toEqual([
         { id: 2, name: 'juan', username: 'juan', followCreatedAt: '2024-09-21T23:29:16.260Z' }
       ]);
     });
 
     it('should raise a NotFoundError if a user with the username "pepe" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce(null),
 
         getFollowers: jest
@@ -416,7 +419,7 @@ describe('UserService', () => {
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(
         service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
@@ -427,7 +430,7 @@ describe('UserService', () => {
     });
 
     it('should raise a ValidationError if authUser and requested user dont follow each other', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce({ id: 255, username: 'pepe' }),
         getFollow: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(false),
         getFollows: jest
@@ -437,7 +440,7 @@ describe('UserService', () => {
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(
         service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
@@ -448,7 +451,7 @@ describe('UserService', () => {
     });
 
     it('should not raise a ValidationError if authUser is the requested user', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: authUser.userId, username: authUser.username }),
@@ -460,7 +463,7 @@ describe('UserService', () => {
           ])
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
       const response = await service.getAllFollows({ ...authUser, type: 'user' }, 'pepe', {
         byFollowers: false,
         has: ''
@@ -474,7 +477,7 @@ describe('UserService', () => {
 
   describe('getFollow', () => {
     it('should return the follow "pepe" -> "juan"', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -487,14 +490,14 @@ describe('UserService', () => {
         })
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
       const result = await service.getFollow('pepe', 'juan');
 
       expect(result).toEqual({ userId: 1, followedId: 2, createdAt: '2024-09-21T23:29:16.260Z' });
     });
 
     it('should raise a NotFoundError if a user with the username "pepe" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
 
         getFollow: jest
@@ -503,13 +506,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.getFollow('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a NotFoundError if a user wants to check if follows someone with the username "juan" who does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -521,13 +524,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.getFollow('pepe', 'juan')).rejects.toThrow(NotFoundError);
     });
 
     it('should raise a ValidationError if a user wants to check if they are following themselves', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValue({ id: 1, username: 'pepe' }),
 
         getFollow: jest
@@ -536,13 +539,13 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
 
       await expect(service.getFollow('pepe', 'pepe')).rejects.toThrow(ValidationError);
     });
 
     it('should raise a NotFoundError if the follow "pepe" -> "juan" does not exist', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest
           .fn()
           .mockResolvedValueOnce({ id: 1, username: 'pepe' })
@@ -552,9 +555,9 @@ describe('UserService', () => {
         deleteFollow: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      service = new UserService(dbServiceMock);
+      service = new UserService(mockRepository);
       await expect(service.getFollow('pepe', 'juan')).rejects.toThrow(NotFoundError); //.toThrow(NotFoundError);
-      expect(dbServiceMock.getFollow).toHaveBeenCalledTimes(1);
+      expect(mockRepository.getFollow).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -581,7 +584,7 @@ describe('UserService', () => {
         isBlocked: false
       };
 
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValue(mockUser),
         modifyUser: jest.fn().mockResolvedValue({
           ...mockUser,
@@ -591,12 +594,12 @@ describe('UserService', () => {
         })
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
 
       const result = await userService.modifyUser(username, newValues);
 
-      expect(dbServiceMock.getByUsername).toHaveBeenCalledWith(username);
-      expect(dbServiceMock.modifyUser).toHaveBeenCalledWith(mockUser.id, {
+      expect(mockRepository.getByUsername).toHaveBeenCalledWith(username);
+      expect(mockRepository.modifyUser).toHaveBeenCalledWith(mockUser.id, {
         name: 'New Name',
         is_private: true,
         is_blocked: false
@@ -605,11 +608,11 @@ describe('UserService', () => {
     });
 
     it('should throw error for non-existent user', async () => {
-      dbServiceMock = {
+      mockRepository = {
         getByUsername: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       await expect(userService.modifyUser('nonexistent', { name: 'New Name' })).rejects.toThrow();
     });
   });
@@ -635,22 +638,22 @@ describe('UserService', () => {
         password: 'hashedpassword'
       };
 
-      dbServiceMock = {
+      mockRepository = {
         findByEmailOrUsername: jest.fn().mockResolvedValue(mockUserWithPassword)
       } as unknown as jest.Mocked<UserRepository>;
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       const result = await userService.findByEmailOrUsername('test@example.com');
 
-      expect(dbServiceMock.findByEmailOrUsername).toHaveBeenCalledWith('test@example.com');
+      expect(mockRepository.findByEmailOrUsername).toHaveBeenCalledWith('test@example.com');
       expect(result).toEqual(mockUserWithPassword);
     });
 
     it('should return null for non-existent user', async () => {
-      dbServiceMock = {
+      mockRepository = {
         findByEmailOrUsername: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       const result = await userService.findByEmailOrUsername('nonexistent');
 
       expect(result).toBeNull();
@@ -665,13 +668,13 @@ describe('UserService', () => {
         has: ''
       };
 
-      dbServiceMock = {
+      mockRepository = {
         getAmount: jest.fn().mockResolvedValue(42)
       } as unknown as jest.Mocked<UserRepository>;
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       const result = await userService.getAmount(params);
 
-      expect(dbServiceMock.getAmount).toHaveBeenCalledWith(params);
+      expect(mockRepository.getAmount).toHaveBeenCalledWith(params);
       expect(result).toBe(42);
     });
   });
@@ -708,11 +711,11 @@ describe('UserService', () => {
       };
 
       const mockUsers = [mockUser];
-      dbServiceMock = {
+      mockRepository = {
         getList: jest.fn().mockResolvedValue(mockUsers)
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
 
       const addFollowStateSpy = jest
         .spyOn(userService as any, 'addFollowState')
@@ -720,7 +723,7 @@ describe('UserService', () => {
 
       const result = await userService.getList(jwtUser, params);
 
-      expect(dbServiceMock.getList).toHaveBeenCalledWith(params);
+      expect(mockRepository.getList).toHaveBeenCalledWith(params);
       expect(addFollowStateSpy).toHaveBeenCalledWith(jwtUser, mockUser);
       expect(result).toHaveLength(1);
       expect(result[0].following).toBeDefined();
@@ -743,22 +746,22 @@ describe('UserService', () => {
     };
 
     it('should return user by id', async () => {
-      dbServiceMock = {
+      mockRepository = {
         get: jest.fn().mockResolvedValue(mockUser)
       } as unknown as jest.Mocked<UserRepository>;
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       const result = await userService.get(1);
 
-      expect(dbServiceMock.get).toHaveBeenCalledWith(1);
+      expect(mockRepository.get).toHaveBeenCalledWith(1);
       expect(result).toEqual(mockUser);
     });
 
     it('should return null for non-existent id', async () => {
-      dbServiceMock = {
+      mockRepository = {
         get: jest.fn().mockResolvedValue(null)
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
       const result = await userService.get(999);
 
       expect(result).toBeNull();
@@ -777,7 +780,7 @@ describe('UserService', () => {
         phoneNumber: '+541112341234'
       };
 
-      dbServiceMock = {
+      mockRepository = {
         create: jest.fn().mockResolvedValue({
           ...userData,
           id: 3,
@@ -787,13 +790,68 @@ describe('UserService', () => {
         })
       } as unknown as jest.Mocked<UserRepository>;
 
-      const userService = new UserService(dbServiceMock);
+      const userService = new UserService(mockRepository);
 
       const result = await userService.create(userData);
 
-      expect(dbServiceMock.create).toHaveBeenCalledWith(userData);
+      expect(mockRepository.create).toHaveBeenCalledWith(userData);
       expect(result.username).toBe(userData.username);
       expect(result.email).toBe(userData.email);
+    });
+  });
+
+  describe('getAllInterests', () => {
+    it('should return all interests', async () => {
+      const mockInterests: Interest[] = [
+        { id: 1, name: 'Sports', parentId: null },
+        { id: 2, name: 'Swimming', parentId: 1 }
+      ];
+      mockRepository.getAllInterests = jest.fn().mockResolvedValue(mockInterests);
+      const service = new UserService(mockRepository);
+      const result = await service.getAllInterests();
+
+      expect(mockRepository.getAllInterests).toHaveBeenCalled();
+      expect(result).toEqual(mockInterests);
+    });
+  });
+
+  describe('getUserInterests', () => {
+    it('should return user interests', async () => {
+      const mockInterests: Interest[] = [
+        { id: 1, name: 'Sports', parentId: null },
+        { id: 2, name: 'Swimming', parentId: 1 }
+      ];
+      mockRepository.getUserInterests = jest.fn().mockResolvedValue(mockInterests);
+      const result = await service.getUserInterests(1);
+
+      expect(mockRepository.getUserInterests).toHaveBeenCalledWith(1);
+      expect(result).toEqual(mockInterests);
+    });
+
+    describe('associateInterestsToUser', () => {
+      it('should associate interests to a user', async () => {
+        const userId = 1;
+        const interests = [1, 2];
+        mockRepository.getUserInterests = jest.fn().mockResolvedValue([]);
+        mockRepository.associateInterestsToUser = jest.fn().mockResolvedValue(true);
+        const result = await service.associateInterestsToUser(userId, interests);
+
+        expect(mockRepository.associateInterestsToUser).toHaveBeenCalledWith(userId, interests);
+        expect(result).toBe(true);
+      });
+
+      it('should throw a ValidationError if the user already has interests', async () => {
+        mockRepository.getUserInterests = jest.fn().mockResolvedValue([{ id: 1, name: 'Sports', parentId: null }]);
+        await expect(service.associateInterestsToUser(1, [1])).rejects.toThrow(ValidationError);
+      });
+
+      it('should handle duplicates in interests', async () => {
+        mockRepository.getUserInterests = jest.fn().mockResolvedValue([]);
+        mockRepository.associateInterestsToUser = jest.fn().mockResolvedValue(true);
+        const result = await service.associateInterestsToUser(1, [1, 1]);
+        expect(result).toBe(true);
+        expect(mockRepository.associateInterestsToUser).toHaveBeenCalledWith(1, [1]);
+      });
     });
   });
 });
