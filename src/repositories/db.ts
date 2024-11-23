@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+/* ignore coverage */
 // db.ts
 import { Pool } from 'pg';
 
