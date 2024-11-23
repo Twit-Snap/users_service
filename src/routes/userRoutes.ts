@@ -43,6 +43,18 @@ router.get('/interests', async (req, res, next) => {
   }
 });
 
+//associate interests to user
+router.post('/interests', async (req, res, next) => {
+  try {
+    const authUser = (req as unknown as UserRequest).user;
+    const interests = req.body.interests as number[];
+    const user = await new UserController().associateInterestsToUser(authUser.userId, interests);
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/:username', async (req, res, next) => {
   try {
     const authUser = (req as unknown as UserRequest).user;

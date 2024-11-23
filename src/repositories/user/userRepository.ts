@@ -334,4 +334,16 @@ export class UserRepository implements IUserRepository {
     const result = await this.pool.query<Interest>(query, [userId]);
     return result.rows;
   }
+
+  async associateInterestsToUser(userId: number, interests: number[]): Promise<boolean> {
+    // in the service we check that interests is not empty and are numbers, so this is safe
+    const valuesQuery = interests.map((interestId) => `(${userId}, ${interestId})`).join(', ');
+    const query = `
+      INSERT INTO user_interests (user_id, interest_id)
+      VALUES ${valuesQuery}
+      ON CONFLICT (user_id, interest_id) DO NOTHING
+    `;
+    await this.pool.query(query);
+    return true;
+  }
 }

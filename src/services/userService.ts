@@ -251,4 +251,15 @@ export class UserService {
   async getUserInterests(userId: number): Promise<Interest[]> {
     return await this.userRepository.getUserInterests(userId);
   }
+
+  async associateInterestsToUser(userId: number, interests: number[]): Promise<boolean> {
+    const uniqueInterests = [...new Set(interests)];
+    const actualInterests = await this.userRepository.getUserInterests(userId);
+
+    if (actualInterests.length) {
+      throw new ValidationError('interests', 'User already has interests', 'USER_ALREADY_HAS_INTERESTS');
+    }
+
+    return await this.userRepository.associateInterestsToUser(userId, uniqueInterests);
+  }
 }

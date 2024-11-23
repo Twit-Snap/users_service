@@ -56,4 +56,14 @@ export class UserController {
       }
     });
   }
+
+  async associateInterestsToUser(userId: number, interests: number[]): Promise<boolean> {
+    if (interests.length === 0) {
+      throw new ValidationError('interests', 'Interests are required', 'EMPTY_INTERESTS');
+    }
+    if (interests.some((interest) => typeof interest !== 'number')) {
+      throw new ValidationError('interests', 'Interests must be numbers', 'INVALID_INTERESTS');
+    }
+    return await this.userService.associateInterestsToUser(userId, interests);
+  }
 }
