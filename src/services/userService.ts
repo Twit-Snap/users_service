@@ -5,6 +5,7 @@ import { NotFoundError, ValidationError } from '../types/customErrors';
 import {
   GetUserParams,
   GetUsersListParams,
+  Interest,
   IUserRepository,
   ModifiableUser,
   OnlyExpoToken,
@@ -241,5 +242,9 @@ export class UserService {
   /*istanbul ignore next */
   async getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]> {
     return await new UserRepository().getAllExpoTokens(senderId);
+  }
+
+  async getAllInterests(): Promise<Interest[]> {
+    return await this.userRepository.getAllInterests();
   }
 }

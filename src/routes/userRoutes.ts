@@ -192,4 +192,13 @@ router.post('/notifications', async (req, res, next) => {
   }
 });
 
+router.get('/interests', async (req, res, next) => {
+  try {
+    const data = await new UserService().getAllInterests();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

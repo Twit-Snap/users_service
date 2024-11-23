@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS users (
     phone_number VARCHAR(20) UNIQUE NOT NULL,
     verified BOOLEAN NOT NULL DEFAULT false
 );
--- Create a unique partial index on sso_uid
-CREATE UNIQUE INDEX idx_unique_sso_uid ON users (sso_uid) WHERE sso_uid IS NOT NULL;
+-- Create a unique partial index on sso_uid if it does not exist
+CREATE UNIQUE INDEX IF NOT EXISTS idx_unique_sso_uid ON users (sso_uid) WHERE sso_uid IS NOT NULL;
 
 
 -- Create the admins table if it doesn't exist
@@ -55,16 +55,16 @@ CREATE TABLE IF NOT EXISTS follows (
     PRIMARY KEY (userId, followedId),
     FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (followedId) REFERENCES users(id) ON DELETE CASCADE
-)
+);
 
 CREATE TABLE IF NOT EXISTS interests (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL UNIQUE,
     parent_id INT NULL,
     FOREIGN KEY (parent_id) REFERENCES interests(id) ON DELETE SET NULL
 );
 
-CREATE TABLE user_interests (
+CREATE TABLE IF NOT EXISTS user_interests (
     user_id INT NOT NULL,
     interest_id INT NOT NULL,
     PRIMARY KEY (user_id, interest_id),
@@ -72,54 +72,60 @@ CREATE TABLE user_interests (
     FOREIGN KEY (interest_id) REFERENCES interests(id) ON DELETE CASCADE
 );
 
-INSERT INTO interests (id, name, parent_id) VALUES
-(1, 'Sports', NULL),
-(2, 'Soccer', 1),
-(3, 'Swimming', 1),
-(4, 'Basketball', 1),
-(5, 'Tennis', 1),
-(6, 'Volleyball', 1),
-(7, 'Baseball', 1),
-(8, 'Athletics', 1),
-(9, 'Rugby', 1),
-(10, 'Cricket', 1),
-(11, 'Tech', NULL),
-(12, 'Programming', 11),
-(13, 'Web Development', 11),
-(14, 'Mobile Development', 11),
-(15, 'AI & Machine Learning', 11),
-(16, 'Cybersecurity', 11),
-(17, 'Cloud Computing', 11),
-(18, 'Data Science', 11),
-(19, 'DevOps', 11),
-(20, 'Blockchain', 11),
-(21, 'Arts', NULL),
-(22, 'Painting', 21),
-(23, 'Drawing', 21),
-(24, 'Photography', 21),
-(25, 'Sculpture', 21),
-(26, 'Digital Art', 21),
-(27, 'Animation', 21),
-(28, 'Graphic Design', 21),
-(29, 'Film Making', 21),
-(30, 'Music', 21),
-(31, 'Science', NULL),
-(32, 'Physics', 31),
-(33, 'Chemistry', 31),
-(34, 'Biology', 31),
-(35, 'Astronomy', 31),
-(36, 'Mathematics', 31),
-(37, 'Environmental Science', 31),
-(38, 'Geology', 31),
-(39, 'Robotics', 31),
-(40, 'Genetics', 31),
-(41, 'Languages', NULL),
-(42, 'English', 41),
-(43, 'Spanish', 41),
-(44, 'French', 41),
-(45, 'German', 41),
-(46, 'Chinese', 41),
-(47, 'Japanese', 41),
-(48, 'Korean', 41),
-(49, 'Italian', 41),
-(50, 'Portuguese', 41);
+-- Insert interests only if the table is empty
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM interests) THEN
+        INSERT INTO interests (name, parent_id) VALUES
+        ('Sports', NULL),
+        ('Soccer', 1),
+        ('Swimming', 1),
+        ('Basketball', 1),
+        ('Tennis', 1),
+        ('Volleyball', 1),
+        ('Baseball', 1),
+        ('Athletics', 1),
+        ('Rugby', 1),
+        ('Cricket', 1),
+        ('Tech', NULL),
+        ('Programming', 11),
+        ('Web Development', 11),
+        ('Mobile Development', 11),
+        ('AI & Machine Learning', 11),
+        ('Cybersecurity', 11),
+        ('Cloud Computing', 11),
+        ('Data Science', 11),
+        ('DevOps', 11),
+        ('Blockchain', 11),
+        ('Arts', NULL),
+        ('Painting', 21),
+        ('Drawing', 21),
+        ('Photography', 21),
+        ('Sculpture', 21),
+        ('Digital Art', 21),
+        ('Animation', 21),
+        ('Graphic Design', 21),
+        ('Film Making', 21),
+        ('Music', 21),
+        ('Science', NULL),
+        ('Physics', 31),
+        ('Chemistry', 31),
+        ('Biology', 31),
+        ('Astronomy', 31),
+        ('Mathematics', 31),
+        ('Environmental Science', 31),
+        ('Geology', 31),
+        ('Robotics', 31),
+        ('Genetics', 31),
+        ('Languages', NULL),
+        ('English', 41),
+        ('Spanish', 41),
+        ('French', 41),
+        ('German', 41),
+        ('Chinese', 41),
+        ('Japanese', 41),
+        ('Korean', 41),
+        ('Italian', 41),
+        ('Portuguese', 41);
+    END IF;
+END $$;

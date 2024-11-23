@@ -3,6 +3,7 @@ import { Pool } from 'pg';
 import {
   GetUserParams,
   GetUsersListParams,
+  Interest,
   IUserRepository,
   ModifiableUser,
   OnlyExpoToken,
@@ -314,6 +315,12 @@ export class UserRepository implements IUserRepository {
       `;
 
     const result = await this.pool.query(query, [senderId]);
+    return result.rows;
+  }
+
+  async getAllInterests(): Promise<Interest[]> {
+    const query = 'SELECT id, name, parent_id AS "parentId" FROM interests';
+    const result = await this.pool.query(query);
     return result.rows;
   }
 }

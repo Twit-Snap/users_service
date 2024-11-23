@@ -67,6 +67,7 @@ export interface IUserRepository {
     location: { latitude: number; longitude: number }
   ): Promise<void>;
   getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]>;
+  getAllInterests(): Promise<Interest[]>;
 }
 
 export type GetUsersListParams = {
@@ -85,3 +86,9 @@ export type GetUserParams = {
 export type OnlyExpoToken = {
   expoToken: string;
 };
+
+export type Interest = {
+  id: number;
+  name: string;
+  parentId?: number;
+}
