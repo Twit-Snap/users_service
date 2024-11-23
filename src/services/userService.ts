@@ -247,4 +247,8 @@ export class UserService {
   async getAllInterests(): Promise<Interest[]> {
     return await this.userRepository.getAllInterests();
   }
+
+  async getUserInterests(userId: number): Promise<Interest[]> {
+    return await this.userRepository.getUserInterests(userId);
+  }
 }

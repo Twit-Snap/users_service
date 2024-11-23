@@ -22,5 +22,10 @@ curl -X GET {{url}}/users/luis4 \
 
 
 ### get all interests
+curl -X GET {{url}}/users/interests/all \
+    -H 'Authorization: {{token}}'
+
+
+### get user interests
 curl -X GET {{url}}/users/interests \
     -H 'Authorization: {{token}}'

@@ -323,4 +323,15 @@ export class UserRepository implements IUserRepository {
     const result = await this.pool.query(query);
     return result.rows;
   }
+
+  async getUserInterests(userId: number): Promise<Interest[]> {
+    const query = `
+      SELECT i.id, i.name, i.parent_id AS "parentId"
+      FROM user_interests ui
+      JOIN interests i ON ui.interest_id = i.id
+      WHERE ui.user_id = $1
+    `;
+    const result = await this.pool.query<Interest>(query, [userId]);
+    return result.rows;
+  }
 }

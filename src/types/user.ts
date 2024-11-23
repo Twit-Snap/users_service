@@ -68,6 +68,7 @@ export interface IUserRepository {
   ): Promise<void>;
   getAllExpoTokens(senderId: number): Promise<OnlyExpoToken[]>;
   getAllInterests(): Promise<Interest[]>;
+  getUserInterests(userId: number): Promise<Interest[]>;
 }
 
 export type GetUsersListParams = {
