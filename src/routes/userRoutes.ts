@@ -33,6 +33,17 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+
+router.get('/interests', async (req, res, next) => {
+  try {
+    console.log('getAllInterests');
+    const data = await new UserService().getAllInterests();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/:username', async (req, res, next) => {
   try {
     const authUser = (req as unknown as UserRequest).user;
@@ -187,15 +198,6 @@ router.post('/notifications', async (req, res, next) => {
     tokens.forEach(({ expoToken }) => {
       sendPushNotification(expoToken, title, body, data);
     });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/interests', async (req, res, next) => {
-  try {
-    const data = await new UserService().getAllInterests();
-    res.status(200).json(data);
   } catch (error) {
     next(error);
   }
