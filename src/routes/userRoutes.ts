@@ -33,17 +33,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-//TODO: move to interest routes file
-router.get('/interests/all', async (req, res, next) => {
-  try {
-    console.log('getAllInterests');
-    const data = await new UserService().getAllInterests();
-    res.status(200).json(data);
-  } catch (error) {
-    next(error);
-  }
-});
-
 router.get('/interests', async (req, res, next) => {
   try {
     const authUser = (req as unknown as UserRequest).user;
