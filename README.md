@@ -1,5 +1,13 @@
 # User service
 
+## Coverage
+
+  ![Statements](https://img.shields.io/badge/statements-99.45%25-brightgreen.svg?style=flat)
+  ![Branches](https://img.shields.io/badge/branches-89.24%25-yellow.svg?style=flat)
+  ![Functions](https://img.shields.io/badge/functions-98.75%25-brightgreen.svg?style=flat)
+  ![Lines](https://img.shields.io/badge/lines-99.43%25-brightgreen.svg?style=flat)
+
+
 ## Comandos de Docker
 
 ### Uso con Docker Compose
