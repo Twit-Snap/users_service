@@ -10,7 +10,8 @@
     "lint": "prettier --write \"src/**/*.ts\" && eslint src/",
     "test": "jest --maxWorkers=1 --coverage",
     "prepare": "husky",
-    "coverage": "jest --coverage && istanbul-badges-readme"
+    "coverage": "jest --coverage && istanbul-badges-readme",
+    "validate": "tsc --noEmit"
   },
   "keywords": [
     "Node.js",

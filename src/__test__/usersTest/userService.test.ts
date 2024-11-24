@@ -803,8 +803,8 @@ describe('UserService', () => {
   describe('getAllInterests', () => {
     it('should return all interests', async () => {
       const mockInterests: Interest[] = [
-        { id: 1, name: 'Sports', parentId: null },
-        { id: 2, name: 'Swimming', parentId: 1 }
+        { id: 1, name: 'Sports', parentId: null, emoji: '🏊‍♂️' },
+        { id: 2, name: 'Swimming', parentId: 1, emoji: '🏊‍♂️' }
       ];
       mockRepository.getAllInterests = jest.fn().mockResolvedValue(mockInterests);
       const service = new UserService(mockRepository);
@@ -818,8 +818,8 @@ describe('UserService', () => {
   describe('getUserInterests', () => {
     it('should return user interests', async () => {
       const mockInterests: Interest[] = [
-        { id: 1, name: 'Sports', parentId: null },
-        { id: 2, name: 'Swimming', parentId: 1 }
+        { id: 1, name: 'Sports', parentId: null, emoji: '🏊‍♂️' },
+        { id: 2, name: 'Swimming', parentId: 1, emoji: '🏊‍♂️' }
       ];
       mockRepository.getUserInterests = jest.fn().mockResolvedValue(mockInterests);
       const result = await service.getUserInterests(1);
