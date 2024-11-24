@@ -70,6 +70,23 @@ export class MetricController {
       });
   }
 
+  async postLocationMetrics(username: string, latitude: number, longitude: number) {
+    await axios
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
+        createdAt: new Date(),
+        type: 'location',
+        username: username ? username : '',
+        metrics: {
+          latitude: latitude,
+          longitude: longitude
+        }
+      })
+      .catch((error) => {
+        console.error('Error posting metrics', error);
+      });
+  }
+
+
   private calculateRegistrationTime(eventTime: number, processTime: Date): number {
     const now = new Date();
     const spentTime = now.getTime() - processTime.getTime();

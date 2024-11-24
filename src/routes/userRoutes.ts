@@ -166,6 +166,7 @@ router.post('/location', async (req, res, next) => {
     const { latitude, longitude } = req.body;
 
     await new UserService().updateUserLocation(jwtUser.username, { latitude, longitude });
+    await new MetricController().postLocationMetrics(jwtUser.username,latitude, longitude);
   } catch (error) {
     next(error);
   }
