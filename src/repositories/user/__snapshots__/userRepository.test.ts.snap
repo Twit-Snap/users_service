@@ -343,7 +343,7 @@ exports[`UserRepository getAllExpoTokens should return empty array when no token
 
 exports[`UserRepository getAllInterests should return all interests 1`] = `
 [
-  "SELECT id, name, parent_id AS "parentId" FROM interests",
+  "SELECT id, name, parent_id AS "parentId", emoji FROM interests",
 ]
 `;
 

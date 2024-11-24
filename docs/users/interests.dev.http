@@ -13,5 +13,5 @@ curl -X POST http://localhost:3000/users/interests \
     -H 'Content-Type: application/json' \
     -H 'Authorization: {{token}}' \
     -d '{
-        "interests": [10, 12, 13,10]
+        "interests": [10, 11, 13,10]
     }'

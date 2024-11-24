@@ -319,14 +319,14 @@ export class UserRepository implements IUserRepository {
   }
 
   async getAllInterests(): Promise<Interest[]> {
-    const query = 'SELECT id, name, parent_id AS "parentId" FROM interests';
+    const query = 'SELECT id, name, parent_id AS "parentId", emoji FROM interests';
     const result = await this.pool.query(query);
     return result.rows;
   }
 
   async getUserInterests(userId: number): Promise<Interest[]> {
     const query = `
-      SELECT i.id, i.name, i.parent_id AS "parentId"
+      SELECT i.id, i.name, i.parent_id AS "parentId", i.emoji
       FROM user_interests ui
       JOIN interests i ON ui.interest_id = i.id
       WHERE ui.user_id = $1

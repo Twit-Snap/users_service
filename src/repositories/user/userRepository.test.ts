@@ -1133,15 +1133,15 @@ describe('UserRepository', () => {
   describe('getUserInterests', () => {
     it('should return interests for a user', async () => {
       const mockInterests = [
-        { id: 1, name: 'Sports', parentId: null },
-        { id: 2, name: 'Soccer', parentId: 1 }
+        { id: 1, name: 'Sports', parentId: null, emoji: '🏃‍♂️' },
+        { id: 2, name: 'Soccer', parentId: 1, emoji: '⚽' }
       ];
       mockPool.query.mockResolvedValueOnce({ rows: mockInterests });
 
       const result = await userRepository.getUserInterests(1);
       expect(result).toEqual(mockInterests);
       expect(mockPool.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId", i.emoji'),
         [1]
       );
     });
@@ -1152,7 +1152,7 @@ describe('UserRepository', () => {
       const result = await userRepository.getUserInterests(1);
       expect(result).toEqual([]);
       expect(mockPool.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId", i.emoji'),
         [1]
       );
     });
@@ -1163,7 +1163,7 @@ describe('UserRepository', () => {
 
       await expect(userRepository.getUserInterests(1)).rejects.toThrow(dbError);
       expect(mockPool.query).toHaveBeenCalledWith(
-        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId"'),
+        expect.stringContaining('SELECT i.id, i.name, i.parent_id AS "parentId", i.emoji'),
         [1]
       );
     });
