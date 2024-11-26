@@ -86,6 +86,21 @@ export class MetricController {
       });
   }
 
+  async postFollowMetric(followedUser: string, isFollowed: boolean) {
+    await axios
+      .post(`${process.env.METRICS_SERVICE_URL}/metrics`, {
+        createdAt: new Date(),
+        type: 'follow',
+        username: followedUser,
+        metrics: {
+          followed: isFollowed,
+          amount: 1
+        }
+      })
+      .catch((error) => {
+        console.log('Error posting metrics', error);
+      });
+  }
 
   private calculateRegistrationTime(eventTime: number, processTime: Date): number {
     const now = new Date();

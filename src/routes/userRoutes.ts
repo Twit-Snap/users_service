@@ -82,6 +82,8 @@ router.post('/:username/followers', async (req, res, next) => {
     controller.validateUsername(followedUsername);
 
     const ret = await new UserService().followUser(username, followedUsername);
+    await new MetricController().postFollowMetric(ret.followedUser.username, true);
+
 
     if (ret.followedUser.expoToken) {
       sendPushNotification(
@@ -113,6 +115,7 @@ router.delete('/:username/followers', async (req, res, next) => {
     controller.validateUsername(followedUsername);
 
     await new UserService().unfollowUser(username, followedUsername);
+    await new MetricController().postFollowMetric(followedUsername, false);
 
     res.status(204).send();
   } catch (error) {

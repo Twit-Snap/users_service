@@ -14,6 +14,7 @@ import {
   UserWithPassword
 } from '../types/user';
 import { UserRegisterRepository } from '../types/userAuth';
+import { MetricController } from '../controllers/metricController';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -102,6 +103,7 @@ export class UserService {
     this.validateFollow(follow, user, followedUser);
 
     await this.userRepository.deleteFollow(user.id, followedUser.id);
+
   }
 
   async getAllFollows(
