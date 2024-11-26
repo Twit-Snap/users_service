@@ -14,7 +14,6 @@ import {
   UserWithPassword
 } from '../types/user';
 import { UserRegisterRepository } from '../types/userAuth';
-import { MetricController } from '../controllers/metricController';
 
 export class UserService {
   private userRepository: IUserRepository;
@@ -103,7 +102,6 @@ export class UserService {
     this.validateFollow(follow, user, followedUser);
 
     await this.userRepository.deleteFollow(user.id, followedUser.id);
-
   }
 
   async getAllFollows(
@@ -259,7 +257,11 @@ export class UserService {
     const actualInterests = await this.userRepository.getUserInterests(userId);
 
     if (actualInterests.length) {
-      throw new ValidationError('interests', 'User already has interests', 'USER_ALREADY_HAS_INTERESTS');
+      throw new ValidationError(
+        'interests',
+        'User already has interests',
+        'USER_ALREADY_HAS_INTERESTS'
+      );
     }
 
     return await this.userRepository.associateInterestsToUser(userId, uniqueInterests);
