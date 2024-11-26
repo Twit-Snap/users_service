@@ -257,7 +257,11 @@ export class UserService {
     const actualInterests = await this.userRepository.getUserInterests(userId);
 
     if (actualInterests.length) {
-      throw new ValidationError('interests', 'User already has interests', 'USER_ALREADY_HAS_INTERESTS');
+      throw new ValidationError(
+        'interests',
+        'User already has interests',
+        'USER_ALREADY_HAS_INTERESTS'
+      );
     }
 
     return await this.userRepository.associateInterestsToUser(userId, uniqueInterests);
