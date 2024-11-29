@@ -59,6 +59,7 @@ export interface IUserRepository {
   deleteFollow(userId: number, followId: number): Promise<void>;
   getFollow(userId: number, followId: number): Promise<FollowReturn | undefined>;
   getFollows(userId: number, params: GetAllFollowsParams): Promise<FollowersResponse[]>;
+  getFollowsFullData(userId: number, params: GetAllFollowsParams): Promise<User[]>;
   getAmount(params: GetUsersListParams): Promise<number>;
   modifyUser(userId: number, newValues: ModifiableUser): Promise<User>;
   putExpoToken(userId: number, expoToken: string): Promise<void>;

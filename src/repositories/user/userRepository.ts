@@ -16,7 +16,7 @@ import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, users.created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified`;
   private readonly reducedUserFields =
     'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate", expo_token AS "expoToken"';
 
@@ -236,6 +236,42 @@ export class UserRepository implements IUserRepository {
 
     try {
       const result = await this.pool.query<FollowersResponse>(query, queryParams);
+      return result.rows;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getFollowsFullData(userId: number, params: GetAllFollowsParams): Promise<User[]> {
+    var queryParams: (number | string)[] = [userId, `%${params.has}%`];
+
+    const condition = params.byFollowers ? 'followedId = $1' : 'userId = $1';
+    const join = params.byFollowers ? 'userId' : 'followedId';
+    var offset = '';
+    var limit = '';
+
+    if (params.createdAt) {
+      queryParams.push(params.createdAt);
+      offset = ` AND follows.created_at < $${queryParams.length}`;
+    }
+
+    if (params.limit) {
+      queryParams.push(Number(params.limit));
+      limit = ` LIMIT $${queryParams.length}`;
+    }
+
+    const query = `
+      SELECT ${this.selectUserFields}
+      FROM follows
+      INNER JOIN users ON follows.${join} = users.id
+      WHERE ${condition}${offset} AND (username ILIKE $2 OR name ILIKE $2)
+      ORDER BY follows.created_at DESC
+      ${limit}
+    `;
+
+    try {
+      const result = await this.pool.query<User>(query, queryParams);
       return result.rows;
     } catch (error) {
       console.error(error);

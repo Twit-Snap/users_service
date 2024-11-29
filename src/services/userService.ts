@@ -128,7 +128,7 @@ export class UserService {
 
     let suggestedAccounts: Set<User> = new Set();
     for (const user of usersFollowed) {
-      let followers = await this.userRepository.getFollows(user.id, { byFollowers: false, has: '', createdAt: undefined });
+      let followers = await this.userRepository.getFollowsFullData(user.id, { byFollowers: false, has: '', createdAt: undefined });
 
       followers = followers.filter(
         (suggestedUser) =>
@@ -136,11 +136,7 @@ export class UserService {
           suggestedUser.username !== username
       );
 
-      const followersUsers = await Promise.all(
-        followers.map(async (follower) => await this.userRepository.get(follower.id))
-      );
-
-      followersUsers.forEach((follower) => suggestedAccounts.add(<User>follower));
+      followers.forEach((follower) => suggestedAccounts.add(follower));
     }
 
     if (suggestedAccounts.size > (params?.limit ?? 10)) {
