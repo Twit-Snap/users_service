@@ -3,6 +3,7 @@ import { JwtUserPayload } from 'jwt';
 import { UserRepository } from '../repositories/user/userRepository';
 import { NotFoundError, ValidationError } from '../types/customErrors';
 import {
+  GetAccountsByUserParams,
   GetUserParams,
   GetUsersListParams,
   Interest,
@@ -116,6 +117,37 @@ export class UserService {
 
     const followers = await this.userRepository.getFollows(user.id, params);
     return followers;
+  }
+
+  async getSuggestedAccounts(username: string, authUser: JwtUserPayload, params?: GetAccountsByUserParams): Promise<User[]> {
+    let usersFollowed = await this.userRepository.getFollows(authUser.userId, { byFollowers: false, has: '', createdAt: undefined });
+
+    if (usersFollowed.length > 10) {
+      usersFollowed = usersFollowed.sort(() => 0.5 - Math.random()).slice(0, 10);
+    }
+
+    let suggestedAccounts: Set<User> = new Set();
+    for (const user of usersFollowed) {
+      let followers = await this.userRepository.getFollows(user.id, { byFollowers: false, has: '', createdAt: undefined });
+
+      followers = followers.filter(
+        (suggestedUser) =>
+          !usersFollowed.some((user) => user.username === suggestedUser.username) &&
+          suggestedUser.username !== username
+      );
+
+      const followersUsers = await Promise.all(
+        followers.map(async (follower) => await this.userRepository.get(follower.id))
+      );
+
+      followersUsers.forEach((follower) => suggestedAccounts.add(<User>follower));
+    }
+
+    if (suggestedAccounts.size > (params?.limit ?? 10)) {
+      return Array.from(suggestedAccounts).sort(() => 0.5 - Math.random()).slice(0, 10);
+    }
+
+    return Array.from(suggestedAccounts);
   }
 
   async getFollow(username: string, followedUsername: string): Promise<FollowReturn> {

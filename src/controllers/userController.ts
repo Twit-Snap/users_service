@@ -1,5 +1,5 @@
 import { JwtCustomPayload, JwtUserPayload } from 'jwt';
-import { GetUserParams, ModifiableUser, PublicUser, User } from 'user';
+import { GetAccountsByUserParams, GetUserParams, ModifiableUser, PublicUser, User } from 'user';
 import { UserService } from '../services/userService';
 import { AuthenticationError, ValidationError } from '../types/customErrors';
 
@@ -8,6 +8,12 @@ export class UserController {
 
   constructor(aUserService?: UserService) {
     this.userService = aUserService ?? new UserService();
+  }
+
+  async getSuggestedAccounts(username: string, authUser: JwtUserPayload, params?: GetAccountsByUserParams) {
+    this.validateUsername(username);
+    const users: User[] = await this.userService.getSuggestedAccounts(username, authUser, params);
+    return { data: users };
   }
 
   async getUserByUsername(username: string, authUser: JwtUserPayload, params?: GetUserParams) {

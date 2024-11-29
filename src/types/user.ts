@@ -81,6 +81,12 @@ export type GetUsersListParams = {
   offset: number;
 };
 
+export type GetAccountsByUserParams = {
+  reduce?: boolean,
+  suggestAccounts?: boolean,
+  limit?: number,
+}
+
 export type GetUserParams = {
   reduce?: boolean;
 };
