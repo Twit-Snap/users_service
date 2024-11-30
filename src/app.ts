@@ -7,7 +7,7 @@ import { errorHandler } from './middleware/errorHandler';
 import { logMiddleware } from './middleware/logMiddleware';
 import { AdminRepository } from './repositories/admin/adminRepository';
 import { DatabasePool } from './repositories/db';
-import { adminRoutes, authAdminRoutes, authSSORoutes, publicRoutes, userAuthRoutes, userRoutes } from './routes';
+import { adminRoutes, authAdminRoutes, authSSORoutes, publicRoutes, redirectRoute, userAuthRoutes, userRoutes } from './routes';
 import { AdminAuthService } from './services/adminAuthService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -117,7 +117,8 @@ async function startServer() {
   app.use((req, res, next) => {
     const isPublicRoute = req.path.startsWith('/public');
     const isAuthPublicRoute = req.path.startsWith('/auth') && req.path !== '/auth/verify';
-    if (isPublicRoute || isAuthPublicRoute) {
+    const isRedirectRoute = req.path.startsWith('/redirect');
+    if (isPublicRoute || isAuthPublicRoute || isRedirectRoute) {
       return next();
     }
     authMiddleware(req, res, next);
@@ -130,6 +131,7 @@ async function startServer() {
   app.use('/auth/admins', authAdminRoutes);
   app.use('/auth/sso', authSSORoutes);
   app.use('/public', publicRoutes);
+  app.use('/redirect', redirectRoute);
 
   // Error handling middleware
   app.use(errorHandler);
