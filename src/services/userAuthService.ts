@@ -1,9 +1,11 @@
 import bcrypt from 'bcrypt';
-import { IJWTService } from 'jwt';
+import { IJWTService, JwtResetPasswordPayload } from 'jwt';
 import { IUserRepository, ModifiableUser } from 'user';
 import { IUserAuthService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { AuthenticationError, BlockedError } from '../types/customErrors';
+import { resetPasswordTemplate } from '../utils/resetPassword';
+import { SmtpEmailProvider } from '../utils/smtpEmailProvider';
 import { JWTService } from './jwtService';
 
 export class UserAuthService implements IUserAuthService {
@@ -13,6 +15,11 @@ export class UserAuthService implements IUserAuthService {
   constructor(userRepositoryArg?: IUserRepository, jwtService?: IJWTService) {
     this.userRepository = userRepositoryArg ?? new UserRepository();
     this.jwtService = jwtService ?? new JWTService();
+  }
+
+  private async encryptPassword(password: string) {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
   }
 
   async login(
@@ -60,8 +67,7 @@ export class UserAuthService implements IUserAuthService {
 
   async register(userData: UserRegisterDto): Promise<UserWithToken> {
     // Hash password
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+    const hashedPassword = await this.encryptPassword(userData.password);
 
     const newUser = await this.userRepository.create({
       ...userData,
@@ -101,5 +107,53 @@ export class UserAuthService implements IUserAuthService {
     const userWithToken = { ...user, token, password: undefined };
 
     return userWithToken;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userRepository.findByEmailOrUsername(email);
+
+    if (!user) {
+      throw new AuthenticationError();
+    }
+
+    const token = this.jwtService.sign({
+      type: 'resetPassword',
+      userId: user.id,
+      email: user.email
+      },
+      {
+        expiresIn: '1h'
+      }
+    );
+
+    const resetPasswordUrl = `${process.env.USER_SERVICE_URL}/redirect/reset-password?email=${user.email}&token=${token}`;
+
+    const emailBody = resetPasswordTemplate(resetPasswordUrl);
+    const emailFrom = 'lescalante+twitsnap@fi.uba.ar';
+    const emailResponse = await new SmtpEmailProvider().sendEmail(user.email, 'Twitsnap - Reset Password', emailBody, emailFrom);
+
+    console.log(emailResponse.data);
+
+    return { success: true };
+  }
+
+  async resetPassword(token: string, password: string) {
+    const decoded = this.jwtService.verify(token) as JwtResetPasswordPayload;
+
+    if (!decoded || decoded.type !== 'resetPassword' || !decoded.userId) {
+      throw new AuthenticationError('Invalid token');
+    }
+
+    const user = await this.userRepository.get(decoded.userId);
+
+    if (!user) {
+      throw new AuthenticationError('Invalid user');
+    }
+
+    const hashedPassword = await this.encryptPassword(password);
+
+    await this.userRepository.updatePassword(user.id, hashedPassword);
+
+    return { success: true };
   }
 }

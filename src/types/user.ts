@@ -70,6 +70,7 @@ export interface IUserRepository {
   getAllInterests(): Promise<Interest[]>;
   getUserInterests(userId: number): Promise<Interest[]>;
   associateInterestsToUser(userId: number, interests: number[]): Promise<boolean>;
+  updatePassword(userId: number, password: string): Promise<void>;
 }
 
 export type GetUsersListParams = {

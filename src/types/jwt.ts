@@ -1,14 +1,14 @@
 import { Request } from 'express';
-import { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload, SignOptions } from 'jsonwebtoken';
 
 // Interface definition
 export interface IJWTService {
-  sign(payload: JwtCustomPayload): string;
+  sign(payload: JwtCustomPayload, options?: SignOptions): string;
   verify(token: string): JwtPayload | string;
   decode(token: string): JwtPayload | string | null;
 }
 
-export type JwtCustomPayload = JwtUserPayload | JwtAdminPayload;
+export type JwtCustomPayload = JwtUserPayload | JwtAdminPayload | JwtResetPasswordPayload;
 
 export type JwtUserPayload = {
   type: 'user';
@@ -22,6 +22,12 @@ export type JwtUserPayload = {
 export type JwtAdminPayload = {
   type: 'admin';
   username: string;
+  email: string;
+};
+
+export type JwtResetPasswordPayload = {
+  type: 'resetPassword';
+  userId: number;
   email: string;
 };
 
