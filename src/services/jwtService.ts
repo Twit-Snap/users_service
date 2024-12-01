@@ -15,7 +15,7 @@ export class JWTService implements IJWTService {
     try {
       return jwt.verify(token, this.secret);
     } catch {
-      throw new AuthenticationError();
+      throw new AuthenticationError('invalid jwt verify token');
     }
   }
 

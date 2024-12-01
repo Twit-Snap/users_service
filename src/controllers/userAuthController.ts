@@ -207,4 +207,18 @@ export class UserAuthController {
       next(error);
     }
   }
+
+  async resetPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { token, password } = req.body;
+      if (!token || !password) {
+        throw new ValidationError('token', 'Invalid token', 'INVALID_TOKEN');
+      }
+
+      const user = await new UserAuthService().resetPassword(token, password);
+      res.send(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

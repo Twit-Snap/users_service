@@ -346,4 +346,9 @@ export class UserRepository implements IUserRepository {
     const result = await this.pool.query(query);
     return result.rowCount !== null && result.rowCount > 0;
   }
+
+  async updatePassword(userId: number, password: string): Promise<void> {
+    const query = `UPDATE users SET password = $1 WHERE id = $2`;
+    await this.pool.query(query, [password, userId]);
+  }
 }
