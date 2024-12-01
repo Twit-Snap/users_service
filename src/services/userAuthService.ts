@@ -4,6 +4,8 @@ import { IUserRepository, ModifiableUser } from 'user';
 import { IUserAuthService, UserRegisterDto, UserWithToken } from 'userAuth';
 import { UserRepository } from '../repositories/user/userRepository';
 import { AuthenticationError, BlockedError } from '../types/customErrors';
+import { resetPasswordTemplate } from '../utils/resetPassword';
+import { SmtpEmailProvider } from '../utils/smtpEmailProvider';
 import { JWTService } from './jwtService';
 
 export class UserAuthService implements IUserAuthService {
@@ -101,5 +103,33 @@ export class UserAuthService implements IUserAuthService {
     const userWithToken = { ...user, token, password: undefined };
 
     return userWithToken;
+  }
+
+  async forgotPassword(email: string) {
+    const user = await this.userRepository.findByEmailOrUsername(email);
+
+    if (!user) {
+      throw new AuthenticationError();
+    }
+
+    const token = this.jwtService.sign({
+      type: 'resetPassword',
+      userId: user.id,
+      email: user.email
+      },
+      {
+        expiresIn: '1h'
+      }
+    );
+
+    const resetPasswordUrl = `${process.env.USER_SERVICE_URL}/redirect/reset-password?email=${user.email}&token=${token}`;
+
+    const emailBody = resetPasswordTemplate(resetPasswordUrl);
+    const emailFrom = 'lescalante+twitsnap@fi.uba.ar';
+    const emailResponse = await new SmtpEmailProvider().sendEmail(user.email, 'Twitsnap - Reset Password', emailBody, emailFrom);
+
+    console.log(emailResponse.data);
+
+    return { success: true };
   }
 }

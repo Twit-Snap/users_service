@@ -192,4 +192,19 @@ export class UserAuthController {
         throw new ValidationError('channel', `Invalid channel ${channel}`, 'INVALID_CHANNEL');
     }
   }
+
+  async forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email } = req.body;
+      // Validate email
+      if (!email || !email.includes('@')) {
+        throw new ValidationError('email', 'Invalid email', 'INVALID_EMAIL');
+      }
+
+      const user = await new UserAuthService().forgotPassword(email);
+      res.send(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
