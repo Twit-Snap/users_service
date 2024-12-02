@@ -196,8 +196,7 @@ export class UserAuthController {
   }
 
   async forgotPassword(req: Request, res: Response, next: NextFunction) {
-
-    const { email, forgotPasswordTime} = req.body;
+    const { email, forgotPasswordTime } = req.body;
     const now = new Date();
     console.log('forgotPasswordTime', forgotPasswordTime);
     try {
@@ -209,7 +208,13 @@ export class UserAuthController {
       const user = await new UserAuthService().forgotPassword(email, forgotPasswordTime);
       res.send(user);
     } catch (error) {
-      await new MetricController().postUserMetrics("unknown", Number(forgotPasswordTime), now, false, 'password');
+      await new MetricController().postUserMetrics(
+        'unknown',
+        Number(forgotPasswordTime),
+        now,
+        false,
+        'password'
+      );
       next(error);
     }
   }
@@ -224,10 +229,22 @@ export class UserAuthController {
       }
 
       const user = await new UserAuthService().resetPassword(token, password);
-      await new MetricController().postUserMetrics(username, Number(resetPasswordTime), now, true, 'password');
+      await new MetricController().postUserMetrics(
+        username,
+        Number(resetPasswordTime),
+        now,
+        true,
+        'password'
+      );
       res.send(user);
     } catch (error) {
-      await new MetricController().postUserMetrics(username, Number(resetPasswordTime), now, false, 'password');
+      await new MetricController().postUserMetrics(
+        username,
+        Number(resetPasswordTime),
+        now,
+        false,
+        'password'
+      );
       next(error);
     }
   }

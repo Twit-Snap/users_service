@@ -83,7 +83,6 @@ router.post('/:username/followers', async (req, res, next) => {
     const ret = await new UserService().followUser(username, followedUsername);
     await new MetricController().postFollowMetric(ret.followedUser.username, true);
 
-
     if (ret.followedUser.expoToken) {
       sendPushNotification(
         ret.followedUser.expoToken,

@@ -116,10 +116,11 @@ export class UserAuthService implements IUserAuthService {
       throw new AuthenticationError();
     }
 
-    const token = this.jwtService.sign({
-      type: 'resetPassword',
-      userId: user.id,
-      email: user.email
+    const token = this.jwtService.sign(
+      {
+        type: 'resetPassword',
+        userId: user.id,
+        email: user.email
       },
       {
         expiresIn: '1h'
@@ -130,7 +131,12 @@ export class UserAuthService implements IUserAuthService {
     console.log('resetPasswordUrl', resetPasswordUrl);
     const emailBody = resetPasswordTemplate(resetPasswordUrl);
     const emailFrom = 'lescalante+twitsnap@fi.uba.ar';
-    const emailResponse = await new SmtpEmailProvider().sendEmail(user.email, 'Twitsnap - Reset Password', emailBody, emailFrom);
+    const emailResponse = await new SmtpEmailProvider().sendEmail(
+      user.email,
+      'Twitsnap - Reset Password',
+      emailBody,
+      emailFrom
+    );
 
     console.log(emailResponse.data);
 

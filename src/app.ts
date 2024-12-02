@@ -7,7 +7,15 @@ import { errorHandler } from './middleware/errorHandler';
 import { logMiddleware } from './middleware/logMiddleware';
 import { AdminRepository } from './repositories/admin/adminRepository';
 import { DatabasePool } from './repositories/db';
-import { adminRoutes, authAdminRoutes, authSSORoutes, publicRoutes, redirectRoute, userAuthRoutes, userRoutes } from './routes';
+import {
+  adminRoutes,
+  authAdminRoutes,
+  authSSORoutes,
+  publicRoutes,
+  redirectRoute,
+  userAuthRoutes,
+  userRoutes
+} from './routes';
 import { AdminAuthService } from './services/adminAuthService';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
