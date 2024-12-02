@@ -4,7 +4,14 @@ import { JWTService } from './jwtService';
 
 describe('JWTService', () => {
   let jwtService: JWTService;
-  const mockPayload: JwtCustomPayload = { userId: 123, email: 'test@test.com', username: 'test', phoneNumber: '1234567890', verified: true, type: 'user' };
+  const mockPayload: JwtCustomPayload = {
+    userId: 123,
+    email: 'test@test.com',
+    username: 'test',
+    phoneNumber: '1234567890',
+    verified: true,
+    type: 'user'
+  };
   let token: string;
 
   beforeAll(() => {

@@ -49,7 +49,7 @@ router.post('/interests', async (req, res, next) => {
     const authUser = (req as unknown as UserRequest).user;
     const interests = req.body.interests as number[];
     const success = await new UserController().associateInterestsToUser(authUser.userId, interests);
-    res.send({success});
+    res.send({ success });
   } catch (error) {
     next(error);
   }
@@ -69,7 +69,6 @@ router.get('/:username', async (req, res, next) => {
   }
 });
 
-
 router.post('/:username/followers', async (req, res, next) => {
   try {
     const { username } = req.params;
@@ -83,7 +82,6 @@ router.post('/:username/followers', async (req, res, next) => {
 
     const ret = await new UserService().followUser(username, followedUsername);
     await new MetricController().postFollowMetric(ret.followedUser.username, true);
-
 
     if (ret.followedUser.expoToken) {
       sendPushNotification(
@@ -192,7 +190,7 @@ router.post('/location', async (req, res, next) => {
     const { latitude, longitude } = req.body;
 
     await new UserService().updateUserLocation(jwtUser.username, { latitude, longitude });
-    await new MetricController().postLocationMetrics(jwtUser.username,latitude, longitude);
+    await new MetricController().postLocationMetrics(jwtUser.username, latitude, longitude);
   } catch (error) {
     next(error);
   }

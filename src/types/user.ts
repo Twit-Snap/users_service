@@ -95,4 +95,4 @@ export type Interest = {
   name: string;
   parentId: number | null;
   emoji: string | null;
-}
+};

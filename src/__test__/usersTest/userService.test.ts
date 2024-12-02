@@ -841,7 +841,9 @@ describe('UserService', () => {
       });
 
       it('should throw a ValidationError if the user already has interests', async () => {
-        mockRepository.getUserInterests = jest.fn().mockResolvedValue([{ id: 1, name: 'Sports', parentId: null }]);
+        mockRepository.getUserInterests = jest
+          .fn()
+          .mockResolvedValue([{ id: 1, name: 'Sports', parentId: null }]);
         await expect(service.associateInterestsToUser(1, [1])).rejects.toThrow(ValidationError);
       });
 

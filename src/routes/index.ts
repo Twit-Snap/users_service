@@ -7,5 +7,12 @@ import userAuthRoutes from './userAuthRoutes';
 import authSSORoutes from './userAuthSSORoutes';
 import userRoutes from './userRoutes';
 
-export { adminRoutes, authAdminRoutes, authSSORoutes, publicRoutes, redirectRoute, userAuthRoutes, userRoutes };
-
+export {
+  adminRoutes,
+  authAdminRoutes,
+  authSSORoutes,
+  publicRoutes,
+  redirectRoute,
+  userAuthRoutes,
+  userRoutes
+};

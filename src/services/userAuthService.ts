@@ -109,28 +109,34 @@ export class UserAuthService implements IUserAuthService {
     return userWithToken;
   }
 
-  async forgotPassword(email: string) {
+  async forgotPassword(email: string, forgotPasswordTime: number) {
     const user = await this.userRepository.findByEmailOrUsername(email);
-
+    console.log('user in service', user);
     if (!user) {
       throw new AuthenticationError();
     }
 
-    const token = this.jwtService.sign({
-      type: 'resetPassword',
-      userId: user.id,
-      email: user.email
+    const token = this.jwtService.sign(
+      {
+        type: 'resetPassword',
+        userId: user.id,
+        email: user.email
       },
       {
         expiresIn: '1h'
       }
     );
 
-    const resetPasswordUrl = `${process.env.USER_SERVICE_URL}/redirect/reset-password?email=${user.email}&token=${token}`;
-
+    const resetPasswordUrl = `${process.env.USER_SERVICE_URL}/redirect/reset-password?email=${user.email}&username=${user.username}&token=${token}&forgotPasswordTime=${forgotPasswordTime}`;
+    console.log('resetPasswordUrl', resetPasswordUrl);
     const emailBody = resetPasswordTemplate(resetPasswordUrl);
     const emailFrom = 'lescalante+twitsnap@fi.uba.ar';
-    const emailResponse = await new SmtpEmailProvider().sendEmail(user.email, 'Twitsnap - Reset Password', emailBody, emailFrom);
+    const emailResponse = await new SmtpEmailProvider().sendEmail(
+      user.email,
+      'Twitsnap - Reset Password',
+      emailBody,
+      emailFrom
+    );
 
     console.log(emailResponse.data);
 

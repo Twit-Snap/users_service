@@ -3,7 +3,6 @@ import { UserService } from '../services/userService';
 
 const router = express.Router();
 
-
 // Endpoint to get all interests
 router.get('/interests', async (req, res, next) => {
   try {
