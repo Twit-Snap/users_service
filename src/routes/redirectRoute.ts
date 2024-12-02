@@ -6,7 +6,7 @@ router.get('/:path', (req, res) => {
   const pathToRedirect = req.url.substring(req.url.lastIndexOf('/redirect/'));
 
   console.log(`Redirecting to path: ${pathToRedirect}`);
-  res.redirect(`myapp://${pathToRedirect}`);
+  res.redirect(`twitsnap://${pathToRedirect}`);
 });
 
 export default router;
