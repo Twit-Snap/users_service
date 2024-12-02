@@ -100,23 +100,33 @@ describe('UserController', () => {
 
     it('should throw ValidationError if interests are empty', async () => {
       const interests: number[] = [];
-      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(ValidationError);
+      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should throw ValidationError if interests is undefined', async () => {
-      await expect(controller.associateInterestsToUser(authUser.userId, undefined)).rejects.toThrow(ValidationError);
+      await expect(controller.associateInterestsToUser(authUser.userId, undefined)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should throw ValidationError if interests contain non-numeric values', async () => {
       const interests = [1, 'invalid', 3] as unknown as number[]; // 'invalid' is not a number
-      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(ValidationError);
+      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(
+        ValidationError
+      );
     });
 
     it('should not handle service errors', async () => {
       const interests = [1, 2, 3];
-      (serviceMock.associateInterestsToUser as jest.Mock).mockRejectedValue(new Error('Service error'));
+      (serviceMock.associateInterestsToUser as jest.Mock).mockRejectedValue(
+        new Error('Service error')
+      );
 
-      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow('Service error');
+      await expect(controller.associateInterestsToUser(authUser.userId, interests)).rejects.toThrow(
+        'Service error'
+      );
     });
   });
 });

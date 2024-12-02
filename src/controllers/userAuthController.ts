@@ -115,6 +115,7 @@ export class UserAuthController {
     }
 
     // Validate registration time
+    /*
     if (!userData.registrationTime) {
       throw new ValidationError(
         'registrationTime',
@@ -122,6 +123,7 @@ export class UserAuthController {
         'INVALID_REGISTRATION_TIME'
       );
     }
+    */
 
     this.validateExpoToken(userData.expoToken);
   }
@@ -209,15 +211,18 @@ export class UserAuthController {
   }
 
   async resetPassword(req: Request, res: Response, next: NextFunction) {
+    const { token, password, resetPasswordTime, email } = req.body;
+    const now = new Date();
     try {
-      const { token, password } = req.body;
       if (!token || !password) {
         throw new ValidationError('token', 'Invalid token', 'INVALID_TOKEN');
       }
 
       const user = await new UserAuthService().resetPassword(token, password);
+      await new MetricController().postUserMetrics(email, Number(resetPasswordTime), now, true, 'password');
       res.send(user);
     } catch (error) {
+      await new MetricController().postUserMetrics(email, Number(resetPasswordTime), now, false, 'password');
       next(error);
     }
   }
