@@ -60,8 +60,17 @@ router.get('/:username', async (req, res, next) => {
     const authUser = (req as unknown as UserRequest).user;
     const username = req.params.username;
     const params = {
-      reduce: req.query.reduce?.toString() === 'true'
+      reduce: req.query.reduce?.toString() === 'true',
+      suggestAccounts: req.query.suggestAccounts?.toString() === 'true',
+      limit: req.query.limit ? +req.query.limit : undefined,
     };
+
+    if (params.suggestAccounts) {
+      const users = await new UserController().getSuggestedAccounts(username, authUser, params);
+      res.send(users);
+      return;
+    }
+
     const user = await new UserController().getUserByUsername(username, authUser, params);
     res.send(user);
   } catch (error) {
