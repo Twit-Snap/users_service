@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
     birthdate DATE NOT NULL,
-    profile_picture VARCHAR(255) NULL,
+    profile_picture VARCHAR(1024) NULL,
+    background_picture VARCHAR(1024) NULL,
     password VARCHAR(255) NULL, -- NULL for social login users
     sso_uid VARCHAR(255) NULL,
     provider_id VARCHAR(50) NULL,

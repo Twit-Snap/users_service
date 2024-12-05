@@ -12,13 +12,14 @@ import {
 } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
+import { userCamelColumnsToSnake } from '../../utils/user';
 import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
   private pool: Pool;
-  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, users.created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified`;
+  private readonly selectUserFields = `id, username, email, name, lastname, birthdate, users.created_at AS "createdAt", sso_uid as "ssoUid", provider_id as "providerId", profile_picture as "profilePicture", is_private AS "isPrivate", is_blocked AS "isBlocked", expo_token AS "expoToken", phone_number AS "phoneNumber", verified, background_picture AS "backgroundPicture"`;
   private readonly reducedUserFields =
-    'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate", expo_token AS "expoToken"';
+    'id, username, name, profile_picture AS "profilePicture", is_private AS "isPrivate", expo_token AS "expoToken", background_picture AS "backgroundPicture"';
 
   constructor(pool?: Pool) {
     this.pool = pool || DatabasePool.getInstance();
@@ -285,7 +286,8 @@ export class UserRepository implements IUserRepository {
     const setVars: string = Object.entries(newValues)
       .map(([key, val]) => {
         queryParams.push(val);
-        return `${key} = $${queryParams.length}`;
+        const snakeKey = userCamelColumnsToSnake(key);
+        return `${snakeKey} = $${queryParams.length}`;
       })
       .join(', ');
 
