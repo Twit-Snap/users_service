@@ -227,7 +227,7 @@ export class UserRepository implements IUserRepository {
     }
 
     const query = `
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.${join} = users.id
       WHERE ${condition}${offset} AND (username ILIKE $2 OR name ILIKE $2)
