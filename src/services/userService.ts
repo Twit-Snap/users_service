@@ -119,31 +119,44 @@ export class UserService {
     return followers;
   }
 
-  async getSuggestedAccounts(username: string, authUser: JwtUserPayload, params?: GetAccountsByUserParams): Promise<User[]> {
-    let usersFollowed = await this.userRepository.getFollows(authUser.userId, { byFollowers: false, has: '', createdAt: undefined });
+  async getSuggestedAccounts(
+    username: string,
+    authUser: JwtUserPayload,
+    params?: GetAccountsByUserParams
+  ): Promise<User[]> {
+    let usersFollowed = await this.userRepository.getFollows(authUser.userId, {
+      byFollowers: false,
+      has: '',
+      createdAt: undefined
+    });
 
     if (usersFollowed.length > 10) {
       usersFollowed = usersFollowed.sort(() => 0.5 - Math.random()).slice(0, 10);
     }
 
-    let suggestedAccounts: Set<User> = new Set();
+    let suggestedAccounts: User[] = [];
     for (const user of usersFollowed) {
-      let followers = await this.userRepository.getFollowsFullData(user.id, { byFollowers: false, has: '', createdAt: undefined });
+      let followers = await this.userRepository.getFollowsFullData(user.id, {
+        byFollowers: false,
+        has: '',
+        createdAt: undefined
+      });
 
-      followers = followers.filter(
-        (suggestedUser) =>
-          !usersFollowed.some((user) => user.username === suggestedUser.username) &&
-          suggestedUser.username !== username
-      );
-
-      followers.forEach((follower) => suggestedAccounts.add(follower));
+      suggestedAccounts.push(...followers);
     }
 
-    if (suggestedAccounts.size > (params?.limit ?? 10)) {
-      return Array.from(suggestedAccounts).sort(() => 0.5 - Math.random()).slice(0, 10);
+    const ids = new Set<number>();
+    const followedIds = new Set<number>(usersFollowed.map(({ id }) => id));
+
+    let filteredAccounts = suggestedAccounts.filter(({ id }) => !ids.has(id) && ids.add(id));
+    filteredAccounts = filteredAccounts.filter(({ id }) => !followedIds.has(id));
+    filteredAccounts = filteredAccounts.filter((user) => user.username !== username);
+
+    if (filteredAccounts.length > (params?.limit ?? 10)) {
+      return filteredAccounts.sort(() => 0.5 - Math.random()).slice(0, 10);
     }
 
-    return Array.from(suggestedAccounts);
+    return filteredAccounts;
   }
 
   async getFollow(username: string, followedUsername: string): Promise<FollowReturn> {
