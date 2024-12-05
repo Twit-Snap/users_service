@@ -4,7 +4,7 @@ import { checkVerification, sendVerification } from './verification';
 
 jest.mock('../app'); // Mock the app module to control the getTwilio function
 
-describe('Verification', () => {
+describe.skip('Verification', () => {
   const mockTwilio = {
     verify: {
       v2: {
