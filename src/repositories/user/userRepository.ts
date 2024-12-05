@@ -12,6 +12,7 @@ import {
 } from 'user';
 import { UserRegisterRepository } from 'userAuth';
 import { EntityAlreadyExistsError } from '../../types/customErrors';
+import { userCamelColumnsToSnake } from '../../utils/user';
 import { DatabasePool } from '../db';
 
 export class UserRepository implements IUserRepository {
@@ -285,7 +286,8 @@ export class UserRepository implements IUserRepository {
     const setVars: string = Object.entries(newValues)
       .map(([key, val]) => {
         queryParams.push(val);
-        return `${key} = $${queryParams.length}`;
+        const snakeKey = userCamelColumnsToSnake(key);
+        return `${snakeKey} = $${queryParams.length}`;
       })
       .join(', ');
 
