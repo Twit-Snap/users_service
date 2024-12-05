@@ -520,7 +520,7 @@ exports[`UserRepository getFollow should return undefined when follow does not e
 
 exports[`UserRepository getFollows gets followers with all params: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND follows.created_at < '2024-01-01' AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -551,7 +551,7 @@ exports[`UserRepository getFollows gets followers with all params: result 1`] = 
 
 exports[`UserRepository getFollows gets followers with all params: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND follows.created_at < $3 AND (username ILIKE $2 OR name ILIKE $2)
@@ -562,7 +562,7 @@ exports[`UserRepository getFollows gets followers with all params: sql query 1`]
 
 exports[`UserRepository getFollows gets followers with createdAt param: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND follows.created_at < '2024-01-01' AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -592,7 +592,7 @@ exports[`UserRepository getFollows gets followers with createdAt param: result 1
 
 exports[`UserRepository getFollows gets followers with createdAt param: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND follows.created_at < $3 AND (username ILIKE $2 OR name ILIKE $2)
@@ -603,7 +603,7 @@ exports[`UserRepository getFollows gets followers with createdAt param: sql quer
 
 exports[`UserRepository getFollows gets followers with limit param: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -633,7 +633,7 @@ exports[`UserRepository getFollows gets followers with limit param: result 1`] =
 
 exports[`UserRepository getFollows gets followers with limit param: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
@@ -644,7 +644,7 @@ exports[`UserRepository getFollows gets followers with limit param: sql query 1`
 
 exports[`UserRepository getFollows gets followers without optional params: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -679,7 +679,7 @@ exports[`UserRepository getFollows gets followers without optional params: resul
 
 exports[`UserRepository getFollows gets followers without optional params: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
@@ -690,7 +690,7 @@ exports[`UserRepository getFollows gets followers without optional params: sql q
 
 exports[`UserRepository getFollows gets following without optional params: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
       WHERE userId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -725,7 +725,7 @@ exports[`UserRepository getFollows gets following without optional params: resul
 
 exports[`UserRepository getFollows gets following without optional params: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.followedId = users.id
       WHERE userId = $1 AND (username ILIKE $2 OR name ILIKE $2)
@@ -736,7 +736,7 @@ exports[`UserRepository getFollows gets following without optional params: sql q
 
 exports[`UserRepository getFollows handles database error: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND (username ILIKE '%test%' OR name ILIKE '%test%')
@@ -754,7 +754,7 @@ exports[`UserRepository getFollows handles database error: query params 1`] = `
 
 exports[`UserRepository getFollows handles database error: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
@@ -765,7 +765,7 @@ exports[`UserRepository getFollows handles database error: sql query 1`] = `
 
 exports[`UserRepository getFollows handles empty result: Interpolated SQL query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = 1 AND (username ILIKE '%nonexistent%' OR name ILIKE '%nonexistent%')
@@ -785,7 +785,7 @@ exports[`UserRepository getFollows handles empty result: result 1`] = `[]`;
 
 exports[`UserRepository getFollows handles empty result: sql query 1`] = `
 "
-      SELECT id, username, name, follows.created_at AS "followCreatedAt"
+      SELECT id, username, name, follows.created_at AS "followCreatedAt", users.profile_picture AS "profilePicture"
       FROM follows
       INNER JOIN users ON follows.userId = users.id
       WHERE followedId = $1 AND (username ILIKE $2 OR name ILIKE $2)
